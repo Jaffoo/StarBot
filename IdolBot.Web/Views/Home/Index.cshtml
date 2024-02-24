@@ -1,0 +1,27 @@
+﻿@{
+    Layout = "_Layout";
+}
+<el-input v-model="count"></el-input>
+<el-button type="primary" @@click="countAdd">click me</el-button>
+@section BodyScripts{
+    <script type="module">
+        const { createApp, ref } = Vue;
+        const { ElMessage } = ElementPlus;
+        const vueApp = createApp({
+            setup() {
+                const count = ref(0);
+                const countAdd = () => {
+                    count.value += 1
+                    if (count.value == 5) {
+                        ElMessage.success("恭喜你点击了：" + count.value);
+                    }
+                }
+                return {
+                    count,
+                    countAdd
+                }
+            }
+        })
+        vueApp.use(ElementPlus).mount("#app")
+    </script>
+}
