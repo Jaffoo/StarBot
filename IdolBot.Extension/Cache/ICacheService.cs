@@ -53,5 +53,11 @@ namespace IdolBot.Extension
         /// <param name="t"></param>
         /// MemoryCacheService.Default.SetCache("test", "MemoryCache works!",TimeSpan.FromSeconds(30));
         void SetSlidingCache(string key, object value, TimeSpan t);
+
+        /// <summary>
+        /// 删除缓存
+        /// </summary>
+        /// <param name="key"></param>
+        void RemoveCache(string key);
     }
 }

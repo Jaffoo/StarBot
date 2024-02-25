@@ -1,3 +1,3 @@
 1：运行命令“dotnet tool install ElectronSharp.CLI -g”安装工具。
 2：进入ElectronCore.Web文件夹，运行cmd。
-3：运行命令“electron-sharp start”，此时会在ElectronCore.Web->obj文件夹中生成Host文件夹，以及安装npm包，如果运行命令中途提示报错，忽略即可，最后运行项目。
+3：运行命令“electron-sharp start”，此时会在ElectronCore.Web->obj文件夹中生成Host文件夹，以及安装nodejs包，如果运行命令中途提示报错，忽略即可，最后运行项目。

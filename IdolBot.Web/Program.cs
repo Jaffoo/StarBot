@@ -22,7 +22,7 @@ ConfigHelper.SetConfig(builder.Configuration, builder.Environment.ContentRootPat
 //注入数据
 builder.Services.AddDataService(ConfigHelper.GetConfiguration("NameSpace") + ".Service");
 
-builder.Services.AddMvc().AddNewtonsoftJson(options =>
+builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
 {
     //json序列化设置
     //json序列化设置默认首字母小写驼峰命名
@@ -50,8 +50,8 @@ builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
 var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
 {
     AutoHideMenuBar = true,
-    Height=900,
-    Width=1200
+    Height = 900,
+    Width = 1200
 });
 await browserWindow.WebContents.Session.ClearCacheAsync();
 browserWindow.OnReadyToShow += () => browserWindow.Show();

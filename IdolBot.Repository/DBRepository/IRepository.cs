@@ -1,3 +1,4 @@
+using SqlSugar;
 using System.Linq.Expressions;
 using PageModel = IdolBot.Model.PageModel;
 
@@ -244,6 +245,21 @@ namespace IdolBot.Repository
         /// <param name="predicate">lambda表达式条件</param>
         /// <returns></returns>
         Task<T> GetModelAsync(Expression<Func<T, bool>> predicate);
+
+        /// <summary>
+        /// 根据lambda表达式条件获取单个实体
+        /// </summary>
+        /// <param name="order">排序字段</param>
+        /// <returns></returns>
+        Task<T> GetModelAsync(Expression<Func<T, object>> order);
+
+        /// <summary>
+        /// 根据lambda表达式条件获取单个实体
+        /// </summary>
+        /// <param name="predicate">lambda表达式条件</param>
+        /// <param name="order">排序字段</param>
+        /// <returns></returns>
+        Task<T> GetModelAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> order);
 
         /// <summary>
         /// 获取树

@@ -5,14 +5,19 @@ namespace IdolBot.Entity
     /// <summary>
     /// 系统配置
     /// </summary>
-    [SugarTable("sys_config")]
-    public class Config
+    [SugarTable("SysConfig")]
+    public class SysConfig
     {
         /// <summary>
         /// id
         /// </summary>
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int Id { get; set; }
+
+        /// <summary>
+        /// id
+        /// </summary>
+        public int Pid { get; set; }
 
         /// <summary>
         /// 键
@@ -22,12 +27,12 @@ namespace IdolBot.Entity
         /// <summary>
         /// 值
         /// </summary>
-        public string? Value { get; set; }
+        public string Value { get; set; } = "";
 
         /// <summary>
         /// 名称
         /// </summary>
-        public string? Name { get; set; }
+        public string Name { get; set; } = "";
 
         /// <summary>
         /// 描述
@@ -35,8 +40,8 @@ namespace IdolBot.Entity
         public string? Desc { get; set; }
 
         /// <summary>
-        /// 创建时间
+        /// 数据类型
         /// </summary>
-        public DateTime CreateDate { get; set; }
+        public string DataType { get; set; } = "";
     }
 }

@@ -204,6 +204,29 @@ namespace IdolBot.Repository
         }
 
         /// <summary>
+        /// 根据lambda表达式条件获取单个实体
+        /// </summary>
+        /// <param name="order">排序字段</param>
+        /// <returns></returns>
+        public virtual async Task<T> GetModelAsync(Expression<Func<T, object>> order)
+        {
+            var model = await Db.SlaveQueryable<T>().OrderBy(order, OrderByType.Desc).FirstAsync();
+            return model;
+        }
+
+        /// <summary>
+        /// 根据lambda表达式条件获取单个实体
+        /// </summary>
+        /// <param name="predicate">lambda表达式条件</param>
+        /// <param name="order">排序字段</param>
+        /// <returns></returns>
+        public virtual async Task<T> GetModelAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> order)
+        {
+            var model = await Db.SlaveQueryable<T>().OrderBy(order, OrderByType.Desc).FirstAsync(predicate);
+            return model;
+        }
+
+        /// <summary>
         /// 获取树
         /// </summary>
         /// <param name="chilProptyName">子集的属性名称</param>

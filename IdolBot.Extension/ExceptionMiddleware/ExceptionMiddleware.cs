@@ -12,13 +12,13 @@ namespace IdolBot.Extension
     /// <remarks>
     /// 构造函数
     /// </remarks>
-    public class ExceptionMiddleware(RequestDelegate next, ILogs logs)
+    public class ExceptionMiddleware(RequestDelegate next, ISysLog logs)
     {
         /// <summary>
         /// 管道代理对象
         /// </summary>
         private readonly RequestDelegate _next = next;
-        private readonly ILogs _logs = logs;
+        private readonly ISysLog _logs = logs;
 
         /// <summary>
         /// 调用管道
@@ -79,9 +79,7 @@ namespace IdolBot.Extension
             await context.Response.WriteAsync(JsonConvert.SerializeObject(apiResult, settings));
             if (statusCode >= 500)
             {
-                var code = statusCode.ToString();
-                var url = context.Request.Path;
-                await _logs.WriteLog(code, msg, Enums.LogLevel.ERROR, url);
+                await _logs.WriteLog(msg);
             }
         }
     }

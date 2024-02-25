@@ -22,7 +22,7 @@ namespace IdolBot.Extension
         /// 日志标题
         /// </summary>
         public string Title { get; set; } = title;
-        private readonly ILogs _logs = ConfigHelper.GetService<ILogs>();
+        private readonly ISysLog _logs = ConfigHelper.GetService<ISysLog>();
 
         /// <summary>
         /// OnActionExecuted是在Action中的代码执行之后运行的方法。
@@ -87,7 +87,7 @@ namespace IdolBot.Extension
 
                 //记录数据库
                 string str = controller + "." + action + "()," + method + " form:" + form + " body:" + body + " response:" + jsonResult;
-                _logs.WriteLog(Title, str, Enums.LogLevel.INFO, url);
+                _logs.WriteLog(str);
             }
             catch (Exception exc)
             {

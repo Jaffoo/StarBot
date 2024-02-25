@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IdolBot.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         public IActionResult Index()
         {
