@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using SqlSugar;
 using PageModel = AIdol.Model.PageModel;
+using AIdol.Repository;
 
 namespace AIdol.Repository
 {
@@ -14,8 +15,6 @@ namespace AIdol.Repository
         /// 数据库对象实例
         /// </summary>
         protected SqlSugarClient Db => _db.Value;
-
-        #region 同步
 
         /// <summary>
         /// 判断记录是否存在
@@ -99,6 +98,7 @@ namespace AIdol.Repository
             return row > 0;
         }
         #endregion
+
         #region 更新实体
         /// <summary>
         /// 更新实体
@@ -193,6 +193,17 @@ namespace AIdol.Repository
         #endregion
 
         /// <summary>
+        /// 根据主键id获取实体
+        /// </summary>
+        /// <param name="id">主键id</param>
+        /// <returns></returns>
+        public virtual async Task<T> GetModelAsync(int id)
+        {
+            var model = await Db.SlaveQueryable<T>().InSingleAsync(id);
+            return model;
+        }
+
+        /// <summary>
         /// 根据lambda表达式条件获取单个实体
         /// </summary>
         /// <param name="predicate">lambda表达式条件</param>
@@ -204,25 +215,25 @@ namespace AIdol.Repository
         }
 
         /// <summary>
-        /// 根据lambda表达式条件获取单个实体
+        /// 根据lambda表达式条件获取最后一个实体
         /// </summary>
-        /// <param name="order">排序字段</param>
+        /// <param name="order">排序字段表达式</param>
         /// <returns></returns>
         public virtual async Task<T> GetModelAsync(Expression<Func<T, object>> order)
         {
-            var model = await Db.SlaveQueryable<T>().OrderBy(order, OrderByType.Desc).FirstAsync();
+            var model = await Db.SlaveQueryable<T>().OrderBy(order).FirstAsync();
             return model;
         }
 
         /// <summary>
-        /// 根据lambda表达式条件获取单个实体
+        /// 根据lambda表达式条件获取最后一个实体
         /// </summary>
         /// <param name="predicate">lambda表达式条件</param>
-        /// <param name="order">排序字段</param>
+        /// <param name="order">排序字段表达式</param>
         /// <returns></returns>
         public virtual async Task<T> GetModelAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> order)
         {
-            var model = await Db.SlaveQueryable<T>().OrderBy(order, OrderByType.Desc).FirstAsync(predicate);
+            var model = await Db.SlaveQueryable<T>().OrderByDescending(order).FirstAsync(predicate);
             return model;
         }
 
@@ -366,6 +377,16 @@ namespace AIdol.Repository
         public virtual async Task<List<T>> GetListAsync()
         {
             return await Db.SlaveQueryable<T>().ToListAsync();
+        }
+
+        /// <summary>
+        /// 获取实体集
+        /// </summary>
+        /// <param name="ids">主键</param>
+        /// <returns></returns>
+        public virtual async Task<List<T>> GetListAsync(IEnumerable<int> ids)
+        {
+            return await Db.SlaveQueryable<T>().In(ids).ToListAsync();
         }
 
         /// <summary>
@@ -544,7 +565,6 @@ namespace AIdol.Repository
             var data = await result1.ToPageListAsync(param.PageIndex, param.PageSize, count);
             return (await data.ToDynamicListAsync<A>(), count);
         }
-        #endregion
 
         private static void CompareAndAssign(T original, T updated)
         {

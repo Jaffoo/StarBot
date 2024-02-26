@@ -1,4 +1,3 @@
-using SqlSugar;
 using System.Linq.Expressions;
 using PageModel = AIdol.Model.PageModel;
 
@@ -6,8 +5,6 @@ namespace AIdol.Repository
 {
     public interface IRepository<T> where T : class
     {
-        #region 同步
-
         /// <summary>
         /// 判断记录是否存在
         /// </summary>
@@ -63,6 +60,7 @@ namespace AIdol.Repository
         /// <returns></returns>
         Task<bool> AddRangeAsync(IEnumerable<T> entities, Expression<Func<T, object>>? insterCol = null);
         #endregion
+
         #region 更新
         /// <summary>
         /// 更新实体
@@ -120,6 +118,7 @@ namespace AIdol.Repository
         Task<bool> UpdateRangeAsync(IEnumerable<T> entities, Expression<Func<T, object>>? updateCol = null);
 
         #endregion
+
         #region 删除
         /// <summary>
         /// 删除实体
@@ -149,7 +148,7 @@ namespace AIdol.Repository
         /// </summary>
         /// <param name="where">条件</param>
         /// <param name="value">条件参数(匿名对象/字典/SugarParameter)</param>
-        Task<bool> DeleteAsync(string where, object? value=null);
+        Task<bool> DeleteAsync(string where, object? value = null);
 
         /// <summary>
         /// 根据条件删除实体
@@ -184,6 +183,13 @@ namespace AIdol.Repository
         /// </summary>
         /// <returns></returns>
         Task<List<T>> GetListAsync();
+
+        /// <summary>
+        /// 获取实体集
+        /// </summary>
+        /// <param name="ids">主键</param>
+        /// <returns></returns>
+        Task<List<T>> GetListAsync(IEnumerable<int> ids);
 
         /// <summary>
         /// 根据lambda表达式条件获取筛选字段集合
@@ -240,24 +246,31 @@ namespace AIdol.Repository
         Task<List<A>> GetListAsync<A>(int top, string whereSQL = "", string ordering = "", string selectSQL = "", object? args = null);
 
         /// <summary>
-        /// 根据lambda表达式条件获取单个实体
+        /// 根据主键获取实体
+        /// </summary>
+        /// <param name="id">lambda表达式条件</param>
+        /// <returns></returns>
+        Task<T> GetModelAsync(int id);
+
+        /// <summary>
+        /// 根据lambda表达式条件获取第一个实体
         /// </summary>
         /// <param name="predicate">lambda表达式条件</param>
         /// <returns></returns>
         Task<T> GetModelAsync(Expression<Func<T, bool>> predicate);
 
         /// <summary>
-        /// 根据lambda表达式条件获取单个实体
+        /// 根据lambda表达式条件获取最后一个实体
         /// </summary>
-        /// <param name="order">排序字段</param>
+        /// <param name="order">排序字段表达式</param>
         /// <returns></returns>
         Task<T> GetModelAsync(Expression<Func<T, object>> order);
 
         /// <summary>
-        /// 根据lambda表达式条件获取单个实体
+        /// 根据lambda表达式条件获取最后一个实体
         /// </summary>
         /// <param name="predicate">lambda表达式条件</param>
-        /// <param name="order">排序字段</param>
+        /// <param name="order">排序字段表达式</param>
         /// <returns></returns>
         Task<T> GetModelAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> order);
 
@@ -268,7 +281,7 @@ namespace AIdol.Repository
         /// <param name="pidProptyName">父级id属性名</param>
         /// <param name="rootId">跟目录id（默认0）</param>
         /// <returns></returns>
-        Task<List<T>> GetTreeAsync(Expression<Func<T, IEnumerable<object>>> chilProptyName, Expression<Func<T, object>> pidProptyName,int rootId=0);
+        Task<List<T>> GetTreeAsync(Expression<Func<T, IEnumerable<object>>> chilProptyName, Expression<Func<T, object>> pidProptyName, int rootId = 0);
 
         /// <summary>
         /// 获取树
@@ -277,7 +290,7 @@ namespace AIdol.Repository
         /// <param name="pidProptyName">父级id属性名</param>
         /// <param name="rootId">跟目录id（默认0）</param>
         /// <returns></returns>
-        Task<List<T>> GetTreeAsync(Expression<Func<T, IEnumerable<object>>> chilProptyName, Expression<Func<T, object>> pidProptyName, Expression<Func<T, object>> primaryKeyExpression, int rootId=0);
+        Task<List<T>> GetTreeAsync(Expression<Func<T, IEnumerable<object>>> chilProptyName, Expression<Func<T, object>> pidProptyName, Expression<Func<T, object>> primaryKeyExpression, int rootId = 0);
 
         /// <summary>
         /// 获取树
@@ -286,7 +299,7 @@ namespace AIdol.Repository
         /// <param name="pidProptyName">父级id属性名</param>
         /// <param name="rootId">跟目录id（默认0）</param>
         /// <returns></returns>
-        Task<List<T>> GetTreeAsync(string chilProptyName="Children", string pidProptyName="Pid",string primaryKeyPropertyName="Id", int rootId=0);
+        Task<List<T>> GetTreeAsync(string chilProptyName = "Children", string pidProptyName = "Pid", string primaryKeyPropertyName = "Id", int rootId = 0);
 
         /// <summary>
         /// 分页查询
@@ -319,6 +332,5 @@ namespace AIdol.Repository
         /// <param name="args">条件参数(匿名对象/字典/SugarParameter)</param>
         /// <returns></returns>
         Task<(List<A> List, int Count)> GetPageListAsync<A>(PageModel param, string whereSQL = "", string orderSQL = "", Expression<Func<T, A>>? selector = null, object? args = null);
-        #endregion
     }
 }

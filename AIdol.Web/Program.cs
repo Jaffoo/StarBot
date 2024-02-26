@@ -55,6 +55,14 @@ browserWindow.SetTitle("AI豆");
 
 var app = builder.Build();
 
+// 注册应用程序关闭事件
+app.Lifetime.ApplicationStopping.Register(() =>
+{
+    var previousProcesses = Process.GetProcessesByName("electron");
+    foreach (var p in previousProcesses)
+        p.Kill();
+});
+
 #region 数据库创建/更新
 if (!File.Exists("wwwroot/data/main.db"))
 {

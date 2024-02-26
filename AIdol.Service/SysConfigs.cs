@@ -4,8 +4,6 @@ using AIdol.IService;
 using AIdol.Model;
 using AIdol.Repository;
 using Newtonsoft.Json.Linq;
-using SqlSugar.Extensions;
-using System.Dynamic;
 using TBC.CommonLib;
 
 namespace AIdol.Service
