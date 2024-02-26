@@ -1,4 +1,4 @@
-﻿using ShamrockCore.Data.Model;
+using ShamrockCore.Data.Model;
 using ShamrockCore.Receiver;
 using ShamrockCore.Receiver.Receivers;
 using System.Diagnostics.Tracing;
