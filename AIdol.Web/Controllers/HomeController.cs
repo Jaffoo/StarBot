@@ -1,13 +1,15 @@
 using AIdol.Extension;
+using AIdol.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AIdol.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        public IActionResult Index()
+        [HttpGet("index")]
+        public ApiResult Index()
         {
-            return View();
+            return Success("³É¹¦");
         }
     }
 }

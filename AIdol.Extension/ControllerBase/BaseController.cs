@@ -6,6 +6,10 @@ namespace AIdol.Extension
     /// <summary>
     /// 控制器基类
     /// </summary>
+    [ApiController]
+    [Produces("application/json")]
+    [Route("[controller]")]
+
     public class BaseController : Controller
     {
         /// <summary>
