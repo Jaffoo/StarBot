@@ -4,6 +4,8 @@ using AIdol.IService;
 using AIdol.Model;
 using AIdol.Repository;
 using Newtonsoft.Json.Linq;
+using SqlSugar.Extensions;
+using System.Dynamic;
 using TBC.CommonLib;
 
 namespace AIdol.Service
@@ -28,72 +30,104 @@ namespace AIdol.Service
             return model.Value;
         }
 
+        public async Task<bool> SaveConfig(Config config)
+        {
+            var whriteList = new List<string>() { "MsgTypeAll" };
+            var updates = new List<SysConfig>();
+            var jobj = JObject.FromObject(config)!;
+            foreach (var item in jobj)
+            {
+                var pModel = await GetModelAsync(t => t.Key == item.Key && t.DataType.Contains("class"));
+                if (pModel == null) continue;
+                var children = await GetListAsync(t => t.Pid == pModel.Id);
+                var subItem = JObject.Parse(item.Value!.ToString());
+                foreach (var child in children)
+                {
+                    if (whriteList.Contains(child.Key)) continue;
+                    var newVal = subItem[child.Key]!.ToString();
+                    if (newVal == "False" || newVal == "True") newVal = newVal.ToLower();
+                    if (newVal == "[]") newVal = "";
+                    if (newVal == child.Value) continue;
+                    child.Value = newVal;
+                    updates.Add(child);
+                }
+            }
+            return await UpdateRangeAsync(updates);
+        }
+
         public async Task<Config> GetConfig()
         {
             var config = new Config();
-            //enable
+            //EnableModule
             var enableModule = cache.GetCache<EnableModule>("EnableModule");
-            if (enableModule == null) await SetCache(6, "EnableModule");
-            else config.EnableModule = enableModule;
+            enableModule ??= await SetCache<EnableModule>(7, "EnableModule");
+            config.EnableModule = enableModule;
 
             //shamrock
             var shamrock = cache.GetCache<Shamrock>("OpenShamrock");
-            if (enableModule == null) await SetCache(1, "OpenShamrock");
-            else config.Shamrock = shamrock;
+            shamrock ??= await SetCache<Shamrock>(1, "OpenShamrock");
+            config.Shamrock = shamrock;
 
             //qq
             var qq = cache.GetCache<QQ>("QQ");
-            if (enableModule == null) await SetCache(8, "QQ");
-            else config.QQ = qq;
+            qq ??= await SetCache<QQ>(8, "QQ");
+            config.QQ = qq;
 
             //WB
             var wb = cache.GetCache<WB>("WB");
-            if (enableModule == null) await SetCache(9, "WB");
-            else config.WB = wb;
+            wb ??= await SetCache<WB>(9, "WB");
+            config.WB = wb;
 
             //BZ
             var bz = cache.GetCache<BZ>("BZ");
-            if (enableModule == null) await SetCache(12, "BZ");
-            else config.BZ = bz;
+            bz ??= await SetCache<BZ>(12, "BZ");
+            config.BZ = bz;
 
             //KD
             var kd = cache.GetCache<KD>("KD");
-            if (enableModule == null) await SetCache(11, "KD");
-            else config.KD = kd;
+            kd ??= await SetCache<KD>(11, "KD");
+            config.KD = kd;
 
             //XHS
             var xhs = cache.GetCache<XHS>("XHS");
-            if (enableModule == null) await SetCache(12, "XHS");
-            else config.XHS = xhs;
+            xhs ??= await SetCache<XHS>(12, "XHS");
+            config.XHS = xhs;
 
             //DY
             var dy = cache.GetCache<DY>("DY");
-            if (enableModule == null) await SetCache(13, "DY");
-            else config.DY = dy;
+            dy ??= await SetCache<DY>(13, "DY");
+            config.DY = dy;
 
             //BD
             var bd = cache.GetCache<BD>("BD");
-            if (enableModule == null) await SetCache(14, "BD");
-            else config.BD = bd;
+            bd ??= await SetCache<BD>(14, "BD");
+            config.BD = bd;
 
             return config;
         }
 
-        private async Task SetCache(int pid, string key)
+        private async Task<T> SetCache<T>(int pid, string key)
         {
             var list = await GetListAsync(t => t.Pid == pid);
             JObject obj = [];
             foreach (var item in list)
             {
-                if (item.Value.Contains("bool"))
+                if (item.DataType.Contains("bool"))
                     obj.Add(item.Key, item.Value.ToBool());
-                else if (item.Value.Contains("list"))
-                    obj.Add(item.Key, JArray.Parse(item.Value));
-                else if (item.Value.Contains("int"))
+                else if (item.DataType.Contains("list"))
+                {
+                    if (string.IsNullOrWhiteSpace(item.Value))
+                        obj.Add(item.Key, new JArray());
+                    else
+                        obj.Add(item.Key, JArray.Parse(item.Value));
+                }
+                else if (item.DataType.Contains("int"))
                     obj.Add(item.Key, item.Value.ToInt());
                 else obj.Add(item.Key, item.Value);
             }
-            cache.SetCache(key, JObject.FromObject(obj));
+            var val = obj.ToObject<T>()!;
+            cache.SetCache(key, val);
+            return val;
         }
 
         public void ClearConfig(string key = "")

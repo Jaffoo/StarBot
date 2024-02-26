@@ -8,7 +8,7 @@ namespace AIdol.Extension
     /// </summary>
     [ApiController]
     [Produces("application/json")]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
 
     public class BaseController : Controller
     {

@@ -84,13 +84,13 @@ CREATE TABLE "SysConfig" (
 -- ----------------------------
 -- Records of SysConfig
 -- ----------------------------
-INSERT INTO "SysConfig" VALUES (1, 0, 'OpenShamrock', 'OpenShamrock配置', '', '', 'class');
+INSERT INTO "SysConfig" VALUES (1, 0, 'Shamrock', 'OpenShamrock配置', '', '', 'class');
 INSERT INTO "SysConfig" VALUES (2, 1, 'Host', '地址', '127.0.0.1', 'OpenShamrock服务的地址，不带协议(如http)', 'string');
 INSERT INTO "SysConfig" VALUES (3, 1, 'WebsocktPort', 'Websocket端口', '7001', NULL, 'int');
 INSERT INTO "SysConfig" VALUES (4, 1, 'HttpPort', 'Http端口', '7002', NULL, 'int');
 INSERT INTO "SysConfig" VALUES (5, 1, 'Token', 'Token', '', '发送数据身份验证标识', 'string');
 INSERT INTO "SysConfig" VALUES (6, 1, 'Use', '使用shamrock', 'false', NULL, 'bool');
-INSERT INTO "SysConfig" VALUES (7, 0, 'EnableModule', '启用项', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (7, 0, 'EnableModule', '启用项', NULL, NULL, 'list&class');
 INSERT INTO "SysConfig" VALUES (8, 7, 'QQ', 'QQ', 'false', NULL, 'class&bool');
 INSERT INTO "SysConfig" VALUES (9, 7, 'WB', '微博', 'false', NULL, 'class&bool');
 INSERT INTO "SysConfig" VALUES (10, 7, 'BZ', 'B站', 'false', NULL, 'class&bool');
@@ -98,7 +98,7 @@ INSERT INTO "SysConfig" VALUES (11, 7, 'KD', '口袋48', 'false', NULL, 'class&b
 INSERT INTO "SysConfig" VALUES (12, 7, 'XHS', '小红书', 'false', NULL, 'class&bool');
 INSERT INTO "SysConfig" VALUES (13, 7, 'DY', '抖音', 'false', NULL, 'class&bool');
 INSERT INTO "SysConfig" VALUES (14, 7, 'BD', '百度', 'false', NULL, 'class&bool');
-INSERT INTO "SysConfig" VALUES (15, 8, 'Admin', '超管', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (15, 8, 'Admin', '超管', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (16, 8, 'Permission', '管理员', NULL, NULL, 'list');
 INSERT INTO "SysConfig" VALUES (17, 8, 'Group', '群', NULL, NULL, 'list');
 INSERT INTO "SysConfig" VALUES (18, 8, 'Save', '保存群消息', 'false', NULL, 'bool');
@@ -199,8 +199,8 @@ INSERT INTO "SysConfig" VALUES (53, 13, 'User', '抖音用户', NULL, NULL, 'lis
 INSERT INTO "SysConfig" VALUES (54, 13, 'TimeSpan', '监听间隔', '3', '单位分钟', 'int');
 INSERT INTO "SysConfig" VALUES (55, 13, 'Group', 'qq群', NULL, NULL, 'list');
 INSERT INTO "SysConfig" VALUES (56, 13, 'QQ', '好友qq', NULL, NULL, 'list');
-INSERT INTO "SysConfig" VALUES (57, 13, 'ForwardGroup', '转发至群', NULL, NULL, 'bool');
-INSERT INTO "SysConfig" VALUES (58, 13, 'ForwardQQ', '转发好友', NULL, NULL, 'bool');
+INSERT INTO "SysConfig" VALUES (57, 13, 'ForwardGroup', '转发至群', 'false', NULL, 'bool');
+INSERT INTO "SysConfig" VALUES (58, 13, 'ForwardQQ', '转发好友', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (59, 14, 'AppKey', 'AppKey', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (60, 14, 'AppSeret', 'AppSeret', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (61, 14, 'Similarity', '人脸相似度', '80', '*直接保存(非双胞胎建议80，双胞胎建议70)', 'int');
@@ -212,7 +212,8 @@ INSERT INTO "SysConfig" VALUES (66, 14, 'ImageList', '基础人脸', NULL, NULL,
 INSERT INTO "SysConfig" VALUES (67, 9, 'WBChiGuaForwardGroup', '吃瓜转发至群', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (68, 9, 'WBChiGuaForwardQQ', '吃瓜转发QQ', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (69, 9, 'WBChiGuaQQ', '吃瓜转发qq', NULL, NULL, 'list');
-INSERT INTO "SysConfig" VALUES (70, 9, 'WBChiGuaGroup', '吃瓜转发群', NULL, NULL, 'string');
+INSERT INTO "SysConfig" VALUES (70, 9, 'WBChiGuaGroup', '吃瓜转发群', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (71, 11, 'SaveMsg', '保存消息', '1', '0-不保存，1-小偶像消息，2-全部消息', 'string');
 
 -- ----------------------------
 -- Table structure for SysIdol

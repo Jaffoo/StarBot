@@ -42,6 +42,7 @@ namespace AIdol.Entity
         /// <summary>
         /// 数据类型
         /// </summary>
-        public string DataType { get; set; } = "";
+        [SugarColumn(ColumnName = "DateType")]
+        public string DataType { get; set; } = "string";
     }
 }

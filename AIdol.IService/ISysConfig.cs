@@ -17,6 +17,8 @@ namespace AIdol.IService
 
         Task<Config> GetConfig();
 
+        Task<bool> SaveConfig(Config config);
+
         void ClearConfig(string key = "");
     }
 }

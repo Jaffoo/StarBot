@@ -1,15 +1,35 @@
 using AIdol.Extension;
+using AIdol.IService;
 using AIdol.Model;
 using Microsoft.AspNetCore.Mvc;
+using ICacheService = AIdol.Extension.ICacheService;
 
 namespace AIdol.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController(ISysConfig sysConfig) : BaseController
     {
-        [HttpGet("index")]
-        public ApiResult Index()
+        ISysConfig _sysConfig = sysConfig;
+
+        /// <summary>
+        /// 获取配置
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getconfig")]
+        public async Task<ApiResult> GetConfig()
         {
-            return Success("成功");
+            var config = await _sysConfig.GetConfig();
+            return DataResult(config);
+        }
+
+        /// <summary>
+        /// 保存配置
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        [HttpPost("saveconfig")]
+        public async Task<ApiResult> SaveConfig(Config config)
+        {
+            return AjaxResult(await _sysConfig.SaveConfig(config));
         }
     }
 }

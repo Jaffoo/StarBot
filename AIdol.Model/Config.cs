@@ -1,6 +1,5 @@
 using SqlSugar;
 using SqlSugar.Extensions;
-using System.Text.Json.Serialization;
 
 namespace AIdol.Model
 {
@@ -395,12 +394,17 @@ namespace AIdol.Model
         /// <summary>
         /// 消息类型
         /// </summary>
-        public List<string> MsgTypeAll { get; set; } = [];
+        public List<MsgTypeModel> MsgTypeAll { get; set; } = [];
 
         /// <summary>
         /// 接收/转发消息类型
         /// </summary>
         public List<string> MsgType { get; set; } = [];
+
+        /// <summary>
+        /// 0-不保存，1-小偶像消息，2-全部消息
+        /// </summary>
+        public int SaveMsg { get; set; }
     }
 
     /// <summary>
@@ -798,5 +802,21 @@ namespace AIdol.Model
         /// 开启程序错误通知
         /// </summary>
         public bool Debug { get; set; } = false;
+    }
+
+    /// <summary>
+    /// 口袋消息类型
+    /// </summary>
+    public class MsgTypeModel
+    {
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Name { get; set; }= string.Empty;
+
+        /// <summary>
+        /// 值
+        /// </summary>
+        public string Value { get; set; }= string.Empty;
     }
 }

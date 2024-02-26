@@ -56,12 +56,11 @@ namespace Helper
                 string msbBody = "";
 
                 if (roleId != 3) return;
-                #region �����߼�
                 else
                 {
                     MessageChainBuilder mcb = new();
-                    mcb.Text($"��{Config.KD.IdolName}|{channelName}��\n��{time}��\n{name}:");
-                    //ͼƬ
+                    mcb.Text($"【{Config.KD.IdolName}|{channelName}】\n【{time}】\n{name}:");
+                    //图片
                     if (msgType == "image")
                     {
                         msbBody = result["attach"]!["url"]!.ToString();
@@ -72,19 +71,19 @@ namespace Helper
                         if (!Config.KD.MsgType.Contains(msgType)) return;
                         mcb.ImageByUrl(msbBody);
                     }
-                    //����
+                    //文字
                     else if (Config.KD.MsgType.Contains(msgType) && msgType == "text")
                     {
                         //"230226137"
                         msbBody = result["body"]!.ToString();
                         mcb.Text(msbBody);
                     }
-                    //��Ƶ
+                    //视频
                     else if (Config.KD.MsgType.Contains(msgType) && msgType == "video")
                     {
                         mcb.Text(result["attach"]!["url"]!.ToString());
                     }
-                    //����
+                    //语言
                     else if (Config.KD.MsgType.Contains(msgType) && msgType == "audio")
                     {
                         mcb.RecordByUrl(result["attach"]!["url"]!.ToString());
@@ -93,74 +92,67 @@ namespace Helper
                     {
                         var attach = result["attach"]!;
                         var messageType = attach["messageType"]!.ToString();
-                        //�ظ�
+                        //回复
                         if (Config.KD.MsgType.Contains(messageType) && messageType == "REPLY")
                         {
                             msbBody = attach["replyInfo"]!["text"] + "\n" + attach["replyInfo"]!["replyName"]! + ":" + attach["replyInfo"]!["replyText"]!;
                             mcb.Text(msbBody);
                         }
-                        //����ظ�
+                        //礼物回复
                         else if (Config.KD.MsgType.Contains(messageType) && messageType == "GIFTREPLY")
                         {
                             msbBody = attach["giftReplyInfo"]!["text"] + "\n" + attach["giftReplyInfo"]!["replyName"]! + ":" + attach["giftReplyInfo"]!["replyText"]!;
                             mcb.Text(msbBody);
                         }
-                        //��ѡ�Ʒ�
-                        //else if (false)
-                        //{
-                        //    msbBody = "�ͳ��ˡ�" + attach["giftInfo"]!["giftName"] + "��" + attach["giftInfo"]!["tpNum"] + "�֣�����";
-                        //    mcb.Text(msbBody);
-                        //}
-                        //ֱ��
+                        //ֱ直播
                         else if (Config.KD.MsgType.Contains(messageType) && messageType == "LIVEPUSH")
                         {
-                            //�ж��Ƿ�at������
-                            msbBody = "ֱ������\n���⣺" + attach["livePushInfo"]!["liveTitle"];
+                            msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
                             mcb.Text(msbBody).ImageByUrl(Config.KD.ImgDomain + attach["livePushInfo"]!["liveCover"]!.ToString());
                             if (Config.KD.MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
                                 mcb.AtAll();
                         }
-                        //����
+                        //语音
                         else if (Config.KD.MsgType.Contains(messageType.ToLower()) && messageType == "AUDIO")
                         {
                             mcb.RecordByUrl(attach["audioInfo"]!["url"]!.ToString());
                         }
-                        //��Ƶ
+                        //视频
                         else if (Config.KD.MsgType.Contains(messageType.ToLower()) && messageType == "VIDEO")
                         {
                             mcb.VideoByUrl(attach["videoInfo"]!["url"]!.ToString());
                         }
-                        // �����̨
+                        // 房间电台
                         else if (Config.KD.MsgType.Contains(messageType) && messageType == "TEAM_VOICE")
                         {
-                            //�ж��Ƿ�at������
-                            msbBody = "�����˷����̨";
+                            //判断是否at所有人
+                            msbBody = "开启了房间电台";
                             mcb.Text(msbBody);
                             if (Config.KD.MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
                                 mcb.AtAll();
                         }
-                        //���ַ���
+                        //文字翻牌
                         else if (Config.KD.MsgType.Contains(messageType) && messageType == "FLIPCARD")
                         {
                             var answer = attach["filpCardInfo"]!["answer"]!.ToString();
                             mcb.Text(answer.ToString());
-                            mcb.Text("\n��˿���ʣ�" + attach["filpCardInfo"]!["question"]);
+                            mcb.Text("\n粉丝提问" + attach["filpCardInfo"]!["question"]);
                         }
-                        //��������
+                        //语音翻牌
                         else if (Config.KD.MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")
                         {
                             var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                             mcb.RecordByUrl(Config.KD.VideoDomain + answer["url"]);
-                            mcb.Text("\n��˿���ʣ�" + attach["filpCardInfo"]!["question"]);
+                            mcb.Text("\n粉丝提问" + attach["filpCardInfo"]!["question"]);
                         }
-                        //��Ƶ����
+                        //视频翻牌
                         else if (Config.KD.MsgType.Contains(messageType) && messageType == "FLIPCARD_VIDEO")
                         {
                             var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
                             mcb.Text(Config.KD.VideoDomain + answer["url"]);
-                            mcb.Text("\n��˿���ʣ�" + attach["filpCardInfo"]!["question"]);
+                            mcb.Text("\n粉丝提问" + attach["filpCardInfo"]!["question"]);
                         }
-                        //����
+                        //表情
                         else if (Config.KD.MsgType.Contains(messageType) && messageType == "EXPRESSIMAGE")
                         {
                             string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
@@ -201,7 +193,6 @@ namespace Helper
                         }
                     }
                 }
-                #endregion
                 return;
             }
             catch (Exception e)
@@ -222,7 +213,7 @@ namespace Helper
                 var time = System.Convert.ToDateTime(DateTime.Parse(DateTime.Now.ToString("1970-01-01 08:00:00")).AddMilliseconds(timeVal).ToString());//����Ϊʱ���ʽ;
                 if (roleId != 3) return;
                 MessageChainBuilder mcb = new();
-                mcb.Text($"��{Config.KD.IdolName}|ֱ���䡿\n��{time}��\n{result["fromNick"]}:");
+                mcb.Text($"【{Config.KD.IdolName}|直播间】\n【{time}】\n{result["fromNick"]}:");
                 if (messageType == "text")
                     mcb.Text(result["text"]?.ToString() ?? "");
                 if (!Config.Shamrock.Use) return;
