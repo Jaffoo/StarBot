@@ -7,6 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Remove="wwwroot\vue\tsconfig.json" />
+	  <Content Remove="wwwroot\vue\vite.config.ts" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="ElectronSharp.API" Version="29.0.1.46142" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.2" />
 	</ItemGroup>

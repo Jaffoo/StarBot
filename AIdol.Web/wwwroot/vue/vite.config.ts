@@ -7,6 +7,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "./",
   plugins: [
     vue(),
     AutoImport({
@@ -21,14 +22,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  build:{
-    outDir:'../Parker/wwwroot/pages',
-    chunkSizeWarningLimit: 2048*2,
-    rollupOptions:{
-      output:{
-        entryFileNames:'index.js',
-        assetFileNames:'[name][extname]',
-        chunkFileNames:'[name].js'
+  build: {
+    outDir: '../aidol/',
+    chunkSizeWarningLimit: 2048 * 2,
+    rollupOptions: {
+      output: {
+        entryFileNames: 'index.js',
+        assetFileNames: '[name][extname]',
+        chunkFileNames: '[name].js'
       }
     }
   }

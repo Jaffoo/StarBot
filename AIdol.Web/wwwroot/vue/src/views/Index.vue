@@ -78,16 +78,16 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
-import { ArrowDownBold, Setting, RefreshRight } from '@element-plus/icons-vue';
+import { ArrowDownBold, Setting } from '@element-plus/icons-vue';
 import axios from "axios";
 import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
 import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
 import type { SubscribeAllChannelResult } from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK/QChatServerServiceInterface";
 import dayjs from 'dayjs';
-import NimChatroomSocket from '../component/Live'
-import type { LiveRoomMessage } from "@/component/messageType";
-import PocketMessage from "@/component/Type";
-import { ElMessage } from 'element-plus'
+import NimChatroomSocket from '@/class/Live'
+import type { LiveRoomMessage } from "@/class/messageType";
+import PocketMessage from "@/class/Type";
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const started = ref<boolean>(false);
 const windStatus = ref<boolean>(false);

@@ -1,7 +1,7 @@
 <template>
-  <RouterView />
+  <Index />
 </template>
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import Index from '@/views/index.vue'
 </script>

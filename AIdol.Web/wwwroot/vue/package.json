@@ -1,6 +1,6 @@
 {
-  "name": "parker",
-  "version": "0.0.0",
+  "name": "aidol",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -16,7 +16,7 @@
     "dayjs": "^1.11.7",
     "element-plus": "^2.3.4",
     "nim-web-sdk-ng": "^0.13.1",
-    "vue": "^3.2.47",
+    "vue": "^3.2.47"
   },
   "devDependencies": {
     "@types/node": "^18.16.17",

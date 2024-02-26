@@ -50,7 +50,6 @@ var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWi
 }, $"http://localhost:{port}/aidol/index.html");
 await browserWindow.WebContents.Session.ClearCacheAsync();
 browserWindow.OnReadyToShow += () => browserWindow.Show();
-browserWindow.SetTitle("≤‚ ‘-" + port);
 #endregion
 
 var app = builder.Build();
