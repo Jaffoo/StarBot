@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdolBot.Service", "IdolBot.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdolBot.Web", "IdolBot.Web\IdolBot.Web.csproj", "{4802AA06-2ECB-42EA-9FF8-F8CA3B88C016}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginServer", "PluginServer\PluginServer.csproj", "{14090AA9-0918-4A51-AD13-74A0DE6487D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{4802AA06-2ECB-42EA-9FF8-F8CA3B88C016}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4802AA06-2ECB-42EA-9FF8-F8CA3B88C016}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4802AA06-2ECB-42EA-9FF8-F8CA3B88C016}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14090AA9-0918-4A51-AD13-74A0DE6487D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14090AA9-0918-4A51-AD13-74A0DE6487D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14090AA9-0918-4A51-AD13-74A0DE6487D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14090AA9-0918-4A51-AD13-74A0DE6487D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

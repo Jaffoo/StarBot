@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IdolBot.IService\IdolBot.IService.csproj" />
+    <ProjectReference Include="..\PluginServer\PluginServer.csproj" />
   </ItemGroup>
 
 	<PropertyGroup>
