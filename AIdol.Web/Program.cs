@@ -10,7 +10,7 @@ var previousProcesses = Process.GetProcessesByName("electron");
 foreach (var p in previousProcesses)
     p.Kill();
 
-var port = Electron.Experimental.FreeTcpPort();
+var port = 5050;
 await Electron.Experimental.StartElectronForDevelopment(port);
 
 var builder = WebApplication.CreateBuilder(args);

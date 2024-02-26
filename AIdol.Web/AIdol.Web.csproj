@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -33,5 +33,11 @@
 
 	<ItemGroup>
 	  <Folder Include="wwwroot\data\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\vue\**">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 </Project>
