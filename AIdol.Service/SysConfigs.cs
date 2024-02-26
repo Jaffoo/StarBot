@@ -4,6 +4,7 @@ using AIdol.IService;
 using AIdol.Model;
 using AIdol.Repository;
 using Newtonsoft.Json.Linq;
+using TBC.CommonLib;
 
 namespace AIdol.Service
 {
@@ -84,7 +85,13 @@ namespace AIdol.Service
             JObject obj = [];
             foreach (var item in list)
             {
-                obj.Add(item.Key.ToLower(), item.Value);
+                if (item.Value.Contains("bool"))
+                    obj.Add(item.Key, item.Value.ToBool());
+                else if (item.Value.Contains("list"))
+                    obj.Add(item.Key, JArray.Parse(item.Value));
+                else if (item.Value.Contains("int"))
+                    obj.Add(item.Key, item.Value.ToInt());
+                else obj.Add(item.Key, item.Value);
             }
             cache.SetCache(key, JObject.FromObject(obj));
         }
