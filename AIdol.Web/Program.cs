@@ -5,13 +5,7 @@ using Microsoft.AspNetCore.Http.Features;
 using ElectronSharp.API.Entities;
 using System.Diagnostics;
 using AIdol.Repository;
-
-var previousProcesses = Process.GetProcessesByName("electron");
-foreach (var p in previousProcesses)
-    p.Kill();
-
-var port = 5050;
-await Electron.Experimental.StartElectronForDevelopment(port);
+using ShamrockCore.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +36,16 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
 
 #region electron
+var openMore = ConfigHelper.GetConfiguration("OpenMore").ToBool(false);
+if (!openMore)
+{
+    var previousProcesses = Process.GetProcessesByName("electron");
+    foreach (var p in previousProcesses)
+        p.Kill();
+}
+var port = openMore ? Electron.Experimental.FreeTcpPort() : 5050;
+await Electron.Experimental.StartElectronForDevelopment(port);
+
 var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
 {
     AutoHideMenuBar = true,

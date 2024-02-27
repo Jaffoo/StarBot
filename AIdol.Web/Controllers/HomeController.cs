@@ -49,9 +49,10 @@ namespace AIdol.Controllers
         /// </summary>
         /// <param name="page"></param>
         /// <returns></returns>
+        [HttpGet("getcache")]
         public async Task<ApiResult> GetCache([FromQuery] PageModel page)
         {
-            var res = await _sysCache.GetPageListAsync(page);
+            var res = await _sysCache.GetPageListAsync(page, " Type=1 ", " Id DESC ");
             return ListResult(res.List, res.Count);
         }
 

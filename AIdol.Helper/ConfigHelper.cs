@@ -8,7 +8,7 @@ namespace AIdol.Helper
         /// <summary>
         /// 设置/获取系统的服务提供器
         /// </summary>
-        public static IServiceProvider? ServiceProvider { get; set; }
+        public static IServiceProvider? ServiceProvider { get; set; } 
 
         /// <summary>
         /// 获取配置
