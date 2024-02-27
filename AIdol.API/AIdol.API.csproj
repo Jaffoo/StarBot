@@ -7,8 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="wwwroot\vue\tsconfig.json" />
-	  <Content Remove="wwwroot\vue\vite.config.ts" />
+		<Content Remove="wwwroot\aidol\index.css" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,18 +30,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Update="wwwroot\**">
+		<Compile Remove="wwwroot\vue\**" />
+		<None Include="wwwroot\vue\**" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Include="wwwroot\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwroot\data\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="wwwroot\vue\**">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	  </None>
+		<Folder Include="wwwroot\data\" />
 	</ItemGroup>
 </Project>

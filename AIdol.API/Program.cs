@@ -6,6 +6,8 @@ using ElectronSharp.API.Entities;
 using System.Diagnostics;
 using AIdol.Repository;
 using ShamrockCore.Utils;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,15 +16,20 @@ ConfigHelper.SetConfig(builder.Configuration, builder.Environment.ContentRootPat
 //注入数据
 builder.Services.AddDataService(ConfigHelper.GetConfiguration("NameSpace") + ".Service");
 
-builder.Services.AddControllers().AddNewtonsoftJson(options =>
-{
-    //json序列化设置
-    //json序列化设置默认首字母小写驼峰命名
-    options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
-    options.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
-    //设置时间格式
-    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-});
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;//解决后端传到前端全大写
+        options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);//解决后端返回数据中文被编码
+    }).AddNewtonsoftJson(options =>
+    {
+        //json序列化设置
+        //json序列化设置默认首字母小写驼峰命名
+        options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
+        options.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+        //设置时间格式
+        options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+    });
 
 //文件上传大小
 builder.Services.Configure<FormOptions>(options =>

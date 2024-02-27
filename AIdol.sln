@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AIdol.Repository", "AIdol.R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AIdol.Service", "AIdol.Service\AIdol.Service.csproj", "{AA0ACD6F-4D72-4A50-BA0D-F6B1B85DD5FD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AIdol.Web", "AIdol.Web\AIdol.Web.csproj", "{4802AA06-2ECB-42EA-9FF8-F8CA3B88C016}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AIdol.API", "AIdol.API\AIdol.API.csproj", "{4802AA06-2ECB-42EA-9FF8-F8CA3B88C016}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginServer", "PluginServer\PluginServer.csproj", "{14090AA9-0918-4A51-AD13-74A0DE6487D8}"
 EndProject
