@@ -1,3 +1,4 @@
+using AIdol.Entity;
 using AIdol.Extension;
 using AIdol.IService;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,12 +17,14 @@ namespace Helper
         private static readonly object lockObject = new object();
         ISysConfig _sysConfig;
         ISysLog _sysLog;
+        IPoketMessage _pocketMsg;
 
         private Pocket()
         {
             var factory = DataService.BuildServiceProvider();
             _sysConfig = factory.GetService<ISysConfig>()!;
             _sysLog = factory.GetService<ISysLog>()!;
+            _pocketMsg = factory.GetService<IPoketMessage>()!;
         }
 
         public static Pocket Instance
@@ -55,142 +58,189 @@ namespace Helper
                 string msgType = result["type"]!.ToString();
                 string msbBody = "";
 
-                if (roleId != 3) return;
-                else
+                //保存信息
+                var saveMsg = new PoketMessage()
                 {
-                    MessageChainBuilder mcb = new();
-                    mcb.Text($"【{Config.KD.IdolName}|{channelName}】\n【{time}】\n{name}:");
-                    //图片
-                    if (msgType == "image")
+                    Time = time.ToDateTime(),
+                    ChannelRole = roleId,
+                    ChannelName = channelName,
+                    FullInfo = str,
+                    Type = msgType,
+                };
+
+                MessageChainBuilder mcb = new();
+                mcb.Text($"【{Config.KD.IdolName}|{channelName}】\n【{time}】\n{name}:");
+                //图片
+                if (msgType == "image")
+                {
+                    msbBody = result["attach"]!["url"]!.ToString();
+                    await Task.Run(async () =>
                     {
-                        msbBody = result["attach"]!["url"]!.ToString();
-                        await Task.Run(async () =>
-                        {
-                            await new Weibo().FatchFace(msbBody);
-                        });
-                        if (!Config.KD.MsgType.Contains(msgType)) return;
-                        mcb.ImageByUrl(msbBody);
-                    }
-                    //文字
-                    else if (Config.KD.MsgType.Contains(msgType) && msgType == "text")
+                        await new Weibo().FatchFace(msbBody);
+                    });
+                    if (!Config.KD.MsgType.Contains(msgType)) return;
+                    mcb.ImageByUrl(msbBody);
+                    saveMsg.Msg = msbBody;
+                }
+                //文字
+                else if (Config.KD.MsgType.Contains(msgType) && msgType == "text")
+                {
+                    //"230226137"
+                    msbBody = result["body"]!.ToString();
+                    mcb.Text(msbBody);
+                    saveMsg.Msg = msbBody;
+                }
+                //视频
+                else if (Config.KD.MsgType.Contains(msgType) && msgType == "video")
+                {
+                    msbBody = result["attach"]!["url"]!.ToString();
+                    mcb.Text(msbBody);
+                    saveMsg.Msg = msbBody;
+                }
+                //语言
+                else if (Config.KD.MsgType.Contains(msgType) && msgType == "audio")
+                {
+                    msbBody = result["attach"]!["url"]!.ToString();
+                    mcb.RecordByUrl(msbBody);
+                    saveMsg.Msg = msbBody;
+                }
+                else if (msgType == "custom")
+                {
+                    var attach = result["attach"]!;
+                    var messageType = attach["messageType"]!.ToString();
+                    //回复
+                    if (Config.KD.MsgType.Contains(messageType) && messageType == "REPLY")
                     {
-                        //"230226137"
-                        msbBody = result["body"]!.ToString();
+                        msbBody = attach["replyInfo"]!["text"] + "\n" + attach["replyInfo"]!["replyName"]! + ":" + attach["replyInfo"]!["replyText"]!;
                         mcb.Text(msbBody);
+                        saveMsg.Type = messageType;
+                        saveMsg.Msg = msbBody;
+                    }
+                    //礼物回复
+                    else if (Config.KD.MsgType.Contains(messageType) && messageType == "GIFTREPLY")
+                    {
+                        msbBody = attach["giftReplyInfo"]!["text"] + "\n" + attach["giftReplyInfo"]!["replyName"]! + ":" + attach["giftReplyInfo"]!["replyText"]!;
+                        mcb.Text(msbBody);
+                        saveMsg.Type = messageType;
+                        saveMsg.Msg = msbBody;
+                    }
+                    //ֱ直播
+                    else if (Config.KD.MsgType.Contains(messageType) && messageType == "LIVEPUSH")
+                    {
+                        msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
+                        mcb.Text(msbBody).ImageByUrl(Config.KD.ImgDomain + attach["livePushInfo"]!["liveCover"]!.ToString());
+                        if (Config.KD.MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
+                            mcb.AtAll();
+                        saveMsg.Type = messageType;
+                        saveMsg.Msg = msbBody;
+                    }
+                    //语音
+                    else if (Config.KD.MsgType.Contains(messageType.ToLower()) && messageType == "AUDIO")
+                    {
+                        msbBody = attach["audioInfo"]!["url"]!.ToString();
+                        mcb.RecordByUrl(msbBody);
+                        saveMsg.Type = messageType;
+                        saveMsg.Msg = msbBody;
                     }
                     //视频
-                    else if (Config.KD.MsgType.Contains(msgType) && msgType == "video")
+                    else if (Config.KD.MsgType.Contains(messageType.ToLower()) && messageType == "VIDEO")
                     {
-                        mcb.Text(result["attach"]!["url"]!.ToString());
+                        msbBody = attach["videoInfo"]!["url"]!.ToString();
+                        mcb.VideoByUrl(msbBody);
+                        saveMsg.Type = messageType;
+                        saveMsg.Msg = msbBody;
                     }
-                    //语言
-                    else if (Config.KD.MsgType.Contains(msgType) && msgType == "audio")
+                    // 房间电台
+                    else if (Config.KD.MsgType.Contains(messageType) && messageType == "TEAM_VOICE")
                     {
-                        mcb.RecordByUrl(result["attach"]!["url"]!.ToString());
+                        //判断是否at所有人
+                        msbBody = "开启了房间电台";
+                        mcb.Text(msbBody);
+                        if (Config.KD.MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
+                            mcb.AtAll();
+                        saveMsg.Type = messageType;
+                        saveMsg.Msg = msbBody;
                     }
-                    else if (msgType == "custom")
+                    //文字翻牌
+                    else if (Config.KD.MsgType.Contains(messageType) && messageType == "FLIPCARD")
                     {
-                        var attach = result["attach"]!;
-                        var messageType = attach["messageType"]!.ToString();
-                        //回复
-                        if (Config.KD.MsgType.Contains(messageType) && messageType == "REPLY")
-                        {
-                            msbBody = attach["replyInfo"]!["text"] + "\n" + attach["replyInfo"]!["replyName"]! + ":" + attach["replyInfo"]!["replyText"]!;
-                            mcb.Text(msbBody);
-                        }
-                        //礼物回复
-                        else if (Config.KD.MsgType.Contains(messageType) && messageType == "GIFTREPLY")
-                        {
-                            msbBody = attach["giftReplyInfo"]!["text"] + "\n" + attach["giftReplyInfo"]!["replyName"]! + ":" + attach["giftReplyInfo"]!["replyText"]!;
-                            mcb.Text(msbBody);
-                        }
-                        //ֱ直播
-                        else if (Config.KD.MsgType.Contains(messageType) && messageType == "LIVEPUSH")
-                        {
-                            msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
-                            mcb.Text(msbBody).ImageByUrl(Config.KD.ImgDomain + attach["livePushInfo"]!["liveCover"]!.ToString());
-                            if (Config.KD.MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
-                                mcb.AtAll();
-                        }
-                        //语音
-                        else if (Config.KD.MsgType.Contains(messageType.ToLower()) && messageType == "AUDIO")
-                        {
-                            mcb.RecordByUrl(attach["audioInfo"]!["url"]!.ToString());
-                        }
-                        //视频
-                        else if (Config.KD.MsgType.Contains(messageType.ToLower()) && messageType == "VIDEO")
-                        {
-                            mcb.VideoByUrl(attach["videoInfo"]!["url"]!.ToString());
-                        }
-                        // 房间电台
-                        else if (Config.KD.MsgType.Contains(messageType) && messageType == "TEAM_VOICE")
-                        {
-                            //判断是否at所有人
-                            msbBody = "开启了房间电台";
-                            mcb.Text(msbBody);
-                            if (Config.KD.MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
-                                mcb.AtAll();
-                        }
-                        //文字翻牌
-                        else if (Config.KD.MsgType.Contains(messageType) && messageType == "FLIPCARD")
-                        {
-                            var answer = attach["filpCardInfo"]!["answer"]!.ToString();
-                            mcb.Text(answer.ToString());
-                            mcb.Text("\n粉丝提问" + attach["filpCardInfo"]!["question"]);
-                        }
-                        //语音翻牌
-                        else if (Config.KD.MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")
-                        {
-                            var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
-                            mcb.RecordByUrl(Config.KD.VideoDomain + answer["url"]);
-                            mcb.Text("\n粉丝提问" + attach["filpCardInfo"]!["question"]);
-                        }
-                        //视频翻牌
-                        else if (Config.KD.MsgType.Contains(messageType) && messageType == "FLIPCARD_VIDEO")
-                        {
-                            var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
-                            mcb.Text(Config.KD.VideoDomain + answer["url"]);
-                            mcb.Text("\n粉丝提问" + attach["filpCardInfo"]!["question"]);
-                        }
-                        //表情
-                        else if (Config.KD.MsgType.Contains(messageType) && messageType == "EXPRESSIMAGE")
-                        {
-                            string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
-                            mcb.ImageByUrl(url);
-                        }
-                        else return;
+                        var answer = attach["filpCardInfo"]!["answer"]!.ToString();
+                        mcb.Text(answer.ToString());
+                        var question = attach["filpCardInfo"]!["question"];
+                        mcb.Text("\n粉丝提问" + question);
+                        saveMsg.Type = messageType;
+                        saveMsg.Msg = question + "：" + answer;
+                    }
+                    //语音翻牌
+                    else if (Config.KD.MsgType.Contains(messageType) && messageType == "FLIPCARD_AUDIO")
+                    {
+                        var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
+                        mcb.RecordByUrl(Config.KD.VideoDomain + answer["url"]);
+                        var question = attach["filpCardInfo"]!["question"];
+                        mcb.Text("\n粉丝提问" + question);
+                        saveMsg.Type = messageType;
+                        saveMsg.Msg = question + "：" + answer;
+                    }
+                    //视频翻牌
+                    else if (Config.KD.MsgType.Contains(messageType) && messageType == "FLIPCARD_VIDEO")
+                    {
+                        var answer = JObject.Parse(attach["filpCardInfo"]!["answer"]!.ToString());
+                        mcb.Text(Config.KD.VideoDomain + answer["url"]);
+                        var question = attach["filpCardInfo"]!["question"];
+                        mcb.Text("\n粉丝提问" + question);
+
+                        saveMsg.Type = messageType;
+                        saveMsg.Msg = question + "：" + answer;
+                    }
+                    //表情
+                    else if (Config.KD.MsgType.Contains(messageType) && messageType == "EXPRESSIMAGE")
+                    {
+                        string url = attach["expressImgInfo"]!["emotionRemote"]!.ToString();
+                        mcb.ImageByUrl(url);
+                        saveMsg.Type = messageType;
+                        saveMsg.Msg = url;
                     }
                     else return;
-                    if (!Config.Shamrock.Use) return;
-                    if (Config.KD.ForwardGroup)
+                }
+                else return;
+                if (Config.KD.SaveMsg == 2)
+                {
+                    await _pocketMsg.AddAsync(saveMsg);
+                }
+                if (Config.KD.SaveMsg == 1 && roleId == 3)
+                {
+                    await _pocketMsg.AddAsync(saveMsg);
+                }
+                if (!Config.Shamrock.Use) return;
+                if (roleId != 3) return;
+                if (Config.KD.ForwardGroup)
+                {
+                    var group = Config.KD.Group ?? Config.QQ.Group;
+                    if (!string.IsNullOrWhiteSpace(group))
                     {
-                        var group = Config.KD.Group ?? Config.QQ.Group;
-                        if (!string.IsNullOrWhiteSpace(group))
+                        MsgModel msgModel = new()
                         {
-                            MsgModel msgModel = new()
-                            {
-                                MsgChain = mcb.Build(),
-                                Ids = group.ToStrList(),
-                            };
-                            ReciverMsg.AddMsg(msgModel);
-                        }
+                            MsgChain = mcb.Build(),
+                            Ids = group.ToStrList(),
+                        };
+                        ReciverMsg.AddMsg(msgModel);
                     }
-                    if (Config.KD.ForwardQQ)
+                }
+                if (Config.KD.ForwardQQ)
+                {
+                    MsgModel msgModel = new();
+                    msgModel.Type = 2;
+                    msgModel.MsgChain = mcb.Build();
+                    if (!string.IsNullOrWhiteSpace(Config.KD.QQ))
                     {
-                        MsgModel msgModel = new();
-                        msgModel.Type = 2;
-                        msgModel.MsgChain = mcb.Build();
-                        if (!string.IsNullOrWhiteSpace(Config.KD.QQ))
-                        {
-                            var qqs = Config.KD.QQ.ToStrList();
-                            msgModel.Ids = qqs;
-                            ReciverMsg.AddMsg(msgModel);
-                        }
-                        else if (!string.IsNullOrWhiteSpace(Config.QQ.Admin))
-                        {
-                            msgModel.Id = Config.QQ.Admin;
-                            ReciverMsg.AddMsg(msgModel);
-                        }
+                        var qqs = Config.KD.QQ.ToStrList();
+                        msgModel.Ids = qqs;
+                        ReciverMsg.AddMsg(msgModel);
+                    }
+                    else if (!string.IsNullOrWhiteSpace(Config.QQ.Admin))
+                    {
+                        msgModel.Id = Config.QQ.Admin;
+                        ReciverMsg.AddMsg(msgModel);
                     }
                 }
                 return;

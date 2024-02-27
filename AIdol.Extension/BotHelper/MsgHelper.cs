@@ -15,15 +15,13 @@ using ShamrockCore.Data.Model;
 using ShamrockCore.Utils;
 using ShamrockCore.Receiver;
 using FluentScheduler;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using AIdol.Repository;
 
 namespace Helper
 {
     public class MsgModel
     {
         /// <summary>
-        /// 1-群，2-好友(风控 0-文字，1-图片，3-图文)
+        /// 1-群，2-好友
         /// </summary>
         public int Type { get; set; } = 1;
         public string Id { get; set; } = "";
@@ -71,7 +69,7 @@ namespace Helper
         }
         public Queue<MsgModel> MsgQueue = new();
         private DateTime _lastSendTime = DateTime.Now;
-        private double _interval = 3;//单位秒
+        private readonly double _interval = 3;//单位秒
         private Bot? _bot = null;
         #region 全局变量
         public string Admin => Config.QQ.Admin;

@@ -32,7 +32,7 @@ namespace AIdol.Entity
         /// <summary>
         /// 频道名
         /// </summary>
-        public int ChannelName { get; set; }
+        public string ChannelName { get; set; } = string.Empty;
 
         /// <summary>
         /// 发送者在频道的角色

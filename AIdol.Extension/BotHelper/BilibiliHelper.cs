@@ -56,7 +56,7 @@ namespace Helper
             {
                 var config = (await _sysConfig.GetConfig());
                 var index = -1;
-                var users = config.BZ.User.Split(',').ToList();
+                var users = config.BZ.User.ToStrList();
                 foreach (var item in users)
                 {
                     index++;
