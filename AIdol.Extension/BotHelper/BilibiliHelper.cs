@@ -4,6 +4,7 @@ using TBC.CommonLib;
 using ShamrockCore.Receiver.MsgChain;
 using AIdol.Extension;
 using Microsoft.Extensions.DependencyInjection;
+using Config = AIdol.Model.Config;
 
 namespace Helper
 {
@@ -11,6 +12,13 @@ namespace Helper
     {
         ISysLog _sysLog;
         ISysConfig _sysConfig;
+        Config Config
+        {
+            get
+            {
+                return _sysConfig.GetConfig().Result;
+            }
+        }
 
         public Bilibili()
         {
@@ -46,9 +54,9 @@ namespace Helper
         {
             try
             {
-                var config = (await _sysConfig.GetConfig()).BZ;
+                var config = (await _sysConfig.GetConfig());
                 var index = -1;
-                var users = config.User.Split(',').ToList();
+                var users = config.BZ.User.Split(',').ToList();
                 foreach (var item in users)
                 {
                     index++;
@@ -72,7 +80,7 @@ namespace Helper
                         DateTime createDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
                         createDate = createDate.AddSeconds(timestamp).ToLocalTime();
 
-                        if (createDate >= DateTime.Now.AddMinutes(-config.TimeSpan))
+                        if (createDate >= DateTime.Now.AddMinutes(-config.BZ.TimeSpan))
                         {
                             //可以认定为新发的动态
                             //获取微博类型0-视频，1-图文
@@ -118,12 +126,17 @@ namespace Helper
                                     }
                                 }
 
-                                if (config.ForwardGroup)
-                                    foreach (var group in config.Group)
-                                        await ReciverMsg.Instance.SendGroupMsg(group, mcb.Build());
-                                if (config.ForwardQQ)
-                                    foreach (var qq in config.QQ)
-                                        await ReciverMsg.Instance.SendFriendMsg(qq, mcb.Build());
+                                if (Config.BZ.ForwardGroup)
+                                {
+                                    var goups = Config.BZ.Group ?? Config.QQ.Group;
+                                    if (goups == null) continue;
+                                    await ReciverMsg.Instance.SendGroupMsg(goups.ToStrList(), mcb.Build());
+                                }
+                                if (Config.BZ.ForwardQQ)
+                                {
+                                    if (string.IsNullOrWhiteSpace(Config.BZ.QQ)) continue;
+                                    await ReciverMsg.Instance.SendFriendMsg(Config.BZ.QQ, mcb.Build());
+                                }
                             }
                             //保存图片
                             if (type == 1)

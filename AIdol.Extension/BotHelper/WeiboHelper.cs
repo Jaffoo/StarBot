@@ -6,6 +6,7 @@ using ShamrockCore.Receiver.MsgChain;
 using Config = AIdol.Model.Config;
 using AIdol.Extension;
 using Microsoft.Extensions.DependencyInjection;
+using TBC.CommonLib;
 
 namespace Helper
 {
@@ -57,7 +58,7 @@ namespace Helper
             string url = "";
             try
             {
-                var allList = Config.WB.UserAll.Concat(Config.WB.UserPart);
+                var allList = Config.WB.UserAll.ToStrList().Concat(Config.WB.UserPart.ToStrList());
                 foreach (var item in allList)
                 {
                     url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
@@ -128,11 +129,16 @@ namespace Helper
                                 }
                                 mcb.Text($"\n链接：https://m.weibo.cn/status/{blog["mid"]}");
                                 if (Config.WB.ForwardGroup)
-                                    foreach (var group in Config.WB.Group)
-                                        await ReciverMsg.Instance.SendGroupMsg(group, mcb.Build());
+                                {
+                                    var goups = Config.WB.Group ?? Config.QQ.Group;
+                                    if (goups == null) continue;
+                                    await ReciverMsg.Instance.SendGroupMsg(goups.ToStrList(), mcb.Build());
+                                }
                                 if (Config.WB.ForwardQQ)
-                                    foreach (var qq in Config.WB.QQ)
-                                        await ReciverMsg.Instance.SendFriendMsg(qq, mcb.Build());
+                                {
+                                    if (string.IsNullOrWhiteSpace(Config.WB.QQ)) continue;
+                                    await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ, mcb.Build());
+                                }
                             }
                             //保存图片
                             if (mblogtype == 2)
@@ -166,7 +172,7 @@ namespace Helper
         {
             try
             {
-                foreach (var item in Config.WB.ChiGuaUser)
+                foreach (var item in Config.WB.ChiGuaUser.ToStrList())
                 {
                     var url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
                     HttpClient httpClient = new();
@@ -196,7 +202,7 @@ namespace Helper
                             if (blog.ContainsKey("page_info")) mblogtype = 0;
                             if (blog.ContainsKey("pic_infos")) mblogtype = 2;
                             var blogContent = blog["text_raw"]!.ToString();
-                            if (!Config.WB.Keyword.Select(blogContent.Contains).Any(x => x) && Config.WB.Keyword.Count > 0)
+                            if (!Config.WB.Keyword.ToStrList().Select(blogContent.Contains).Any(x => x) && Config.WB.Keyword.ToStrList().Count > 0)
                                 return;
                             var mcb = new MessageChainBuilder();
                             var msgModel = new MsgModel { MsgStr = $"{blog["user"]!["screen_name"]}发了一条相关微博！" + $"\n链接：https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]}\n" };
@@ -225,11 +231,16 @@ namespace Helper
                             mcb.Text($"\n链接：https://m.weibo.cn/status/{blog["mid"]}");
                             //需要发送通知则发送通知
                             if (Config.WB.ForwardGroup)
-                                foreach (var group in Config.WB.Group)
-                                    await ReciverMsg.Instance.SendGroupMsg(group, mcb.Build());
+                            {
+                                var goups = Config.WB.Group ?? Config.QQ.Group;
+                                if (goups == null) continue;
+                                await ReciverMsg.Instance.SendGroupMsg(goups.ToStrList(), mcb.Build());
+                            }
                             if (Config.WB.ForwardQQ)
-                                foreach (var qq in Config.WB.QQ)
-                                    await ReciverMsg.Instance.SendFriendMsg(qq, mcb.Build());
+                            {
+                                if (string.IsNullOrWhiteSpace(Config.WB.QQ)) continue;
+                                await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ, mcb.Build());
+                            }
                         }
                     }
                 }

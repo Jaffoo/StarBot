@@ -9,6 +9,7 @@ using System.IO.Compression;
 using System.Text;
 using Config = AIdol.Model.Config;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
+using TBC.CommonLib;
 
 namespace Helper
 {
@@ -59,7 +60,7 @@ namespace Helper
             string url = "";
             try
             {
-                foreach (var item in Config.XHS.User)
+                foreach (var item in Config.XHS.User.ToStrList())
                 {
                     url = "https://www.xiaohongshu.com/user/profile/" + item;
                     var handler = new HttpClientHandler() { UseCookies = true };
@@ -134,11 +135,16 @@ namespace Helper
                     mcb.Text(noteUrl).Text(str);
                     if (type == 1 && !string.IsNullOrWhiteSpace(first)) mcb.ImageByUrl(first);
                     if (Config.XHS.ForwardGroup)
-                        foreach (var group in Config.XHS.Group)
-                            await ReciverMsg.Instance.SendGroupMsg(group, mcb.Build());
+                    {
+                        var goups = Config.XHS.Group ?? Config.QQ.Group;
+                        if (goups == null) continue;
+                        await ReciverMsg.Instance.SendGroupMsg(goups.ToStrList(), mcb.Build());
+                    }
                     if (Config.XHS.ForwardQQ)
-                        foreach (var qq in Config.XHS.QQ)
-                            await ReciverMsg.Instance.SendFriendMsg(qq, mcb.Build());
+                    {
+                        if (string.IsNullOrWhiteSpace(Config.XHS.QQ)) continue;
+                        await ReciverMsg.Instance.SendFriendMsg(Config.XHS.QQ, mcb.Build());
+                    }
                 }
             }
             catch (Exception ex)

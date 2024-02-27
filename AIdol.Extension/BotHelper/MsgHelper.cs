@@ -83,9 +83,9 @@ namespace Helper
                 return _cache.GetListAsync(t => t.Type == 1).Result.Select(t => t.Content).ToList();
             }
         }
-        public List<string> Permission => Config.QQ.Permission;
+        public List<string> Permission => Config.QQ.Permission.ToStrList();
         public List<string> FuncAdmin => Config.QQ.FuncAdmin;
-        public List<string> Group => Config.QQ.Group;
+        public List<string> Group => Config.QQ.Group.ToStrList();
         public List<FriendAddEvent> Event { get; set; } = new();
         #endregion
 
@@ -642,9 +642,11 @@ namespace Helper
                             var keywords = msgText.Replace("#删除微博关键词#", "");
                             if (string.IsNullOrWhiteSpace(keywords))
                                 await fmr.SendPrivateMsgAsync("输入内容为空！");
-                            if (!Config.WB.Keyword.Contains(keywords))
+                            if (!Config.WB.Keyword.ToStrList().Contains(keywords))
                                 await fmr.SendPrivateMsgAsync("不存在该关键词！");
-                            Config.WB.Keyword.Remove(keywords);
+                            var temp = Config.WB.Keyword.ToStrList();
+                            temp.Remove(keywords);
+                            Config.WB.Keyword = string.Join(",", temp);
                             var model = await _sysConfig.GetModelAsync(t => t.Key == "Keyword" && t.DataType == "list");
                             if (model == null) return;
                             model.Value = string.Join(",", Config.WB.Keyword);
@@ -658,9 +660,11 @@ namespace Helper
                             var keywords = msgText.Replace("#添加微博关键词#", "");
                             if (string.IsNullOrWhiteSpace(keywords))
                                 await fmr.SendPrivateMsgAsync("输入内容为空！");
-                            if (Config.WB.Keyword.Contains(keywords))
+                            if (Config.WB.Keyword.ToStrList().Contains(keywords))
                                 await fmr.SendPrivateMsgAsync("已存在该关键词！");
-                            Config.WB.Keyword.Add(keywords);
+                            var temp = Config.WB.Keyword.ToStrList();
+                            temp.Add(keywords);
+                            Config.WB.Keyword = string.Join(",", temp);
                             var model = await _sysConfig.GetModelAsync(t => t.Key == "Keyword" && t.DataType == "list");
                             model!.Value = string.Join(",", Config.WB.Keyword);
                             await _sysConfig.UpdateAsync(model);
@@ -698,8 +702,7 @@ namespace Helper
                     {
                         case PostEventType.Friend:
                             {
-                                var qq = e as FriendAddEvent;
-                                if (qq == null) return;
+                                if (e is not FriendAddEvent qq) return;
                                 await SendFriendMsg(Admin, $"机器人收到添加好友请求\n事件标识：{qq.Flag}\n附加消息：{qq.Comment}\n请求人：{qq.QQ}");
                                 Event.Add(qq);
                             };

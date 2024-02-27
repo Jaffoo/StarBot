@@ -164,13 +164,13 @@ namespace Helper
                     if (!Config.Shamrock.Use) return;
                     if (Config.KD.ForwardGroup)
                     {
-                        var group = Config.KD.Group.Count > 0 ? Config.KD.Group : Config.QQ.Group;
-                        if (group.Count > 0)
+                        var group = Config.KD.Group ?? Config.QQ.Group;
+                        if (!string.IsNullOrWhiteSpace(group))
                         {
                             MsgModel msgModel = new()
                             {
                                 MsgChain = mcb.Build(),
-                                Ids = group,
+                                Ids = group.ToStrList(),
                             };
                             ReciverMsg.AddMsg(msgModel);
                         }
@@ -180,9 +180,9 @@ namespace Helper
                         MsgModel msgModel = new();
                         msgModel.Type = 2;
                         msgModel.MsgChain = mcb.Build();
-                        if (Config.KD.QQ.Count > 0)
+                        if (!string.IsNullOrWhiteSpace(Config.KD.QQ))
                         {
-                            var qqs = Config.KD.QQ;
+                            var qqs = Config.KD.QQ.ToStrList();
                             msgModel.Ids = qqs;
                             ReciverMsg.AddMsg(msgModel);
                         }
@@ -219,13 +219,13 @@ namespace Helper
                 if (!Config.Shamrock.Use) return;
                 if (Config.KD.ForwardGroup)
                 {
-                    var group = Config.KD.Group.Count > 0 ? Config.KD.Group : Config.QQ.Group;
-                    if (group.Count > 0)
+                    var group = Config.KD.Group ?? Config.QQ.Group;
+                    if (!string.IsNullOrWhiteSpace(group))
                     {
                         MsgModel msgModel = new()
                         {
                             MsgChain = mcb.Build(),
-                            Ids = group,
+                            Ids = group.ToStrList(),
                         };
                         ReciverMsg.AddMsg(msgModel);
                     }
@@ -235,9 +235,9 @@ namespace Helper
                     MsgModel msgModel = new();
                     msgModel.Type = 2;
                     msgModel.MsgChain = mcb.Build();
-                    if (Config.KD.QQ.Count > 0)
+                    if (!string.IsNullOrWhiteSpace(Config.KD.QQ))
                     {
-                        var qqs = Config.KD.QQ;
+                        var qqs = Config.KD.QQ.ToStrList();
                         msgModel.Ids = qqs;
                         ReciverMsg.AddMsg(msgModel);
                     }

@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
     <PackageReference Include="ShamrockCore" Version="1.2.1-alpha" />
-    <PackageReference Include="TBC.CommonLib" Version="1.0.2" />
+    <PackageReference Include="TBC.CommonLib" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>
