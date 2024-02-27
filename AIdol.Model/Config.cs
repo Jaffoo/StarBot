@@ -354,7 +354,7 @@ namespace AIdol.Model
         /// <summary>
         /// qq群
         /// </summary>
-        public List<string> Group { get; set; } = [];
+        public string Group { get; set; } = string.Empty;
 
         /// <summary>
         /// 是否转发到qq群
@@ -369,7 +369,7 @@ namespace AIdol.Model
         /// <summary>
         /// qq号
         /// </summary>
-        public List<string> QQ { get; set; } = [];
+        public string QQ { get; set; } = string.Empty;
 
         /// <summary>
         /// appkey
@@ -451,13 +451,13 @@ namespace AIdol.Model
         /// 用户id
         /// 转发动态，保存图片
         /// </summary>
-        public List<string> UserAll { get; set; } = [];
+        public string UserAll { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户id
         /// 仅用于保存图片
         /// </summary>
-        public List<string> UserPart { get; set; } = [];
+        public string UserPart { get; set; } = string.Empty;
 
         /// <summary>
         /// 监听间隔时间
@@ -467,7 +467,7 @@ namespace AIdol.Model
         /// <summary>
         /// 群号
         /// </summary>
-        public List<string> Group { get; set; } = [];
+        public string Group { get; set; } = string.Empty;
 
         /// <summary>
         /// 转发qq群
@@ -482,37 +482,37 @@ namespace AIdol.Model
         /// <summary>
         /// qq
         /// </summary>
-        public List<string> QQ { get; set; } = [];
+        public string QQ { get; set; } = string.Empty;
 
         /// <summary>
         /// 吃瓜id
         /// </summary>
-        public List<string> ChiGuaUser { get; set; } = [];
+        public string ChiGuaUser { get; set; } = string.Empty;
 
         /// <summary>
         /// 吃瓜微博关键词过滤
         /// </summary>
-        public List<string> Keyword { get; set; } = [];
+        public string Keyword { get; set; } = string.Empty;
 
         /// <summary>
         /// 吃瓜转发qq
         /// </summary>
-        public List<string> WBChiGuaQQ { get; set; } = [];
+        public string ChiGuaQQ { get; set; } = string.Empty;
 
         /// <summary>
         /// 吃瓜转发qq
         /// </summary>
-        public bool WBChiGuaForwardQQ { get; set; }
+        public bool ChiGuaForwardQQ { get; set; }
 
         /// <summary>
         /// 吃瓜转发群
         /// </summary>
-        public List<string> WBChiGuaGroup { get; set; } = [];
+        public string ChiGuaGroup { get; set; } = string.Empty;
 
         /// <summary>
         /// 吃瓜转发群
         /// </summary>
-        public bool WBChiGuaForwardGroup { get; set; }
+        public bool ChiGuaForwardGroup { get; set; }
     }
 
     /// <summary>
@@ -558,7 +558,7 @@ namespace AIdol.Model
         /// <summary>
         /// 用户id
         /// </summary>
-        public List<string> User { get; set; } = [];
+        public string User { get; set; } = string.Empty;
 
         /// <summary>
         /// 监听间隔时间
@@ -568,7 +568,7 @@ namespace AIdol.Model
         /// <summary>
         /// 群号
         /// </summary>
-        public List<string> Group { get; set; } = [];
+        public string Group { get; set; } = string.Empty;
 
         /// <summary>
         /// 转发qq群
@@ -583,7 +583,7 @@ namespace AIdol.Model
         /// <summary>
         /// qq
         /// </summary>
-        public List<string> QQ { get; set; } = [];
+        public string QQ { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -629,7 +629,7 @@ namespace AIdol.Model
         /// <summary>
         /// 用户id
         /// </summary>
-        public List<string> User { get; set; } = [];
+        public string User { get; set; } = string.Empty;
 
         /// <summary>
         /// 监听间隔时间
@@ -639,7 +639,7 @@ namespace AIdol.Model
         /// <summary>
         /// 群号
         /// </summary>
-        public List<string> Group { get; set; } = [];
+        public string Group { get; set; } = string.Empty;
 
         /// <summary>
         /// 转发qq群
@@ -654,7 +654,7 @@ namespace AIdol.Model
         /// <summary>
         /// qq
         /// </summary>
-        public List<string> QQ { get; set; } = [];
+        public string QQ { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -700,7 +700,7 @@ namespace AIdol.Model
         /// <summary>
         /// 用户id
         /// </summary>
-        public List<string> User { get; set; } = [];
+        public string User { get; set; } = string.Empty;
 
         /// <summary>
         /// 监听间隔时间
@@ -710,7 +710,7 @@ namespace AIdol.Model
         /// <summary>
         /// 群号
         /// </summary>
-        public List<string> Group { get; set; } = [];
+        public string Group { get; set; } = string.Empty;
 
         /// <summary>
         /// 转发qq群
@@ -725,7 +725,7 @@ namespace AIdol.Model
         /// <summary>
         /// qq
         /// </summary>
-        public List<string> QQ { get; set; } = [];
+        public string QQ { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -776,7 +776,7 @@ namespace AIdol.Model
         /// <summary>
         /// 监听群/转发群
         /// </summary>
-        public List<string> Group { get; set; } = [];
+        public string Group { get; set; } = string.Empty;
 
         /// <summary>
         /// 是否保存群消息
@@ -796,7 +796,7 @@ namespace AIdol.Model
         /// <summary>
         /// 管理员
         /// </summary>
-        public List<string> Permission { get; set; } = [];
+        public string Permission { get; set; } = string.Empty;
 
         /// <summary>
         /// 开启程序错误通知
@@ -812,11 +812,11 @@ namespace AIdol.Model
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get; set; }= string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 值
         /// </summary>
-        public string Value { get; set; }= string.Empty;
+        public string Value { get; set; } = string.Empty;
     }
 }

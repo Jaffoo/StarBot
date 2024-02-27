@@ -61,18 +61,10 @@ var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWi
 }, $"http://localhost:{port}/aidol/index.html");
 await browserWindow.WebContents.Session.ClearCacheAsync();
 browserWindow.OnReadyToShow += () => browserWindow.Show();
-browserWindow.SetTitle("AI豆");
+browserWindow.SetTitle("AIdol Robot");
 #endregion
 
 var app = builder.Build();
-
-// 注册应用程序关闭事件
-app.Lifetime.ApplicationStopping.Register(() =>
-{
-    var previousProcesses = Process.GetProcessesByName("electron");
-    foreach (var p in previousProcesses)
-        p.Kill();
-});
 
 #region 数据库创建/更新
 if (!File.Exists("wwwroot/data/main.db"))

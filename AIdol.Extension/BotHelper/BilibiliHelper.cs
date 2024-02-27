@@ -48,7 +48,8 @@ namespace Helper
             {
                 var config = (await _sysConfig.GetConfig()).BZ;
                 var index = -1;
-                foreach (var item in config.User)
+                var users = config.User.Split(',').ToList();
+                foreach (var item in users)
                 {
                     index++;
                     var url = "https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history?host_uid=" + item;

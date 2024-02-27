@@ -99,25 +99,25 @@ INSERT INTO "SysConfig" VALUES (12, 7, 'XHS', '小红书', 'false', NULL, 'class
 INSERT INTO "SysConfig" VALUES (13, 7, 'DY', '抖音', 'false', NULL, 'class&bool');
 INSERT INTO "SysConfig" VALUES (14, 7, 'BD', '百度', 'false', NULL, 'class&bool');
 INSERT INTO "SysConfig" VALUES (15, 8, 'Admin', '超管', NULL, NULL, 'string');
-INSERT INTO "SysConfig" VALUES (16, 8, 'Permission', '管理员', NULL, NULL, 'list');
-INSERT INTO "SysConfig" VALUES (17, 8, 'Group', '群', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (16, 8, 'Permission', '管理员', NULL, NULL, 'string');
+INSERT INTO "SysConfig" VALUES (17, 8, 'Group', '群', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (18, 8, 'Save', '保存群消息', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (19, 8, 'Debug', '开启程序错误通知', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (20, 8, 'Notice', '开启消息通知', 'false', NULL, 'bool');
-INSERT INTO "SysConfig" VALUES (21, 8, 'FuncAdmin', '仅管理员可用', NULL, NULL, 'list');
-INSERT INTO "SysConfig" VALUES (22, 9, 'UserAll', '微博用户', NULL, '转发动态，保存图片', 'list');
-INSERT INTO "SysConfig" VALUES (23, 9, 'UserPart', '微博用户', NULL, '仅用于保存图片', 'list');
+INSERT INTO "SysConfig" VALUES (21, 8, 'FuncAdmin', '仅管理员可用', NULL, NULL, 'string');
+INSERT INTO "SysConfig" VALUES (22, 9, 'UserAll', '微博用户', NULL, '转发动态，保存图片', 'string');
+INSERT INTO "SysConfig" VALUES (23, 9, 'UserPart', '微博用户', NULL, '仅用于保存图片', 'string');
 INSERT INTO "SysConfig" VALUES (24, 9, 'TimeSpan', '监听间隔', '3', '单位分钟', 'int');
-INSERT INTO "SysConfig" VALUES (25, 9, 'Group', 'qq群', NULL, NULL, 'list');
-INSERT INTO "SysConfig" VALUES (26, 9, 'QQ', '好友qq', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (25, 9, 'Group', 'qq群', NULL, NULL, 'string');
+INSERT INTO "SysConfig" VALUES (26, 9, 'QQ', '好友qq', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (27, 9, 'ForwardGroup', '转发至群', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (28, 9, 'ForwardQQ', '转发好友', 'false', NULL, 'bool');
-INSERT INTO "SysConfig" VALUES (29, 9, 'ChiGuaUser', '吃瓜用户', NULL, NULL, 'list');
-INSERT INTO "SysConfig" VALUES (30, 9, 'Keyword', '关键词过滤', NULL, '吃瓜微博关键词过滤', 'list');
-INSERT INTO "SysConfig" VALUES (31, 10, 'User', 'B站用户', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (29, 9, 'ChiGuaUser', '吃瓜用户', NULL, NULL, 'string');
+INSERT INTO "SysConfig" VALUES (30, 9, 'Keyword', '关键词过滤', NULL, '吃瓜微博关键词过滤', 'string');
+INSERT INTO "SysConfig" VALUES (31, 10, 'User', 'B站用户', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (32, 10, 'TimeSpan', '监听间隔', '3', '单位分钟', 'int');
-INSERT INTO "SysConfig" VALUES (33, 10, 'Group', 'qq群', NULL, NULL, 'list');
-INSERT INTO "SysConfig" VALUES (34, 10, 'QQ', '好友QQ', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (33, 10, 'Group', 'qq群', NULL, NULL, 'string');
+INSERT INTO "SysConfig" VALUES (34, 10, 'QQ', '好友QQ', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (35, 10, 'ForwardGroup', '转发至群', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (36, 10, 'ForwardQQ', '转发好友', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (37, 11, 'IdolName', '小偶像名', NULL, NULL, 'string');
@@ -188,17 +188,17 @@ INSERT INTO "SysConfig" VALUES (45, 11, 'MsgTypeAll', '所有消息类型', '[{
     "name":"礼物消息",
     "value":"PRESENT_NORMAL"
 }]', NULL, 'list');
-INSERT INTO "SysConfig" VALUES (46, 11, 'MsgType', '消息类型', NULL, '接收/转发消息类型', 'list');
-INSERT INTO "SysConfig" VALUES (47, 12, 'User', '小红书用户', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (46, 11, 'MsgType', '消息类型', NULL, '接收/转发消息类型', 'string');
+INSERT INTO "SysConfig" VALUES (47, 12, 'User', '小红书用户', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (48, 12, 'TimeSpan', '监听间隔', '3', '单位分钟', 'int');
-INSERT INTO "SysConfig" VALUES (49, 12, 'Group', 'qq群', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (49, 12, 'Group', 'qq群', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (50, 12, 'ForwardGroup', '转发至群', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (51, 12, 'ForwardQQ', '转发好友', 'false', NULL, 'bool');
-INSERT INTO "SysConfig" VALUES (52, 12, 'QQ', '好友qq', NULL, NULL, 'list');
-INSERT INTO "SysConfig" VALUES (53, 13, 'User', '抖音用户', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (52, 12, 'QQ', '好友qq', NULL, NULL, 'string');
+INSERT INTO "SysConfig" VALUES (53, 13, 'User', '抖音用户', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (54, 13, 'TimeSpan', '监听间隔', '3', '单位分钟', 'int');
-INSERT INTO "SysConfig" VALUES (55, 13, 'Group', 'qq群', NULL, NULL, 'list');
-INSERT INTO "SysConfig" VALUES (56, 13, 'QQ', '好友qq', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (55, 13, 'Group', 'qq群', NULL, NULL, 'string');
+INSERT INTO "SysConfig" VALUES (56, 13, 'QQ', '好友qq', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (57, 13, 'ForwardGroup', '转发至群', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (58, 13, 'ForwardQQ', '转发好友', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (59, 14, 'AppKey', 'AppKey', NULL, NULL, 'string');
@@ -209,10 +209,10 @@ INSERT INTO "SysConfig" VALUES (63, 14, 'Audit', '审核相似度', '50', NULL, 
 INSERT INTO "SysConfig" VALUES (64, 14, 'AlbumName', '相册名', NULL, '如果不存在，自动创建', 'string');
 INSERT INTO "SysConfig" VALUES (65, 14, 'FaceVerify', '开启人脸验证', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (66, 14, 'ImageList', '基础人脸', NULL, NULL, 'list');
-INSERT INTO "SysConfig" VALUES (67, 9, 'WBChiGuaForwardGroup', '吃瓜转发至群', 'false', NULL, 'bool');
-INSERT INTO "SysConfig" VALUES (68, 9, 'WBChiGuaForwardQQ', '吃瓜转发QQ', 'false', NULL, 'bool');
-INSERT INTO "SysConfig" VALUES (69, 9, 'WBChiGuaQQ', '吃瓜转发qq', NULL, NULL, 'list');
-INSERT INTO "SysConfig" VALUES (70, 9, 'WBChiGuaGroup', '吃瓜转发群', NULL, NULL, 'list');
+INSERT INTO "SysConfig" VALUES (67, 9, 'ChiGuaForwardGroup', '吃瓜转发至群', 'false', NULL, 'bool');
+INSERT INTO "SysConfig" VALUES (68, 9, 'ChiGuaForwardQQ', '吃瓜转发QQ', 'false', NULL, 'bool');
+INSERT INTO "SysConfig" VALUES (69, 9, 'ChiGuaQQ', '吃瓜转发qq', NULL, NULL, 'string');
+INSERT INTO "SysConfig" VALUES (70, 9, 'ChiGuaGroup', '吃瓜转发群', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (71, 11, 'SaveMsg', '保存消息', '1', '0-不保存，1-小偶像消息，2-全部消息', 'string');
 
 -- ----------------------------
