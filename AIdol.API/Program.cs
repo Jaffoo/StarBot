@@ -1,15 +1,15 @@
 using AIdol.Helper;
-using ElectronSharp.API;
+using ElectronNET.API;
 using AIdol.Extension;
 using Microsoft.AspNetCore.Http.Features;
-using ElectronSharp.API.Entities;
-using System.Diagnostics;
+using ElectronNET.API.Entities;
 using AIdol.Repository;
-using ShamrockCore.Utils;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseElectron(args);
+builder.Services.AddElectron();
 
 //…Ë÷√ª˘¥°≈‰÷√
 ConfigHelper.SetConfig(builder.Configuration, builder.Environment.ContentRootPath, builder.Environment.WebRootPath);
@@ -41,28 +41,6 @@ builder.Services.Configure<FormOptions>(options =>
 //ª∫¥Ê
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
-
-#region electron
-var openMore = ConfigHelper.GetConfiguration("OpenMore").ToBool(false);
-if (!openMore)
-{
-    var previousProcesses = Process.GetProcessesByName("electron");
-    foreach (var p in previousProcesses)
-        p.Kill();
-}
-var port = openMore ? Electron.Experimental.FreeTcpPort() : 5050;
-await Electron.Experimental.StartElectronForDevelopment(port);
-
-var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
-{
-    AutoHideMenuBar = true,
-    Height = 900,
-    Width = 1200
-}, $"http://localhost:{port}/aidol/index.html");
-await browserWindow.WebContents.Session.ClearCacheAsync();
-browserWindow.OnReadyToShow += () => browserWindow.Show();
-browserWindow.SetTitle("AIdol Robot");
-#endregion
 
 var app = builder.Build();
 
@@ -98,6 +76,18 @@ app.UseRouting();
 
 app.MapControllers();
 
+var port = 6051;
 app.Urls.Add($"http://localhost:{port}");
 
-app.Run();
+await app.StartAsync();
+var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
+{
+    AutoHideMenuBar = true,
+    Height = 900,
+    Width = 1200
+}, $"http://localhost:{port}/aidol/index.html");
+await browserWindow.WebContents.Session.ClearCacheAsync();
+browserWindow.OnReadyToShow += () => browserWindow.Show();
+browserWindow.SetTitle("ElectronAPI-" + port);
+
+app.WaitForShutdown();
