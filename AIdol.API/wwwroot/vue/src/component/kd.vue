@@ -84,7 +84,8 @@
 import { ref, type PropType } from 'vue'
 import type { KD } from '@/class/model'
 import { ElMessage, type FormRules } from 'element-plus';
-import axios from 'axios';
+import { kdUserInfo, pocketLogin, sendSmsCode, searchIdol } from "@/api"
+
 const prop = defineProps({
     model: {
         type: Object as PropType<KD>,
@@ -152,13 +153,9 @@ const searchXox = async () => {
         return;
     }
     searchModel.value.loading = true;
-    var res: any = await axios({
-        url: 'http://parkerbot.api/api/getxox?group=' + searchModel.value.group.toString() + "&name=" + searchModel.value.name,
-    }).catch(() => {
-        searchModel.value.loading = false;
-    })
-    if (res.data.success) {
-        var data = res.data.data;
+    var res = await searchIdol(searchModel.value.group.toString(), searchModel.value.name);
+    if (res.success) {
+        var data = res.data;
         prop.model.idolName = data.name;
         prop.model.liveRoomId = data.liveId;
         prop.model.serverId = data.serverId;
@@ -178,7 +175,7 @@ const close = () => {
     loginfo.value.hasSend = false;
     loginfo.value.sec = 60;
 }
-const send = () => {
+const send = async () => {
     if (!loginfo.value.phone) {
         ElMessage({ message: "请输入手机号码！", type: 'warning' });
         return;
@@ -190,20 +187,14 @@ const send = () => {
     }
     loginfo.value.hasSend = true;
     subtraction();
-    axios({
-        url: 'http://parkerbot.api/api/SendSmsCode',
-        method: 'get',
-        params: { mobile: loginfo.value.phone, area: loginfo.value.area }
-    }).then(res => {
-        let result = JSON.parse(res?.data)
-        if (result?.success) {
-            ElMessage({ message: "发送成功，请注意查收！", type: 'success' });
-        } else {
-            ElMessage({ message: result?.message ?? "发送失败！", type: 'success' });
-        }
-    });
+    var res = await sendSmsCode(loginfo.value.phone, loginfo.value.area);
+    if (res.success) {
+        ElMessage({ message: "发送成功，请注意查收！", type: 'success' });
+    } else {
+        ElMessage({ message: res.msg ?? "发送失败！", type: 'error' });
+    }
 }
-const login = () => {
+const login = async () => {
     if (!loginfo.value.phone) {
         ElMessage({ message: "请输入手机号码！", type: 'warning' });
         return;
@@ -217,34 +208,22 @@ const login = () => {
         ElMessage({ message: "手机号码格式有误，请重新输入！", type: 'warning' });
         return;
     }
-    axios({
-        url: 'http://parkerbot.api/api/PocketLogin',
-        method: 'get',
-        params: { mobile: loginfo.value.phone, code: loginfo.value.code }
-    }).then(res => {
-        let result = JSON.parse(res?.data);
-        if (result?.success) {
-            axios({
-                url: 'http://parkerbot.api/api/GetPokectUserInfo',
-                method: 'get',
-                params: { token: result.content.token }
-            }).then(res1 => {
-                let result1 = JSON.parse(res1?.data)
-                if (result1?.success) {
-                    prop.model.token = result1.content.pwd;
-                    prop.model.account = result1.content.accid;
-                    setTimeout(() => {
-                        close();
-                    }, 1000);
-                    ElMessage({ message: result1?.message ?? '登录成功', type: 'success' });
-                } else {
-                    ElMessage({ message: result1?.message ?? '登录失败！', type: 'error' });
-                }
-            });
+    var res = await pocketLogin(loginfo.value.phone, loginfo.value.code);
+    if (res.success) {
+        var tokenRes = await kdUserInfo(res.data.content.token);
+        if (tokenRes.success) {
+            prop.model.token = tokenRes.data.content.pwd;
+            prop.model.account = tokenRes.data.content.accid;
+            setTimeout(() => {
+                close();
+            }, 1000);
+            ElMessage({ message: tokenRes.msg ?? '登录成功', type: 'success' });
         } else {
-            ElMessage({ message: result?.message ?? '登录失败！', type: 'error' });
+            ElMessage({ message: tokenRes.msg ?? '登录失败！', type: 'error' });
         }
-    });
+    } else {
+        ElMessage({ message: res.msg ?? '登录失败！', type: 'error' });
+    }
 }
 const subtraction = () => {
     loginfo.value.sec = 60;

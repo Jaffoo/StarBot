@@ -77,7 +77,6 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import { useRouter } from "vue-router";
 import { ArrowDownBold, Setting } from '@element-plus/icons-vue';
 import axios from "axios";
 import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
@@ -95,7 +94,6 @@ const baseConfig = ref({} as any);
 const mirai = ref({} as any);
 const useMirai = ref(false);
 const useAli = ref(false);
-const router = useRouter();
 const nim = ref<NIMSDK>();
 const qChat = ref<QChatSDK>();
 const liveNim = ref<NimChatroomSocket>();

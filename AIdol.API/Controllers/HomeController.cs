@@ -76,10 +76,10 @@ namespace AIdol.Controllers
         /// <param name="page"></param>
         /// <returns></returns>
         [HttpGet("getcache")]
-        public async Task<ApiResult> GetCache([FromQuery] PageModel page)
+        public async Task<ApiResult> GetCache()
         {
-            var res = await _sysCache.GetPageListAsync(page, " Type=1 ", " Id DESC ");
-            return ListResult(res.List, res.Count);
+            var res = await _sysCache.GetListAsync();
+            return DataResult(res);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace AIdol.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("saveimg")]
+        [HttpGet("saveimg/{id}")]
         public async Task<ApiResult> SaveImg(int id)
         {
             var model = await _sysCache.GetModelAsync(id);
@@ -100,7 +100,7 @@ namespace AIdol.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("delimg")]
+        [HttpGet("delimg/{id}")]
         public async Task<ApiResult> DelImg(int id)
         {
             var b = await _sysCache.DeleteAsync(id);
@@ -210,9 +210,9 @@ namespace AIdol.Controllers
         /// <param name="area">区号</param>
         /// <returns></returns>
         [HttpGet("sendsmscode")]
-        public ApiResult SendSmsCode(string mobile, string area = "86")
+        public async Task<ApiResult> SendSmsCode(string mobile, string area = "86")
         {
-            var res = Pocket.SmsCode(mobile, area).Result;
+            var res = await Pocket.SmsCode(mobile, area);
             return DataResult(res);
         }
 
@@ -223,9 +223,21 @@ namespace AIdol.Controllers
         /// <param name="code">验证码</param>
         /// <returns></returns>
         [HttpGet("pocketlogin")]
-        public ApiResult PocketLogin(string mobile,string code)
+        public async Task<ApiResult> PocketLogin(string mobile, string code)
         {
-            var res = Pocket.Login(mobile, code).Result;
+            var res = await Pocket.Login(mobile, code);
+            return DataResult(res);
+        }
+
+        /// <summary>
+        /// 获取口袋登录信息
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [HttpGet("kduserinfo")]
+        public async Task<ApiResult> KDUserInfo(string token)
+        {
+            var res = await Pocket.UserInfo(token);
             return DataResult(res);
         }
     }

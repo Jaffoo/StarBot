@@ -7,6 +7,18 @@ interface Base {
 interface Listing extends Base {
     timeSpan: number,
 }
+export interface Config {
+    BD: BD,
+    QQ: QQ,
+    Shamrock: Shamrock,
+    DY: DY_XHS_BZ,
+    BZ: DY_XHS_BZ,
+    XHS: DY_XHS_BZ,
+    KD: KD,
+    WB: WB,
+    EnableModule: EnableModule
+}
+
 export interface BD {
     appKey?: string,
     appSeret?: string,
@@ -68,4 +80,11 @@ export interface EnableModule {
     bd: boolean,
     xhs: boolean,
     bz: boolean,
+}
+export interface ApiResult {
+    code: number,
+    msg?: string,
+    data?: any,
+    success: boolean,
+    count: number
 }
