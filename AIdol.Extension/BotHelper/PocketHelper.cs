@@ -237,11 +237,6 @@ namespace Helper
                         msgModel.Ids = qqs;
                         ReciverMsg.AddMsg(msgModel);
                     }
-                    else if (!string.IsNullOrWhiteSpace(Config.QQ.Admin))
-                    {
-                        msgModel.Id = Config.QQ.Admin;
-                        ReciverMsg.AddMsg(msgModel);
-                    }
                 }
                 return;
             }

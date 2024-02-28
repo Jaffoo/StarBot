@@ -87,8 +87,9 @@ namespace Helper
         public List<FriendAddEvent> Event { get; set; } = new();
         #endregion
 
-        public void BotStart(Bot? bot)
+        public void BotStart(Bot bot)
         {
+            bot.Start();
             GroupMessageReceiver(bot!);
             FriendMessageReceiver(bot!);
             EventMessageReceiver(bot!);
@@ -106,26 +107,29 @@ namespace Helper
                     //消息链
                     var msgChain = gmr.Message;
                     var msgText = msgChain.GetPlainText().Trim();
-                    var msgModel = new QQMessage()
+                    if (Config.QQ.Save)
                     {
-                        SenderId = gmr.Sender!.QQ.ToString(),
-                        SenderName = gmr.Sender.Name,
-                        ReciverId = gmr.Group!.GroupQQ.ToString(),
-                        ReciverName = gmr.Group.Name,
-                        Time = DateTime.Now,
-                    };
-                    foreach (var item in msgChain)
-                    {
-                        if (item.Type == MessageType.Text)
-                            msgModel.Content = item.ConvertTo<TextMessage>().Data.Text;
-                        if (item.Type == MessageType.Image)
-                            msgModel.Url = item.ConvertTo<ImageMessage>().Data.Url;
-                        if (item.Type == MessageType.Record)
-                            msgModel.Url = item.ConvertTo<RecordMessage>().Data.Url;
-                        if (item.Type == MessageType.Video)
-                            msgModel.Url = item.ConvertTo<VideoMessage>().Data.File;
+                        var msgModel = new QQMessage()
+                        {
+                            SenderId = gmr.Sender!.QQ.ToString(),
+                            SenderName = gmr.Sender.Name,
+                            ReciverId = gmr.Group!.GroupQQ.ToString(),
+                            ReciverName = gmr.Group.Name,
+                            Time = DateTime.Now,
+                        };
+                        foreach (var item in msgChain)
+                        {
+                            if (item.Type == MessageType.Text)
+                                msgModel.Content = item.ConvertTo<TextMessage>().Data.Text;
+                            if (item.Type == MessageType.Image)
+                                msgModel.Url = item.ConvertTo<ImageMessage>().Data.Url;
+                            if (item.Type == MessageType.Record)
+                                msgModel.Url = item.ConvertTo<RecordMessage>().Data.Url;
+                            if (item.Type == MessageType.Video)
+                                msgModel.Url = item.ConvertTo<VideoMessage>().Data.File;
+                        }
+                        await _qqMessage.AddAsync(msgModel);
                     }
-                    await _qqMessage.AddAsync(msgModel);
                     return;
                 }
                 catch (Exception e)

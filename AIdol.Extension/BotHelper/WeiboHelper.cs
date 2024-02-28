@@ -137,7 +137,7 @@ namespace Helper
                                 if (Config.WB.ForwardQQ)
                                 {
                                     if (string.IsNullOrWhiteSpace(Config.WB.QQ)) continue;
-                                    await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ, mcb.Build());
+                                    await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ.ToStrList(), mcb.Build());
                                 }
                             }
                             //保存图片
@@ -239,7 +239,7 @@ namespace Helper
                             if (Config.WB.ForwardQQ)
                             {
                                 if (string.IsNullOrWhiteSpace(Config.WB.QQ)) continue;
-                                await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ, mcb.Build());
+                                await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ.ToStrList(), mcb.Build());
                             }
                         }
                     }
@@ -290,14 +290,14 @@ namespace Helper
         {
             try
             {
-                if (!Config.EnableModule.BD)
+                if (!Config.EnableModule.BD && !Config.BD.FaceVerify)
                 {
                     await _sysCache.AddAsync(new()
                     {
                         Content = url,
                         Type = 1
                     });
-                    await ReciverMsg.Instance.SendAdminMsg($"未启用人脸识别，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
+                    await ReciverMsg.Instance.SendAdminMsg($"未启用百度人脸识别，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
                     return;
                 }
                 var face = await new Baidu().IsFaceAndCount(url);

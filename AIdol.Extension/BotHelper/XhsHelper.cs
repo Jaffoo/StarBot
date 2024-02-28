@@ -143,7 +143,7 @@ namespace Helper
                     if (Config.XHS.ForwardQQ)
                     {
                         if (string.IsNullOrWhiteSpace(Config.XHS.QQ)) continue;
-                        await ReciverMsg.Instance.SendFriendMsg(Config.XHS.QQ, mcb.Build());
+                        await ReciverMsg.Instance.SendFriendMsg(Config.XHS.QQ.ToStrList(), mcb.Build());
                     }
                 }
             }

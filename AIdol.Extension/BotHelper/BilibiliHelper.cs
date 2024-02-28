@@ -135,7 +135,7 @@ namespace Helper
                                 if (Config.BZ.ForwardQQ)
                                 {
                                     if (string.IsNullOrWhiteSpace(Config.BZ.QQ)) continue;
-                                    await ReciverMsg.Instance.SendFriendMsg(Config.BZ.QQ, mcb.Build());
+                                    await ReciverMsg.Instance.SendFriendMsg(Config.BZ.QQ.ToStrList(), mcb.Build());
                                 }
                             }
                             //保存图片

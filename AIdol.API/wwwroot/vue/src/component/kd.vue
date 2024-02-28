@@ -1,10 +1,262 @@
 <template>
-    <div>
-        {{ count }}
-    </div>
+    <el-form ref="form" :model="model" label-width="100px">
+        <el-form-item label="姓名" :rules="rules.common">
+            <el-input v-model="model.idolName"></el-input>
+        </el-form-item>
+        <el-form-item label="IMServerId" prop="KD.serverId" :rules="rules.input">
+            <el-input v-model="model.serverId"></el-input>
+        </el-form-item>
+        <el-form-item label="直播房间Id" prop="KD.liveRoomId" :rules="rules.input">
+            <el-input v-model="model.liveRoomId"></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button @click="searchModel.show = true">查询小偶像信息</el-button>
+        </el-form-item>
+        <el-form-item label="IM账号" :rules="rules.common">
+            <el-input v-model="model.account" />
+        </el-form-item>
+        <el-form-item label="IMtoken" :rules="rules.common">
+            <el-input v-model="model.token" />
+        </el-form-item>
+        <el-form-item>
+            <el-button @click="loginKD = true">登录口袋48</el-button>
+            <span style="color:red">*IM账号和IMtoken可点此登录口袋后自动获取</span>
+        </el-form-item>
+        <el-form-item label="监听消息类型" v-show="model.forwardGroup === true || model.forwardQQ === true">
+            <el-checkbox-group v-model="model.msgType">
+                <el-checkbox v-for="(item, index) in model.msgTypeAll" :label="item.value" :key="index">{{
+                    item.name
+                }}</el-checkbox>
+            </el-checkbox-group>
+        </el-form-item>
+        <el-form-item label="转发至群">
+            <el-switch v-model="model.forwardGroup" active-text="转发" inactive-text="不转发" />
+        </el-form-item>
+        <el-form-item label="群qq号" v-if="model.forwardGroup">
+            <el-input v-model="model.group" />
+        </el-form-item>
+        <el-form-item label="转发至好友">
+            <el-switch v-model="model.forwardQQ" active-text="转发" inactive-text="不转发" />
+        </el-form-item>
+        <el-form-item label="好友qq" v-if="model.forwardQQ">
+            <el-input v-model="model.qq" />
+        </el-form-item>
+    </el-form>
+    <el-dialog title="登录口袋48" v-model="loginKD" :before-close="close" :close-on-click-modal="false">
+        <el-form label-width="100px">
+            <el-form-item label="手机号" required class="mt-4">
+                <el-input v-model="loginfo.phone" style="width:95%">
+                    <template #prepend>+{{ loginfo.area }}</template>
+                </el-input>
+            </el-form-item>
+            <el-form-item label="验证码" required>
+                <el-input type="primary" v-model="loginfo.code" style="width:65%"></el-input><el-button
+                    v-show="!loginfo.hasSend" style="width:25%;margin-left:5%" @click="send">发送验证码</el-button><el-button
+                    v-show="loginfo.hasSend" style="width:25%;margin-left:5%">{{ loginfo.sec }}秒</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="login">登录</el-button>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
+    <el-dialog title="查询小偶像 " v-model="searchModel.show" :before-close="close" :close-on-click-modal="false">
+        <el-form label-width="100px">
+            <el-form-item label="队伍" class="mt-4">
+                <el-cascader :props="{ expandTrigger: 'hover', checkStrictly: 'true' }" placeholder="请选择"
+                    v-model="searchModel.group" :options="groups" style="width:95%"></el-cascader>
+            </el-form-item>
+            <el-form-item label="姓名" required>
+                <el-input v-model="searchModel.name" style="width:95%">
+                </el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" :loading="searchModel.loading" @click="searchXox">查询</el-button>
+            </el-form-item>
+            <div v-if="searchModel.url" style="width:95%;margin-top:5px">
+                <span>未查询到小偶像，检查名称等后重新查询或者自行通过下方地址获取小偶像信息填入：</span>
+                <div style="word-break:break-all">{{ searchModel.url }}</div>
+            </div>
+        </el-form>
+    </el-dialog>
 </template>
 
-<script setup lang="ts" name="kd">
-import { ref } from 'vue'
-const count = ref(0);
+<script setup lang="ts" name="qq">
+import { ref, type PropType } from 'vue'
+import type { KD } from '@/class/model'
+import { ElMessage, type FormRules } from 'element-plus';
+import axios from 'axios';
+const prop = defineProps({
+    model: {
+        type: Object as PropType<KD>,
+        default: null
+    }
+})
+const form = ref(null);
+const rules = ref<FormRules>(
+    { common: [{ required: true, message: '请输入该值', trigger: 'blur' }] }
+)
+const loginKD = ref(false)
+const searchModel = ref({
+    show: false,
+    group: [],
+    name: '',
+    loading: false,
+    url: ''
+})
+const loginfo = ref({
+    phone: '',
+    area: '+86',
+    hasSend: false,
+    code: '',
+    sec: 60
+})
+const groups = ref(
+    [{
+        label: 'SNH48',
+        value: 'SNH48',
+        children: [
+            { value: "TEAM SII", label: "TEAM SII" },
+            { value: "TEAM HII", label: "TEAM HII" },
+            { value: "TEAM X", label: "TEAM X" },
+        ]
+    }, {
+        label: 'GNZ48',
+        value: 'GNZ48',
+        children: [
+            { value: "TEAM G", label: "TEAM G" },
+            { value: "TEAM NIII", label: "TEAM NIII" },
+            { value: "TEAM Z", label: "TEAM Z" },
+            { value: "TEAM CII", label: "TEAM CII" },
+        ]
+    }, {
+        label: 'CGT48',
+        value: 'CGT48',
+        children: [
+            { value: "TEAM GII", label: "TEAM GII" },
+        ]
+    }, {
+        label: 'BEJ48',
+        value: 'BEJ48',
+        children: [
+            { value: "TEAM B", label: "TEAM B" },
+            { value: "TEAM E", label: "TEAM E" }
+        ]
+    }, {
+        label: 'CKG48',
+        value: 'CKG48',
+    }]
+)
+const searchXox = async () => {
+    if (!searchModel.value.name) {
+        ElMessage({ message: "请输入小偶像姓名", type: 'error' });
+        return;
+    }
+    searchModel.value.loading = true;
+    var res: any = await axios({
+        url: 'http://parkerbot.api/api/getxox?group=' + searchModel.value.group.toString() + "&name=" + searchModel.value.name,
+    }).catch(() => {
+        searchModel.value.loading = false;
+    })
+    if (res.data.success) {
+        var data = res.data.data;
+        prop.model.idolName = data.name;
+        prop.model.liveRoomId = data.liveId;
+        prop.model.serverId = data.serverId;
+        close();
+    } else {
+        searchModel.value.url = res.data.data;
+    }
+    searchModel.value.loading = false;
+}
+const close = () => {
+    searchModel.value.loading = false;
+    searchModel.value.show = false;
+    searchModel.value.name = '';
+    searchModel.value.url = "";
+    searchModel.value.group = [];
+    loginKD.value = false;
+    loginfo.value.hasSend = false;
+    loginfo.value.sec = 60;
+}
+const send = () => {
+    if (!loginfo.value.phone) {
+        ElMessage({ message: "请输入手机号码！", type: 'warning' });
+        return;
+    }
+    var patrn = /^1[3456789]\d{9}$/;
+    if (patrn.test(loginfo.value.phone) == false) {
+        ElMessage({ message: "手机号码格式有误，请重新输入！", type: 'warning' });
+        return;
+    }
+    loginfo.value.hasSend = true;
+    subtraction();
+    axios({
+        url: 'http://parkerbot.api/api/SendSmsCode',
+        method: 'get',
+        params: { mobile: loginfo.value.phone, area: loginfo.value.area }
+    }).then(res => {
+        let result = JSON.parse(res?.data)
+        if (result?.success) {
+            ElMessage({ message: "发送成功，请注意查收！", type: 'success' });
+        } else {
+            ElMessage({ message: result?.message ?? "发送失败！", type: 'success' });
+        }
+    });
+}
+const login = () => {
+    if (!loginfo.value.phone) {
+        ElMessage({ message: "请输入手机号码！", type: 'warning' });
+        return;
+    }
+    if (!loginfo.value.code) {
+        ElMessage({ message: "请输入验证码！", type: 'warning' });
+        return;
+    }
+    var patrn = /^1[3456789]\d{9}$/;
+    if (patrn.test(loginfo.value.phone) == false) {
+        ElMessage({ message: "手机号码格式有误，请重新输入！", type: 'warning' });
+        return;
+    }
+    axios({
+        url: 'http://parkerbot.api/api/PocketLogin',
+        method: 'get',
+        params: { mobile: loginfo.value.phone, code: loginfo.value.code }
+    }).then(res => {
+        let result = JSON.parse(res?.data);
+        if (result?.success) {
+            axios({
+                url: 'http://parkerbot.api/api/GetPokectUserInfo',
+                method: 'get',
+                params: { token: result.content.token }
+            }).then(res1 => {
+                let result1 = JSON.parse(res1?.data)
+                if (result1?.success) {
+                    prop.model.token = result1.content.pwd;
+                    prop.model.account = result1.content.accid;
+                    setTimeout(() => {
+                        close();
+                    }, 1000);
+                    ElMessage({ message: result1?.message ?? '登录成功', type: 'success' });
+                } else {
+                    ElMessage({ message: result1?.message ?? '登录失败！', type: 'error' });
+                }
+            });
+        } else {
+            ElMessage({ message: result?.message ?? '登录失败！', type: 'error' });
+        }
+    });
+}
+const subtraction = () => {
+    loginfo.value.sec = 60;
+    let timer: number;
+    timer = setInterval(() => {
+        if (loginfo.value.sec > 0) {
+            loginfo.value.sec--;
+        } else {
+            clearInterval(timer);
+            loginfo.value.sec = 60;
+            loginfo.value.hasSend = false;
+        }
+    }, 1000);
+}
 </script>
