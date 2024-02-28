@@ -19,7 +19,14 @@ namespace AIdol.Helper
             get { return _plugins.FirstOrDefault(t => t.Name == name); }
         }
         private static readonly string _path = Environment.CurrentDirectory + "/Plugin";
-        private readonly List<PluginHelper> _plugins = [];
+        public List<PluginHelper> Plugins
+        {
+            get
+            {
+                return _plugins;
+            }
+        }
+        public readonly List<PluginHelper> _plugins = [];
         private string? Name { get; set; }
         private string? Description { get; set; }
         private BasePlugin? Plugin { get; set; }
