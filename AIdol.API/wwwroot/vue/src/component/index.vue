@@ -83,9 +83,9 @@ import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
 import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
 import type { SubscribeAllChannelResult } from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK/QChatServerServiceInterface";
 import dayjs from 'dayjs';
-import NimChatroomSocket from '@/class/Live'
+import NimChatroomSocket from '@/class/live'
 import type { LiveRoomMessage } from "@/class/messageType";
-import PocketMessage from "@/class/Type";
+import PocketMessage from "@/class/type";
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const started = ref<boolean>(false);
@@ -316,7 +316,6 @@ const config = () => {
     if (liveNim.value) {
         liveNim.value.disconnect();
     }
-    router.push("/config");
 };
 const miraiSetting = () => {
     if (nim.value) {
@@ -328,7 +327,6 @@ const miraiSetting = () => {
     if (liveNim.value) {
         liveNim.value.disconnect();
     }
-    router.push("mirai");
 };
 
 const getConfig = async (): Promise<any> => {

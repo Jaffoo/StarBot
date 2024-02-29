@@ -10,7 +10,7 @@
             <el-switch v-model="model.faceVerify" :active-value="true" :inactive-value="false"></el-switch>
         </el-form-item>
         <el-form-item label="基础人脸" v-show="model.faceVerify">
-            <el-upload :file-list="model.imageList" action="http://parkerbot.api/api/upload" :on-success="onSuccess"
+            <el-upload :file-list="model.imageList" action="http://127.0.0.1:6051/api/v1/upload" :on-success="onSuccess"
                 :on-remove="onRemove" list-type="picture-card" :limit="3" accept=".jpg,.png,.jpeg">
                 <el-icon>
                     <Plus />
