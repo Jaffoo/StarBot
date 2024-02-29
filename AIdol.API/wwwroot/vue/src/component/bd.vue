@@ -1,5 +1,5 @@
 <template>
-    <el-form ref="form" :model="model" label-width="100px">
+    <el-form ref="bdform" :model="model" label-width="100px">
         <el-form-item label="apiKey">
             <el-input v-model="model.appKey" placeholder="百度appKey"></el-input>
         </el-form-item>
@@ -43,32 +43,33 @@
 </template>
 
 <script setup lang="ts" name="bd">
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, toRef } from 'vue'
 import type { BD } from '@/class/model'
 import type { UploadFile, UploadProps } from 'element-plus';
 const props = defineProps({
-    model: {
+    bd: {
         type: Object as PropType<BD>,
         default: null
     }
 })
-const form = ref(null);
+const model = toRef(props.bd);
+const bdform = ref(null);
 const onSuccess: UploadProps['onSuccess'] = (response: any, uploadFile: UploadFile) => {
-    if (props.model.imageList) props.model.imageList.push(uploadFile.name)
-    else props.model.imageList = []
+    if (model.value.imageList) model.value.imageList.push(uploadFile.name)
+    else model.value.imageList = []
 }
 
 const onRemove: UploadProps['onRemove'] = (file: UploadFile) => {
-    if (!props.model.imageList) return
+    if (!model.value.imageList) return
     var i = -1;
-    props.model.imageList.forEach((item, index) => {
+    model.value.imageList.forEach((item, index) => {
         if (item === file.name) {
             i = index;
             return;
         }
     })
     if (i >= 0) {
-        props.model.imageList.splice(i, 1);
+        model.value.imageList.splice(i, 1);
     }
 }
 </script>

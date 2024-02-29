@@ -1,5 +1,5 @@
 <template>
-    <el-form ref="form" :model="model" label-width="100px">
+    <el-form ref="qqform" :model="model" label-width="100px">
         <el-form-item label="超管" :rules="rules.common">
             <el-input v-model="model.admin" />
         </el-form-item>
@@ -22,24 +22,27 @@
 </template>
 
 <script setup lang="ts" name="qq">
-import { ref, type PropType, onMounted } from 'vue'
+import { ref, type PropType, onMounted, toRef } from 'vue'
 import type { QQ } from '@/class/model'
 import type { FormRules } from 'element-plus';
 import { getFun } from '@/api'
-defineProps({
-    model: {
+
+const props = defineProps({
+    qq: {
         type: Object as PropType<QQ>,
         default: null
     }
 })
+const model = toRef(props.qq);
 const getQQFuns = async () => {
     var res = await getFun();
+    console.log(res)
 }
-const form = ref(null);
+const qqform = ref(null);
 const rules = ref<FormRules>(
     { common: [{ required: true, message: '请输入该值', trigger: 'blur' }] }
 )
-onMounted(() => {
-    getQQFuns
+onMounted(async () => {
+    await getQQFuns();
 })
 </script>

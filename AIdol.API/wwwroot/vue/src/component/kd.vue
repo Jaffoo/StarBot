@@ -1,98 +1,101 @@
 <template>
-    <el-form ref="form" :model="model" label-width="100px">
-        <el-form-item label="姓名" :rules="rules.common">
-            <el-input v-model="model.idolName"></el-input>
-        </el-form-item>
-        <el-form-item label="IMServerId" prop="KD.serverId" :rules="rules.input">
-            <el-input v-model="model.serverId"></el-input>
-        </el-form-item>
-        <el-form-item label="直播房间Id" prop="KD.liveRoomId" :rules="rules.input">
-            <el-input v-model="model.liveRoomId"></el-input>
-        </el-form-item>
-        <el-form-item>
-            <el-button @click="searchModel.show = true">查询小偶像信息</el-button>
-        </el-form-item>
-        <el-form-item label="IM账号" :rules="rules.common">
-            <el-input v-model="model.account" />
-        </el-form-item>
-        <el-form-item label="IMtoken" :rules="rules.common">
-            <el-input v-model="model.token" />
-        </el-form-item>
-        <el-form-item>
-            <el-button @click="loginKD = true">登录口袋48</el-button>
-            <span style="color:red">*IM账号和IMtoken可点此登录口袋后自动获取</span>
-        </el-form-item>
-        <el-form-item label="监听消息类型" v-show="model.forwardGroup === true || model.forwardQQ === true">
-            <el-checkbox-group v-model="model.msgType">
-                <el-checkbox v-for="(item, index) in model.msgTypeAll" :label="item.value" :key="index">{{
-                    item.name
-                }}</el-checkbox>
-            </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="转发至群">
-            <el-switch v-model="model.forwardGroup" active-text="转发" inactive-text="不转发" />
-        </el-form-item>
-        <el-form-item label="群qq号" v-if="model.forwardGroup">
-            <el-input v-model="model.group" />
-        </el-form-item>
-        <el-form-item label="转发至好友">
-            <el-switch v-model="model.forwardQQ" active-text="转发" inactive-text="不转发" />
-        </el-form-item>
-        <el-form-item label="好友qq" v-if="model.forwardQQ">
-            <el-input v-model="model.qq" />
-        </el-form-item>
-    </el-form>
-    <el-dialog title="登录口袋48" v-model="loginKD" :before-close="close" :close-on-click-modal="false">
-        <el-form label-width="100px">
-            <el-form-item label="手机号" required class="mt-4">
-                <el-input v-model="loginfo.phone" style="width:95%">
-                    <template #prepend>+{{ loginfo.area }}</template>
-                </el-input>
+    <div>
+        <el-form ref="kdform" :model="model" label-width="100px">
+            <el-form-item label="姓名" :rules="rules.common">
+                <el-input v-model="model.idolName"></el-input>
             </el-form-item>
-            <el-form-item label="验证码" required>
-                <el-input type="primary" v-model="loginfo.code" style="width:65%"></el-input><el-button
-                    v-show="!loginfo.hasSend" style="width:25%;margin-left:5%" @click="send">发送验证码</el-button><el-button
-                    v-show="loginfo.hasSend" style="width:25%;margin-left:5%">{{ loginfo.sec }}秒</el-button>
+            <el-form-item label="IMServerId" prop="KD.serverId" :rules="rules.input">
+                <el-input v-model="model.serverId"></el-input>
+            </el-form-item>
+            <el-form-item label="直播房间Id" prop="KD.liveRoomId" :rules="rules.input">
+                <el-input v-model="model.liveRoomId"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="login">登录</el-button>
+                <el-button @click="searchModel.show = true">查询小偶像信息</el-button>
             </el-form-item>
-        </el-form>
-    </el-dialog>
-    <el-dialog title="查询小偶像 " v-model="searchModel.show" :before-close="close" :close-on-click-modal="false">
-        <el-form label-width="100px">
-            <el-form-item label="队伍" class="mt-4">
-                <el-cascader :props="{ expandTrigger: 'hover', checkStrictly: 'true' }" placeholder="请选择"
-                    v-model="searchModel.group" :options="groups" style="width:95%"></el-cascader>
+            <el-form-item label="IM账号" :rules="rules.common">
+                <el-input v-model="model.account" />
             </el-form-item>
-            <el-form-item label="姓名" required>
-                <el-input v-model="searchModel.name" style="width:95%">
-                </el-input>
+            <el-form-item label="IMtoken" :rules="rules.common">
+                <el-input v-model="model.token" />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" :loading="searchModel.loading" @click="searchXox">查询</el-button>
+                <el-button @click="loginKD = true">登录口袋48</el-button>
+                <span style="color:red">*IM账号和IMtoken可点此登录口袋后自动获取</span>
             </el-form-item>
-            <div v-if="searchModel.url" style="width:95%;margin-top:5px">
-                <span>未查询到小偶像，检查名称等后重新查询或者自行通过下方地址获取小偶像信息填入：</span>
-                <div style="word-break:break-all">{{ searchModel.url }}</div>
-            </div>
+            <el-form-item label="监听消息类型" v-show="model.forwardGroup === true || model.forwardQQ === true">
+                <el-checkbox-group v-model="model.msgType">
+                    <el-checkbox v-for="(item, index) in model.msgTypeAll" :label="item.value" :key="index">{{
+                        item.name
+                    }}</el-checkbox>
+                </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="转发至群">
+                <el-switch v-model="model.forwardGroup" active-text="转发" inactive-text="不转发" />
+            </el-form-item>
+            <el-form-item label="群qq号" v-if="model.forwardGroup">
+                <el-input v-model="model.group" />
+            </el-form-item>
+            <el-form-item label="转发至好友">
+                <el-switch v-model="model.forwardQQ" active-text="转发" inactive-text="不转发" />
+            </el-form-item>
+            <el-form-item label="好友qq" v-if="model.forwardQQ">
+                <el-input v-model="model.qq" />
+            </el-form-item>
         </el-form>
-    </el-dialog>
+        <el-dialog title="登录口袋48" v-model="loginKD" :before-close="close" :close-on-click-modal="false">
+            <el-form label-width="100px">
+                <el-form-item label="手机号" required class="mt-4">
+                    <el-input v-model="loginfo.phone" style="width:95%">
+                        <template #prepend>+{{ loginfo.area }}</template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="验证码" required>
+                    <el-input type="primary" v-model="loginfo.code" style="width:65%"></el-input><el-button
+                        v-show="!loginfo.hasSend" style="width:25%;margin-left:5%" @click="send">发送验证码</el-button><el-button
+                        v-show="loginfo.hasSend" style="width:25%;margin-left:5%">{{ loginfo.sec }}秒</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="login">登录</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <el-dialog title="查询小偶像 " v-model="searchModel.show" :before-close="close" :close-on-click-modal="false">
+            <el-form label-width="100px">
+                <el-form-item label="队伍" class="mt-4">
+                    <el-cascader :props="{ expandTrigger: 'hover', checkStrictly: 'true' }" placeholder="请选择"
+                        v-model="searchModel.group" :options="groups" style="width:95%"></el-cascader>
+                </el-form-item>
+                <el-form-item label="姓名" required>
+                    <el-input v-model="searchModel.name" style="width:95%">
+                    </el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" :loading="searchModel.loading" @click="searchXox">查询</el-button>
+                </el-form-item>
+                <div v-if="searchModel.url" style="width:95%;margin-top:5px">
+                    <span>未查询到小偶像，检查名称等后重新查询或者自行通过下方地址获取小偶像信息填入：</span>
+                    <div style="word-break:break-all">{{ searchModel.url }}</div>
+                </div>
+            </el-form>
+        </el-dialog>
+    </div>
 </template>
 
 <script setup lang="ts" name="qq">
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, toRef } from 'vue'
 import type { KD } from '@/class/model'
 import { ElMessage, type FormRules } from 'element-plus';
 import { kdUserInfo, pocketLogin, sendSmsCode, searchIdol } from "@/api"
 
-const prop = defineProps({
-    model: {
+const props = defineProps({
+    kd: {
         type: Object as PropType<KD>,
         default: null
     }
 })
-const form = ref(null);
+const model = toRef(props.kd);
+const kdform = ref(null);
 const rules = ref<FormRules>(
     { common: [{ required: true, message: '请输入该值', trigger: 'blur' }] }
 )
@@ -156,9 +159,9 @@ const searchXox = async () => {
     var res = await searchIdol(searchModel.value.group.toString(), searchModel.value.name);
     if (res.success) {
         var data = res.data;
-        prop.model.idolName = data.name;
-        prop.model.liveRoomId = data.liveId;
-        prop.model.serverId = data.serverId;
+        model.value.idolName = data.name;
+        model.value.liveRoomId = data.liveId;
+        model.value.serverId = data.serverId;
         close();
     } else {
         searchModel.value.url = res.data.data;
@@ -212,8 +215,8 @@ const login = async () => {
     if (res.success) {
         var tokenRes = await kdUserInfo(res.data.content.token);
         if (tokenRes.success) {
-            prop.model.token = tokenRes.data.content.pwd;
-            prop.model.account = tokenRes.data.content.accid;
+            model.value.token = tokenRes.data.content.pwd;
+            model.value.account = tokenRes.data.content.accid;
             setTimeout(() => {
                 close();
             }, 1000);

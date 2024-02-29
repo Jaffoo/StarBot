@@ -54,7 +54,7 @@ export interface WB extends Listing {
     chiGuaForwardGroup: boolean
 }
 export interface DY_XHS_BZ extends Listing {
-    user: Array<string>,
+    user: string,
 }
 export interface QQ {
     funcAdmin?: Array<string>,

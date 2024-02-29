@@ -1,4 +1,8 @@
 <template>
+    <h1>Index.Vue</h1>
+</template>
+
+<!-- <template>
     <el-container>
         <el-header height="50px">
             <el-button type="primary" native-type="button" :icon="Setting" @click="config">
@@ -489,4 +493,4 @@ const clearCache = () => {
 const clear = () => {
     log.value.length = 0;
 }
-</script>
+</script> -->

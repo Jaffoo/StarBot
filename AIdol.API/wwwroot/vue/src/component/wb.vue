@@ -1,6 +1,6 @@
 <template>
-    <el-form ref="form" :model="model" label-width="100px">
-        <el-form-item label="idol用户">
+    <el-form ref="wbform" :model="model" label-width="100px">
+        <el-form-item label="微博用户">
             <el-input v-model="model.userAll" /><span style="color: red;">用于转发动态和图片保存，一般是填idol</span>
         </el-form-item>
         <el-form-item label="返图用户">
@@ -44,13 +44,14 @@
 </template>
 
 <script setup lang="ts" name="wb">
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, toRef } from 'vue'
 import type { WB } from '@/class/model'
-defineProps({
-    model: {
+const props = defineProps({
+    wb: {
         type: Object as PropType<WB>,
         default: null
     }
 })
-const form = ref(null);
+const model = toRef(props.wb);
+const wbform = ref(null);
 </script>

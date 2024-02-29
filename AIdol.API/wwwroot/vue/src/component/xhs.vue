@@ -1,6 +1,6 @@
 <template>
-    <el-form ref="form" :model="model" label-width="100px">
-        <el-form-item label="用户">
+    <el-form ref="xhsform" :model="model" label-width="100px">
+        <el-form-item label="小红书用户">
             <el-input v-model="model.user" />
         </el-form-item>
         <el-form-item label="转发至群">
@@ -22,14 +22,15 @@
 </template>
 
 <script setup lang="ts" name="xhs">
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, toRef } from 'vue'
 import type { DY_XHS_BZ as XHS } from '@/class/model'
-import type { FormRules } from 'element-plus';
-defineProps({
-    model: {
+
+const props = defineProps({
+    xhs: {
         type: Object as PropType<XHS>,
         default: null
     }
 })
-const form = ref(null);
+const model = toRef(props.xhs);
+const xhsform = ref(null);
 </script>

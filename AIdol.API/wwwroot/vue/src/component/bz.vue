@@ -1,6 +1,6 @@
 <template>
-    <el-form ref="form" :model="model" label-width="100px">
-        <el-form-item label="用户">
+    <el-form ref="bzform" :model="model" label-width="100px">
+        <el-form-item label="b站用户">
             <el-input v-model="model.user" />
         </el-form-item>
         <el-form-item label="转发至群">
@@ -22,13 +22,14 @@
 </template>
 
 <script setup lang="ts" name="bz">
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, toRef } from 'vue'
 import type { DY_XHS_BZ as BZ } from '@/class/model'
-defineProps({
-    model: {
+const props = defineProps({
+    bz: {
         type: Object as PropType<BZ>,
         default: null
     }
 })
-const form = ref(null);
+const model = toRef(props.bz);
+const bzform = ref(null);
 </script>
