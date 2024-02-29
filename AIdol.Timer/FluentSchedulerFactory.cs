@@ -1,4 +1,4 @@
-using FluentScheduler;
+﻿using FluentScheduler;
 using AIdol.Entity;
 using AIdol.Extension;
 using AIdol.IService;
