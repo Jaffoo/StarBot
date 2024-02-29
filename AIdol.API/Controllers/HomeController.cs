@@ -3,6 +3,7 @@ using AIdol.Extension;
 using AIdol.Helper;
 using AIdol.IService;
 using AIdol.Model;
+using FluentScheduler;
 using Helper;
 using Microsoft.AspNetCore.Mvc;
 using ShamrockCore;
@@ -34,6 +35,7 @@ namespace AIdol.Controllers
             var connectConfig = new ConnectConfig(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, Config.Shamrock.Token);
             var bot = new Bot(connectConfig);
             ReciverMsg.Instance.BotStart(bot);
+            JobManager.Initialize(new FluentSchedulerFactory());
             return Success();
         }
 

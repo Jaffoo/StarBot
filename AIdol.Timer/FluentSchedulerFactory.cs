@@ -11,18 +11,16 @@ namespace Helper
     {
 
         ISysConfig _sysConfig;
-        ISysLog _sysLog;
         ISysIdol _sysIdol;
         public FluentSchedulerFactory()
         {
             var factory = DataService.BuildServiceProvider();
             _sysConfig = factory.GetService<ISysConfig>()!;
-            _sysLog = factory.GetService<ISysLog>()!;
             _sysIdol = factory.GetService<ISysIdol>()!;
-            Start();
+            CreateJob();
         }
 
-        public void Start()
+        public void CreateJob()
         {
             var config = _sysConfig.GetConfig().Result;
             if (config.EnableModule.WB)

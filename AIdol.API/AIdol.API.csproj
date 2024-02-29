@@ -24,6 +24,7 @@
     <ProjectReference Include="..\AIdol.Extension\AIdol.Extension.csproj" />
     <ProjectReference Include="..\AIdol.Helper\AIdol.Helper.csproj" />
     <ProjectReference Include="..\AIdol.Service\AIdol.Service.csproj" />
+    <ProjectReference Include="..\AIdol.Timer\AIdol.Timer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="wwwroot\vue\**" />

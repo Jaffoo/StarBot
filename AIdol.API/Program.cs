@@ -6,6 +6,8 @@ using ElectronNET.API.Entities;
 using AIdol.Repository;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using FluentScheduler;
+using Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseElectron(args);
@@ -58,6 +60,9 @@ if (File.Exists("wwwroot/data/update.sql"))
     await db.Ado.ExecuteCommandAsync(sqlStr);
 }
 #endregion
+
+//启动定时任务
+JobManager.Initialize(new FluentSchedulerFactory());
 
 //获取依赖注入的服务
 ConfigHelper.ServiceProvider = app.Services;
