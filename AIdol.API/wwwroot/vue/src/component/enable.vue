@@ -11,7 +11,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { toRef, type PropType } from "vue"
+import { toRef, type PropType, watch } from "vue"
 import type { EnableModule } from "@/class/model";
 const props = defineProps({
     enable: {
@@ -27,5 +27,10 @@ const props = defineProps({
         }
     }
 })
+// 定义子组件向父组件传值/事件
+const emit = defineEmits(['enable-change']);
 const data = toRef(props.enable);
+watch(() => data.value, () => {
+    emit("enable-change", data.value)
+})
 </script>
