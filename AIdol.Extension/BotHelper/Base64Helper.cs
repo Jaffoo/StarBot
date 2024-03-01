@@ -1,4 +1,4 @@
-namespace Helper
+namespace AIdol.Extension
 {
     public class Base64Helper
     {

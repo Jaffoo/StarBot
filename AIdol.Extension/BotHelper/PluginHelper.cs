@@ -3,7 +3,7 @@ using ShamrockCore.Receiver;
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace AIdol.Helper
+namespace AIdol.Extension
 {
     /// <summary>
     /// 插件帮助类

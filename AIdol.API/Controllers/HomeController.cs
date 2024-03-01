@@ -1,10 +1,9 @@
 using AIdol.Entity;
 using AIdol.Extension;
-using AIdol.Helper;
 using AIdol.IService;
 using AIdol.Model;
+using AIdol.Timer;
 using FluentScheduler;
-using Helper;
 using Microsoft.AspNetCore.Mvc;
 using ShamrockCore;
 using System.Diagnostics;

@@ -7,7 +7,6 @@ using AIdol.Repository;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using FluentScheduler;
-using Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseElectron(args);

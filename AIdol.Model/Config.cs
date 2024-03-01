@@ -109,11 +109,6 @@ namespace AIdol.Model
     public class Shamrock
     {
         /// <summary>
-        /// 使用
-        /// </summary>
-        public bool Use { get; set; }
-
-        /// <summary>
         /// 地址
         /// </summary>
         public string Host { get; set; } = string.Empty;
@@ -173,6 +168,11 @@ namespace AIdol.Model
                 prop.SetValue(enableModule, value); // 设置属性值
             }
         }
+
+        /// <summary>
+        /// Shamrock
+        /// </summary>
+        public bool Shamrock { get; set; }
 
         /// <summary>
         /// qq

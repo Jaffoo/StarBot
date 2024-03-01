@@ -5,7 +5,7 @@ using AIdol.IService;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 
-namespace Helper
+namespace AIdol.Timer
 {
     public class FluentSchedulerFactory : Registry
     {

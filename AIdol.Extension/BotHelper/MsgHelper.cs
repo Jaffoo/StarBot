@@ -5,7 +5,6 @@ using System.Data;
 using ShamrockCore;
 using ShamrockCore.Receiver.MsgChain;
 using ShamrockCore.Receiver.Receivers;
-using AIdol.Extension;
 using AIdol.IService;
 using Microsoft.Extensions.DependencyInjection;
 using ShamrockCore.Receiver.Events;
@@ -16,7 +15,7 @@ using ShamrockCore.Utils;
 using ShamrockCore.Receiver;
 using FluentScheduler;
 
-namespace Helper
+namespace AIdol.Extension
 {
     public class MsgModel
     {
@@ -493,9 +492,9 @@ namespace Helper
                             Config.EnableModule[moudel] = true;
                             _sysConfig.ClearConfig(moudel);
                             await fmr.SendPrivateMsgAsync($"模块【{old}】已开启！");
-                            JobManager.RemoveAllJobs();
-                            JobManager.Initialize(new FluentSchedulerFactory());
-                            var model = await _sysConfig.GetModelAsync(t => t.Pid == 7 && t.Key == moudel);
+                            var job = JobManager.AllSchedules.FirstOrDefault(t => t.Name.ToLower() == moudel.ToLower());
+                            if (job != null) job.Enable();
+                            var model = await _sysConfig.GetModelAsync(t => t.Pid == 6 && t.Key == moudel);
                             if (model != null)
                             {
                                 model.Value = "true";
@@ -511,8 +510,9 @@ namespace Helper
                             Config.EnableModule[moudel] = false;
                             _sysConfig.ClearConfig(moudel);
                             await fmr.SendPrivateMsgAsync($"模块【{old}】已关闭！");
-                            JobManager.RemoveJob(moudel);
-                            var model = await _sysConfig.GetModelAsync(t => t.Pid == 7 && t.Key == moudel);
+                            var job = JobManager.AllSchedules.FirstOrDefault(t => t.Name.ToLower() == moudel.ToLower());
+                            if (job != null) job.Disable();
+                            var model = await _sysConfig.GetModelAsync(t => t.Pid == 6 && t.Key == moudel);
                             if (model != null)
                             {
                                 model.Value = "false";
@@ -541,7 +541,7 @@ namespace Helper
                             }
                             Config[moudel, forward] = true;
                             await fmr.SendPrivateMsgAsync($"模块【{list[0]}】转发至{type}功能已开启！");
-                            var pmodel = await _sysConfig.GetModelAsync(t => t.Key == moudel && t.Pid == 7);
+                            var pmodel = await _sysConfig.GetModelAsync(t => t.Key == moudel && t.Pid == 6);
                             if (pmodel == null) return;
                             var model = await _sysConfig.GetModelAsync(t => t.Key == forward && t.Pid == pmodel.Id);
                             if (model == null) return;
@@ -571,7 +571,7 @@ namespace Helper
                             }
                             Config[moudel, forward] = false;
                             await fmr.SendPrivateMsgAsync($"模块【{list[0]}】转发至{type}功能已关闭！");
-                            var pmodel = await _sysConfig.GetModelAsync(t => t.Key == moudel && t.Pid == 7);
+                            var pmodel = await _sysConfig.GetModelAsync(t => t.Key == moudel && t.Pid == 6);
                             if (pmodel == null) return;
                             var model = await _sysConfig.GetModelAsync(t => t.Key == forward && t.Pid == pmodel.Id);
                             if (model == null) return;
@@ -602,7 +602,7 @@ namespace Helper
                             }
                             Config[moudel, forward] = false;
                             await fmr.SendPrivateMsgAsync($"模块【{list[0]}】转发至{type}功能的值已修改为：{value}");
-                            var pmodel = await _sysConfig.GetModelAsync(t => t.Key == moudel && t.Pid == 7);
+                            var pmodel = await _sysConfig.GetModelAsync(t => t.Key == moudel && t.Pid == 6);
                             if (pmodel == null) return;
                             var model = await _sysConfig.GetModelAsync(t => t.Key == forward && t.Pid == pmodel.Id);
                             if (model == null) return;
@@ -751,7 +751,7 @@ namespace Helper
         {
             try
             {
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 var group = _bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
                 if (group == null) return;
@@ -768,7 +768,7 @@ namespace Helper
         {
             try
             {
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 foreach (var groupId in groupIds)
                 {
@@ -788,7 +788,7 @@ namespace Helper
         {
             try
             {
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 var group = _bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
                 if (group == null) return;
@@ -806,7 +806,7 @@ namespace Helper
         {
             try
             {
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 foreach (var groupId in groupIds)
                 {
@@ -827,7 +827,7 @@ namespace Helper
         {
             try
             {
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
                 if (friend == null) return;
@@ -845,7 +845,7 @@ namespace Helper
         {
             try
             {
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 foreach (var friendId in friendIds)
                 {
@@ -866,7 +866,7 @@ namespace Helper
         {
             try
             {
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
 
                 if (_bot == null) return;
                 var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
@@ -885,7 +885,7 @@ namespace Helper
         {
             try
             {
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
 
                 if (_bot == null) return;
                 foreach (var friendId in friendIds)
@@ -907,7 +907,7 @@ namespace Helper
         {
             try
             {
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
 
                 if (_bot == null || !Notice) return;
                 var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == Admin.ToLong());
@@ -925,7 +925,7 @@ namespace Helper
         {
             try
             {
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
 
                 if (_bot == null || !Notice) return;
                 var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == Admin.ToLong());

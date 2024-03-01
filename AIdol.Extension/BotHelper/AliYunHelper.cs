@@ -2,7 +2,7 @@ using AIdol.Extension;
 using AIdol.IService;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Helper
+namespace AIdol.Extension
 {
     public class AliYun
     {

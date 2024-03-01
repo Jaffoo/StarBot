@@ -21,12 +21,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AIdol.Extension\AIdol.Extension.csproj" />
-    <ProjectReference Include="..\AIdol.Helper\AIdol.Helper.csproj" />
-    <ProjectReference Include="..\AIdol.Service\AIdol.Service.csproj" />
-    <ProjectReference Include="..\AIdol.Timer\AIdol.Timer.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="wwwroot\vue\**" />
     <None Include="wwwroot\vue\**" />
   </ItemGroup>
@@ -43,6 +37,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AIdol.Entity\AIdol.Entity.csproj" />
+    <ProjectReference Include="..\AIdol.Extension\AIdol.Extension.csproj" />
+    <ProjectReference Include="..\AIdol.Service\AIdol.Service.csproj" />
+    <ProjectReference Include="..\AIdol.Timer\AIdol.Timer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="electron.manifest.json">

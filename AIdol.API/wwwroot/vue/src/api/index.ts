@@ -10,7 +10,8 @@ export const startBot = async () => {
 }
 
 export const getConfig = async () => {
-    return await axios.get(_baseUrl + "/getconfig");
+    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/getconfig`);
+    return response.data as ApiResult;
 }
 
 export const saveConfig = async (config: Config) => {

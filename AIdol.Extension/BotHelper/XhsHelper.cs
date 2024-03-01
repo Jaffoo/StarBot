@@ -1,7 +1,5 @@
 using HtmlAgilityPack;
-using AIdol.Extension;
 using AIdol.IService;
-using AIdol.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using ShamrockCore.Receiver.MsgChain;
@@ -11,7 +9,7 @@ using Config = AIdol.Model.Config;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 using TBC.CommonLib;
 
-namespace Helper
+namespace AIdol.Extension
 {
     public class Xhs
     {

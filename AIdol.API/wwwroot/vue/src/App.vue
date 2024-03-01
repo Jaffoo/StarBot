@@ -46,15 +46,7 @@
           <el-main style="padding-left: 20px;padding-right: 20px;">
             <el-scrollbar>
               <Index v-show="component === 'index'" />
-              <Shamrock :shamrock="config.Shamrock" v-if="component === 'shamrock'" />
-              <Enable :enable="config.EnableModule" v-if="component === 'enable'" />
-              <QQ :qq="config.QQ" v-if="component === 'qq'" />
-              <WB :wb="config.WB" v-if="component === 'wb'" />
-              <BZ :bz="config.BZ" v-if="component === 'bz'" />
-              <KD :kd="config.KD" v-if="component === 'kd'" />
-              <XHS :xhs="config.XHS" v-if="component === 'xhs'" />
-              <BD :bd="config.BD" v-if="component === 'bd'" />
-              <DY :dy="config.DY" v-if="component === 'dy'" />
+              <Config v-if="component === 'config'" @enable-change="enableChange" />
             </el-scrollbar>
           </el-main>
         </el-container>
@@ -65,18 +57,11 @@
 
 <script setup lang="ts">
 import Index from '@/component/index.vue'
-import Enable from '@/component/enable.vue'
-import Shamrock from '@/component/shamrock.vue'
-import QQ from '@/component/qq.vue'
-import WB from '@/component/wb.vue'
-import BZ from '@/component/bz.vue'
-import KD from '@/component/kd.vue'
-import XHS from '@/component/xhs.vue'
-import BD from '@/component/bd.vue'
-import DY from '@/component/dy.vue'
-import type { EnableModule, Shamrock as ShamrockType, QQ as QQType, WB as WBType, BD as BDType, KD as KDType, DY_XHS_BZ, Config as ConfigType } from '@/class/model'
+import Config from '@/component/config.vue'
 import { Menu as IconMenu, House, Link as LinkIcon, Cpu } from '@element-plus/icons-vue'
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import type { EnableModule } from './class/model';
+import { getConfig } from './api';
 
 const enable = ref<EnableModule>({
   qq: false,
@@ -87,96 +72,18 @@ const enable = ref<EnableModule>({
   dy: false,
   bd: false
 })
-const shamrock = ref<ShamrockType>({
-  use: false,
-  host: '',
-  websocktPort: 0,
-  httpPort: 0
-})
-const qq = ref<QQType>({
-  admin: '',
-  group: '',
-  save: false,
-  notice: false,
-  debug: false,
-  permission: '',
-  funcAdmin: []
-})
-const wb = ref<WBType>({
-  userAll: '',
-  userPart: '',
-  forwardGroup: false,
-  forwardQQ: false,
-  chiGuaForwardGroup: false,
-  chiGuaForwardQQ: false,
-  qq: '',
-  group: '',
-  chiGuaQQ: '',
-  chiGuaGroup: '',
-  chiGuaUser: '',
-  timeSpan: 3,
-})
-const bd = ref<BDType>({
-  appKey: '',
-  appSeret: '',
-  saveAliyunDisk: false,
-  faceVerify: false,
-  audit: 60,
-  similarity: 80,
-  albumName: '',
-  imageList: [],
-})
-const kd = ref<KDType>({
-  forwardGroup: false,
-  forwardQQ: false,
-  idolName: '',
-  account: '',
-  token: '',
-  liveRoomId: '',
-  msgType: [],
-  msgTypeAll: [],
-  saveMsg: 0
-})
-const bz = ref<DY_XHS_BZ>({
-  user: '',
-  forwardGroup: false,
-  forwardQQ: false,
-  timeSpan: 3,
-  qq: '',
-  group: ''
-})
-const dy = ref<DY_XHS_BZ>({
-  user: '',
-  forwardGroup: false,
-  forwardQQ: false,
-  timeSpan: 3,
-  qq: '',
-  group: ''
-})
-const xhs = ref<DY_XHS_BZ>({
-  user: '',
-  forwardGroup: false,
-  forwardQQ: false,
-  timeSpan: 3,
-  qq: '',
-  group: ''
-})
-const config = ref<ConfigType>({
-  QQ: qq.value,
-  WB: wb.value,
-  BZ: bz.value,
-  DY: dy.value,
-  KD: kd.value,
-  EnableModule: enable.value,
-  Shamrock: shamrock.value,
-  XHS: xhs.value,
-  BD: bd.value
-})
 
 const component = ref("index");
 const changeMenu = (com: string) => {
   component.value = com;
 }
+const enableChange = (enableNew: EnableModule) => {
+  enable.value = enableNew
+}
+onMounted(async () => {
+  var res = await getConfig();
+  enable.value=res.data.enable
+}),
 </script>
 
 <style scoped>

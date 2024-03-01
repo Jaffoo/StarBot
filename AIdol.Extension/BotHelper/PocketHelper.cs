@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using TBC.CommonLib;
 using Config = AIdol.Model.Config;
 
-namespace Helper
+namespace AIdol.Extension
 {
     public class Pocket
     {
@@ -211,7 +211,7 @@ namespace Helper
                 {
                     await _pocketMsg.AddAsync(saveMsg);
                 }
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
                 if (roleId != 3) return;
                 if (Config.KD.ForwardGroup)
                 {
@@ -261,7 +261,7 @@ namespace Helper
                 mcb.Text($"【{Config.KD.IdolName}|直播间】\n【{time}】\n{result["fromNick"]}:");
                 if (messageType == "text")
                     mcb.Text(result["text"]?.ToString() ?? "");
-                if (!Config.Shamrock.Use) return;
+                if (!Config.EnableModule.Shamrock) return;
                 if (Config.KD.ForwardGroup)
                 {
                     var group = Config.KD.Group ?? Config.QQ.Group;

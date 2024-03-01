@@ -55,7 +55,7 @@ namespace AIdol.Extension
             ConfigHelper.SetConfig(builder.Configuration, builder.Environment.ContentRootPath, builder.Environment.WebRootPath);
 
             #region 注入数据
-            builder.Services.AddDataService("Name.Service");
+            builder.Services.AddDataService(ConfigHelper.GetConfiguration("NameSpace") + ".Service");
             #endregion
 
             //启用dotnet本地缓存服务

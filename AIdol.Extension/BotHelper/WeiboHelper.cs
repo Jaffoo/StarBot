@@ -4,11 +4,10 @@ using Newtonsoft.Json;
 using AIdol.IService;
 using ShamrockCore.Receiver.MsgChain;
 using Config = AIdol.Model.Config;
-using AIdol.Extension;
 using Microsoft.Extensions.DependencyInjection;
 using TBC.CommonLib;
 
-namespace Helper
+namespace AIdol.Extension
 {
     public class Weibo
     {

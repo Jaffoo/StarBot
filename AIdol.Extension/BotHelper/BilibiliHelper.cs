@@ -6,7 +6,7 @@ using AIdol.Extension;
 using Microsoft.Extensions.DependencyInjection;
 using Config = AIdol.Model.Config;
 
-namespace Helper
+namespace AIdol.Extension
 {
     public class Bilibili
     {
