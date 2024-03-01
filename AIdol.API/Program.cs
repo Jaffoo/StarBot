@@ -7,6 +7,8 @@ using AIdol.Repository;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using FluentScheduler;
+using AIdol.Timer;
+using TBC.CommonLib;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseElectron(args);
@@ -82,14 +84,15 @@ app.MapControllers();
 
 var port = 6051;
 app.Urls.Add($"http://localhost:{port}");
-
+var startUrl = $"http://localhost:{port}/aidol/index.html";
+//var startUrl = $"http://localhost:5173";
 await app.StartAsync();
 var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
 {
     AutoHideMenuBar = true,
     Height = 900,
     Width = 1200
-}, $"http://localhost:{port}/aidol/index.html");
+}, startUrl);
 await browserWindow.WebContents.Session.ClearCacheAsync();
 browserWindow.OnReadyToShow += () => browserWindow.Show();
 browserWindow.SetTitle("ElectronAPI-" + port);
