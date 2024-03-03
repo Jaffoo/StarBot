@@ -1,22 +1,25 @@
 <template>
-    <div>
-        <el-form ref="kdform" :model="model" label-width="100px">
-            <el-form-item label="姓名" :rules="rules.common">
+    <el-card class="card-kd">
+        <template #header>
+            <span id="kd">口袋48</span>
+        </template>
+        <el-form ref="kdform" :rules="rules" :model="model" label-width="150px" label-position="left">
+            <el-form-item label="姓名" prop="idolName">
                 <el-input v-model="model.idolName"></el-input>
             </el-form-item>
-            <el-form-item label="IMServerId" prop="KD.serverId" :rules="rules.input">
+            <el-form-item label="IMServerId" prop="serverId">
                 <el-input v-model="model.serverId"></el-input>
             </el-form-item>
-            <el-form-item label="直播房间Id" prop="KD.liveRoomId" :rules="rules.input">
+            <el-form-item label="直播房间Id" prop="liveRoomId">
                 <el-input v-model="model.liveRoomId"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button @click="searchModel.show = true">查询小偶像信息</el-button>
             </el-form-item>
-            <el-form-item label="IM账号" :rules="rules.common">
+            <el-form-item label="IM账号" prop="account">
                 <el-input v-model="model.account" />
             </el-form-item>
-            <el-form-item label="IMtoken" :rules="rules.common">
+            <el-form-item label="IMtoken" prop="token">
                 <el-input v-model="model.token" />
             </el-form-item>
             <el-form-item>
@@ -44,13 +47,13 @@
             </el-form-item>
         </el-form>
         <el-dialog title="登录口袋48" v-model="loginKD" :before-close="close" :close-on-click-modal="false">
-            <el-form label-width="100px">
-                <el-form-item label="手机号" required class="mt-4">
+            <el-form label-width="100px" :rules="rules" :model="loginfo">
+                <el-form-item label="手机号" class="mt-4" prop="phone">
                     <el-input v-model="loginfo.phone" style="width:95%">
                         <template #prepend>+{{ loginfo.area }}</template>
                     </el-input>
                 </el-form-item>
-                <el-form-item label="验证码" required>
+                <el-form-item label="验证码" prop="code">
                     <el-input type="primary" v-model="loginfo.code" style="width:65%"></el-input><el-button
                         v-show="!loginfo.hasSend" style="width:25%;margin-left:5%" @click="send">发送验证码</el-button><el-button
                         v-show="loginfo.hasSend" style="width:25%;margin-left:5%">{{ loginfo.sec }}秒</el-button>
@@ -61,12 +64,12 @@
             </el-form>
         </el-dialog>
         <el-dialog title="查询小偶像 " v-model="searchModel.show" :before-close="close" :close-on-click-modal="false">
-            <el-form label-width="100px">
+            <el-form label-width="100px" :rules="rules" :model="searchModel">
                 <el-form-item label="队伍" class="mt-4">
                     <el-cascader :props="{ expandTrigger: 'hover', checkStrictly: 'true' }" placeholder="请选择"
                         v-model="searchModel.group" :options="groups" style="width:95%"></el-cascader>
                 </el-form-item>
-                <el-form-item label="姓名" required>
+                <el-form-item label="姓名" prop="name">
                     <el-input v-model="searchModel.name" style="width:95%">
                     </el-input>
                 </el-form-item>
@@ -79,25 +82,47 @@
                 </div>
             </el-form>
         </el-dialog>
-    </div>
+    </el-card>
 </template>
 
 <script setup lang="ts" name="qq">
 import { ref, type PropType, toRef } from 'vue'
-import type { KD } from '@/class/model'
-import { ElMessage, type FormRules } from 'element-plus';
+import type { KD, MsgType } from '@/class/model'
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
 import { kdUserInfo, pocketLogin, sendSmsCode, searchIdol } from "@/api"
 
 const props = defineProps({
     kd: {
         type: Object as PropType<KD>,
-        default: null
+        default: {
+            group: '',
+            forwardGroup: false,
+            forwardQQ: false,
+            qq: '',
+            idolName: '',
+            account: '',
+            token: '',
+            serverId: '',
+            liveRoomId: '',
+            msgTypeAll: new Array<MsgType>,
+            msgType: [],
+            saveMsg: false
+        }
     }
 })
 const model = toRef(props.kd);
-const kdform = ref(null);
+const kdform = ref<FormInstance>();
 const rules = ref<FormRules>(
-    { common: [{ required: true, message: '请输入该值', trigger: 'blur' }] }
+    {
+        idolName: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        serverId: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        liveRoomId: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        account: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        token: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        phone: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        code: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+    }
 )
 const loginKD = ref(false)
 const searchModel = ref({
@@ -109,11 +134,12 @@ const searchModel = ref({
 })
 const loginfo = ref({
     phone: '',
-    area: '+86',
+    area: '86',
     hasSend: false,
     code: '',
     sec: 60
 })
+
 const groups = ref(
     [{
         label: 'SNH48',
@@ -241,4 +267,16 @@ const subtraction = () => {
         }
     }, 1000);
 }
+const validForm = () => {
+    kdform.value?.validate(valid => {
+        if (valid) {
+            return true
+        } else {
+            return false
+        }
+    })
+}
+defineExpose({
+    validForm
+})
 </script>

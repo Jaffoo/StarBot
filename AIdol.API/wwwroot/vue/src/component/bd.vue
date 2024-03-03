@@ -1,59 +1,74 @@
 <template>
-    <el-form ref="bdform" :model="model" label-width="100px">
-        <el-form-item label="apiKey">
-            <el-input v-model="model.appKey" placeholder="百度appKey"></el-input>
-        </el-form-item>
-        <el-form-item label="appSeret">
-            <el-input v-model="model.appSeret" placeholder="百度appSeret"></el-input>
-        </el-form-item>
-        <el-form-item label="开启人脸验证">
-            <el-switch v-model="model.faceVerify" :active-value="true" :inactive-value="false"></el-switch>
-        </el-form-item>
-        <el-form-item label="基础人脸" v-show="model.faceVerify">
-            <el-upload :file-list="model.imageList" action="http://127.0.0.1:6051/api/v1/upload" :on-success="onSuccess"
-                :on-remove="onRemove" list-type="picture-card" :limit="3" accept=".jpg,.png,.jpeg">
-                <el-icon>
-                    <Plus />
-                </el-icon>
-            </el-upload>
-            <span style="color:red">*上传人脸轮廓清晰的图片</span>
-        </el-form-item>
-        <el-form-item label="人脸相似度" v-show="model.faceVerify">
-            <el-col :span="8">
-                <el-input type="number" v-model="model.similarity"></el-input>
-            </el-col>
-            <span style="color:red">*直接保存(非双胞胎建议80，双胞胎建议70)</span>
-        </el-form-item>
-        <el-form-item label="审核相似度" v-show="model.faceVerify">
-            <el-col :span="8">
-                <el-input type="number" v-model="model.audit"></el-input>
-            </el-col>
-            <span style="color:red">*超过该值，但未超过上面的值，将加入审核列表，审核通过才会保存</span>
-        </el-form-item>
-        <el-form-item label="上传云盘" v-show="model.faceVerify">
-            <el-switch v-model="model.saveAliyunDisk" :active-value="true" :inactive-value="false"></el-switch>
-            <span style="color:red">*启用会将图片自动上传到阿里云盘相册</span>
-        </el-form-item>
-        <el-form-item label="相册名称" v-show="model.saveAliyunDisk">
-            <el-col :span="8">
-                <el-input v-model="model.albumName"></el-input>
-            </el-col>
-        </el-form-item>
-    </el-form>
+    <el-card class="card-bd">
+        <template #header>
+            <span id="bd">百度</span>
+        </template>
+        <el-form ref="bdform" :model="model" :rules="rules" label-width="150px" label-position="left">
+            <el-form-item label="apiKey" prop="appKey">
+                <el-input v-model="model.appKey" placeholder="百度appKey"></el-input>
+            </el-form-item>
+            <el-form-item label="appSeret" prop="appSeret">
+                <el-input v-model="model.appSeret" placeholder="百度appSeret"></el-input>
+            </el-form-item>
+            <el-form-item label="开启人脸验证">
+                <el-switch v-model="model.faceVerify" :active-value="true" :inactive-value="false"></el-switch>
+            </el-form-item>
+            <el-form-item label="基础人脸" v-show="model.faceVerify">
+                <el-upload :file-list="model.imageList" action="http://127.0.0.1:6051/api/v1/upload" :on-success="onSuccess"
+                    :on-remove="onRemove" list-type="picture-card" :limit="3" accept=".jpg,.png,.jpeg">
+                    <el-icon>
+                        <Plus />
+                    </el-icon>
+                </el-upload>
+                <span style="color:red">*上传人脸轮廓清晰的图片</span>
+            </el-form-item>
+            <el-form-item label="人脸相似度" v-show="model.faceVerify">
+                <el-col :span="8">
+                    <el-input type="number" v-model="model.similarity"></el-input>
+                </el-col>
+                <span style="color:red">*直接保存(非双胞胎建议80，双胞胎建议70)</span>
+            </el-form-item>
+            <el-form-item label="审核相似度" v-show="model.faceVerify">
+                <el-col :span="8">
+                    <el-input type="number" v-model="model.audit"></el-input>
+                </el-col>
+                <span style="color:red">*超过该值，但未超过上面的值，将加入审核列表，审核通过才会保存</span>
+            </el-form-item>
+            <el-form-item label="上传云盘" v-show="model.faceVerify">
+                <el-switch v-model="model.saveAliyunDisk" :active-value="true" :inactive-value="false"></el-switch>
+                <span style="color:red">*启用会将图片自动上传到阿里云盘相册</span>
+            </el-form-item>
+            <el-form-item label="相册名称" v-show="model.saveAliyunDisk" prop="albumName">
+                <el-col :span="8">
+                    <el-input v-model="model.albumName"></el-input>
+                </el-col>
+            </el-form-item>
+        </el-form>
+    </el-card>
 </template>
 
 <script setup lang="ts" name="bd">
 import { ref, type PropType, toRef } from 'vue'
 import type { BD } from '@/class/model'
-import type { UploadFile, UploadProps } from 'element-plus';
+import type { FormInstance, FormRules, UploadFile, UploadProps } from 'element-plus';
 const props = defineProps({
     bd: {
         type: Object as PropType<BD>,
-        default: null
+        default: {
+            appKey: "",
+            appSeret: "",
+            similarity: 0,
+            saveAliyunDisk: false,
+            audit: 0,
+            albumName: "",
+            faceVerify: false,
+            imageList: []
+        }
     }
 })
+
 const model = toRef(props.bd);
-const bdform = ref(null);
+const bdform = ref<FormInstance>();
 const onSuccess: UploadProps['onSuccess'] = (response: any, uploadFile: UploadFile) => {
     if (model.value.imageList) model.value.imageList.push(uploadFile.name)
     else model.value.imageList = []
@@ -72,4 +87,23 @@ const onRemove: UploadProps['onRemove'] = (file: UploadFile) => {
         model.value.imageList.splice(i, 1);
     }
 }
+const rules = ref<FormRules>(
+    {
+        appKey: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        appSeret: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        albumName: [{ required: true, message: '请输入该值', trigger: 'blur' }]
+    },
+)
+const validForm = () => {
+    bdform.value?.validate(valid => {
+        if (valid) {
+            return true
+        } else {
+            return false
+        }
+    })
+}
+defineExpose({
+    validForm
+})
 </script>

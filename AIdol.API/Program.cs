@@ -77,6 +77,8 @@ app.UseStaticFiles(new StaticFileOptions
     ServeUnknownFileTypes = true
 });
 
+app.UseCors(option => option.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
 //将请求与端点匹配，匹配路由
 app.UseRouting();
 
@@ -84,14 +86,19 @@ app.MapControllers();
 
 var port = 6051;
 app.Urls.Add($"http://localhost:{port}");
-var startUrl = $"http://localhost:{port}/aidol/index.html";
-//var startUrl = $"http://localhost:5173";
+//var startUrl = $"http://localhost:{port}/aidol/index.html";
+var startUrl = $"http://localhost:5173";
 await app.StartAsync();
 var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
 {
     AutoHideMenuBar = true,
     Height = 900,
-    Width = 1200
+    Width = 1200,
+    WebPreferences = new WebPreferences
+    {
+        DevTools = true,//Ctrl + Shift + I
+
+    }
 }, startUrl);
 await browserWindow.WebContents.Session.ClearCacheAsync();
 browserWindow.OnReadyToShow += () => browserWindow.Show();

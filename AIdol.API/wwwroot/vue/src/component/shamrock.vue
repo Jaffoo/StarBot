@@ -1,36 +1,62 @@
 <template>
-    <el-form ref="botform" :model="model" label-width="100px">
-        <el-switch v-model="model.use" active-text="启用" inactive-text="禁用"></el-switch>
-        <template v-if="model.use">
-            <el-form-item label="IP地址" :rules="rules.common">
+    <el-card class="card-shamrock">
+        <template #header>
+            <span id="shamrock">Shamrock机器人</span>
+        </template>
+        <el-form ref="botform" :rules="rules" :model="model" label-width="150px" label-position="left">
+            <el-form-item label="IP地址" prop="host">
                 <el-input v-model="model.host" />
             </el-form-item>
-            <el-form-item label="WebScoket端口" :rules="rules.common">
+            <el-form-item label="WebScoket端口" prop="websocktPort">
                 <el-input v-model="model.websocktPort" />
             </el-form-item>
-            <el-form-item label="Http端口" :rules="rules.common">
+            <el-form-item label="Http端口" prop="httpPort">
                 <el-input v-model="model.httpPort" />
             </el-form-item>
             <el-form-item label="token">
                 <el-input v-model="model.token" />
             </el-form-item>
-        </template>
-    </el-form>
+        </el-form>
+    </el-card>
 </template>
 
 <script setup lang="ts" name="bot">
-import { ref, type PropType, toRef } from 'vue'
+import { ref, type PropType, toRef, onMounted } from 'vue'
 import type { Shamrock } from '@/class/model'
-import type { FormRules } from 'element-plus';
+import type { FormInstance, FormRules } from 'element-plus';
 const props = defineProps({
     shamrock: {
         type: Object as PropType<Shamrock>,
-        default: null
+        default: {
+            host: '',
+            websocktPort: '',
+            httpPort: '',
+            token: ''
+        }
     }
 })
 const model = toRef(props.shamrock);
-const botform = ref(null);
+const botform = ref<FormInstance>();
 const rules = ref<FormRules>(
-    { common: [{ required: true, message: '请输入该值', trigger: 'blur' }] }
+    {
+        common: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        websocktPort: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        httpPort: [{ required: true, message: '请输入该值', trigger: 'blur' }]
+    },
 )
+const validForm = () => {
+    botform.value?.validate(valid => {
+        if (valid) {
+            return true
+        } else {
+            return false
+        }
+    })
+}
+defineExpose({
+    validForm
+})
+onMounted(() => {
+    console.log(props.shamrock)
+})
 </script>

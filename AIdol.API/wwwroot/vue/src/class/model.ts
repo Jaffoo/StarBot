@@ -8,14 +8,14 @@ interface Listing extends Base {
     timeSpan: number,
 }
 export interface Config {
-    BD: BD,
-    QQ: QQ,
-    Shamrock: Shamrock,
-    DY: DY_XHS_BZ,
-    BZ: DY_XHS_BZ,
-    XHS: DY_XHS_BZ,
-    KD: KD,
-    WB: WB,
+    BD?: BD,
+    QQ?: QQ,
+    Shamrock?: Shamrock,
+    DY?: DY_XHS_BZ,
+    BZ?: DY_XHS_BZ,
+    XHS?: DY_XHS_BZ,
+    KD?: KD,
+    WB?: WB,
     EnableModule: EnableModule
 }
 
@@ -73,6 +73,7 @@ export interface Shamrock {
     token?: string,
 }
 export interface EnableModule {
+    shamrock:boolean,
     qq: boolean,
     wb: boolean,
     kd: boolean,

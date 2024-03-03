@@ -16,7 +16,8 @@
     "dayjs": "^1.11.7",
     "element-plus": "^2.3.4",
     "nim-web-sdk-ng": "^0.13.1",
-    "vue": "^3.2.47"
+    "vue": "^3.2.47",
+    "vue-scrollto": "^2.20.0"
   },
   "devDependencies": {
     "@types/node": "^18.16.17",
