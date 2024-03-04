@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="wwwroot\aidol\index.css" />
+    <Content Remove="wwwroot\bot\index.css" />
     <Content Remove="wwwroot\vue\tsconfig.json" />
     <Content Remove="wwwroot\vue\tsconfig.node.json" />
   </ItemGroup>

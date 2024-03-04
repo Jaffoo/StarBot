@@ -23,7 +23,7 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: '../aidol/',
+    outDir: '../bot/',
     chunkSizeWarningLimit: 2048 * 2,
     rollupOptions: {
       output: {
