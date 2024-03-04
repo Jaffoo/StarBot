@@ -213,7 +213,7 @@ INSERT INTO "SysConfig" VALUES (67, 9, 'ChiGuaForwardGroup', '吃瓜转发至群
 INSERT INTO "SysConfig" VALUES (68, 9, 'ChiGuaForwardQQ', '吃瓜转发QQ', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (69, 9, 'ChiGuaQQ', '吃瓜转发qq', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (70, 9, 'ChiGuaGroup', '吃瓜转发群', NULL, NULL, 'string');
-INSERT INTO "SysConfig" VALUES (71, 11, 'SaveMsg', '保存消息', '1', '0-不保存，1-小偶像消息，2-全部消息', 'string');
+INSERT INTO "SysConfig" VALUES (71, 11, 'SaveMsg', '保存消息', '0', '0-不保存，1-小偶像消息，2-全部消息', 'string');
 
 -- ----------------------------
 -- Table structure for SysIdol

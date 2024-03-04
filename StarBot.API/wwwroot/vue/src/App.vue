@@ -72,14 +72,13 @@ const changeMenu = async (com: string) => {
 
 const scrollSet = async (com: string) => {
   const childElement = document.getElementById(com);
-  const parentContainer = document.getElementById("pdom")!.parentElement;
+  const parentContainer = document.getElementById("pdom")?.parentElement;
 
   if (parentContainer && childElement) {
     const parentRect = parentContainer.getBoundingClientRect();
     const childRect = childElement.getBoundingClientRect();
     const scrollTop = childRect.top + parentContainer.scrollTop - parentRect.top - 28;
 
-    console.log(parentContainer.scrollTo)
     parentContainer.scrollTo({
       top: scrollTop,
       behavior: 'smooth'

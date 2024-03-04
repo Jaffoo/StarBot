@@ -25,7 +25,7 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// ����
+        /// 启动qq机器人
         /// </summary>
         /// <returns></returns>
         [HttpGet("startbot")]
@@ -39,7 +39,7 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// ��ȡ����
+        /// 获取配置
         /// </summary>
         /// <returns></returns>
         [HttpGet("getconfig")]
@@ -50,7 +50,7 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// ��������
+        /// 保存配置
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
@@ -72,7 +72,7 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// ��ȡ����ͼƬ����
+        /// 获取缓存图片
         /// </summary>
         /// <param name="page"></param>
         /// <returns></returns>
@@ -84,7 +84,7 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// ���滺��ͼƬ
+        /// 保存图片
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -97,7 +97,7 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// ɾ������ͼƬ
+        /// 删除图片
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -109,7 +109,7 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// ��ȡqq����
+        /// 获取qq插件功能
         /// </summary>
         /// <returns></returns>
         [HttpGet("getfun")]
@@ -120,7 +120,7 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// ������������
+        /// 启动阿里云盘
         /// </summary>
         /// <returns></returns>
         [HttpGet("startaliyunpan")]
@@ -138,7 +138,7 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// �ϴ��ļ�
+        /// 上传
         /// </summary>
         /// <returns></returns>
         [HttpPost("upload")]
@@ -168,32 +168,32 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// ����Сż��
+        /// 搜索48小偶像
         /// </summary>
-        /// <param name="group">����,�ֶ�</param>
-        /// <param name="name">����</param>
+        /// <param name="name"></param>
+        /// <param name="group"></param>
         /// <returns></returns>
         [HttpGet("searchidol")]
-        public async Task<ApiResult> SearchIdol(string group, string name)
+        public async Task<ApiResult> SearchIdol(string name, string group = "")
         {
-            var groupList = group.Split(",").ToList();
             string url = @"https://fastly.jsdelivr.net/gh/duan602728596/qqtools@main/packages/NIMTest/node/roomId.json";
             var chain = new List<SysIdol>();
             SysIdol? xox = new();
-            if (groupList != null)
+            if (group != "")
             {
+                var groupList = group.Split(",").ToList();
                 if (groupList.Count >= 2)
                     chain = await _sysIdol.GetListAsync(t => t.GroupName == groupList[0] && t.Team == groupList[1]);
                 else
                     chain = await _sysIdol.GetListAsync(t => t.GroupName == groupList[0]);
             }
             xox = chain?.FirstOrDefault(t => t.Name == name);
-            if (xox == null) return Success(url, "δ��ѯ����Сż��");
+            if (xox == null) return Success(url, "未搜索到，请手动查询填入！");
             return DataResult(xox);
         }
 
         /// <summary>
-        /// ����΢����̬ͼƬ
+        /// 通过id保存微博
         /// </summary>
         /// <param name="blogId">΢��id</param>
         /// <returns></returns>
@@ -201,14 +201,14 @@ namespace StarBot.Controllers
         public ApiResult SaveWbById(string blogId)
         {
             Task.Run(async () => { await new Weibo().SaveByUrl(blogId); });
-            return Success("������΢����ͼƬʶ�𱣴�����У�");
+            return Success("正在进行保存中！");
         }
 
         /// <summary>
-        /// �ڴ���¼��֤��
+        /// 口袋登录发送验证码
         /// </summary>
-        /// <param name="mobile">�ֻ���</param>
-        /// <param name="area">����</param>
+        /// <param name="mobile"></param>
+        /// <param name="area"></param>
         /// <returns></returns>
         [HttpGet("sendsmscode")]
         public async Task<ApiResult> SendSmsCode(string mobile, string area = "86")
@@ -218,10 +218,10 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// �ڴ���¼
+        /// 口袋登录
         /// </summary>
-        /// <param name="mobile">�ֻ���</param>
-        /// <param name="code">��֤��</param>
+        /// <param name="mobile"></param>
+        /// <param name="code"></param>
         /// <returns></returns>
         [HttpGet("pocketlogin")]
         public async Task<ApiResult> PocketLogin(string mobile, string code)
@@ -231,7 +231,7 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// ��ȡ�ڴ���¼��Ϣ
+        /// 口袋个人信息
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>

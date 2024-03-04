@@ -26,11 +26,18 @@
                 <el-button @click="loginKD = true">登录口袋48</el-button>
                 <span style="color:red">*IM账号和IMtoken可点此登录口袋后自动获取</span>
             </el-form-item>
+            <el-form-item label="保存消息">
+                <el-radio-group v-model="model.saveMsg">
+                    <el-radio :label="0" :value="0">不保存</el-radio>
+                    <el-radio :label="1" :value="1">仅小偶像</el-radio>
+                    <el-radio :label="2" :value="2">全部</el-radio>
+                </el-radio-group>
+            </el-form-item>
             <el-form-item label="监听消息类型" v-show="model.forwardGroup === true || model.forwardQQ === true">
                 <el-checkbox-group v-model="model.msgType">
                     <el-checkbox v-for="(item, index) in model.msgTypeAll" :label="item.value" :key="index">{{
-                        item.name
-                    }}</el-checkbox>
+            item.name
+        }}</el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
             <el-form-item label="转发至群">
@@ -55,8 +62,9 @@
                 </el-form-item>
                 <el-form-item label="验证码" prop="code">
                     <el-input type="primary" v-model="loginfo.code" style="width:65%"></el-input><el-button
-                        v-show="!loginfo.hasSend" style="width:25%;margin-left:5%" @click="send">发送验证码</el-button><el-button
-                        v-show="loginfo.hasSend" style="width:25%;margin-left:5%">{{ loginfo.sec }}秒</el-button>
+                        v-show="!loginfo.hasSend" style="width:25%;margin-left:5%"
+                        @click="send">发送验证码</el-button><el-button v-show="loginfo.hasSend"
+                        style="width:25%;margin-left:5%">{{ loginfo.sec }}秒</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="login">登录</el-button>
@@ -106,7 +114,7 @@ const props = defineProps({
             liveRoomId: '',
             msgTypeAll: new Array<MsgType>,
             msgType: [],
-            saveMsg: false
+            saveMsg: 0
         }
     }
 })
