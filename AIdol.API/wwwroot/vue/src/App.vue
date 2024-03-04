@@ -1,5 +1,4 @@
 <template>
-  <el-card>
     <el-container class="layout-container">
       <el-card>
         <el-aside width="300px">
@@ -41,7 +40,6 @@
         </el-container>
       </el-card>
     </el-container>
-  </el-card>
 </template>
 
 <script setup lang="ts">
@@ -102,7 +100,7 @@ onMounted(async () => {
 
 <style scoped>
 .layout-container {
-  height: calc(100vh - 60px);
+  height: calc(100vh - 18px);
 }
 
 .layout-container .el-aside {

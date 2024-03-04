@@ -8,7 +8,8 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using FluentScheduler;
 using AIdol.Timer;
-using TBC.CommonLib;
+using System.Net.NetworkInformation;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseElectron(args);
@@ -84,7 +85,13 @@ app.UseRouting();
 
 app.MapControllers();
 
-var port = 6051;
+var portsStr = ConfigHelper.GetConfiguration("Ports")!;
+var ports = portsStr.Split("|").Select(int.Parse).ToList();
+IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+IPEndPoint[] tcpEndPoints = properties.GetActiveTcpListeners();
+List<int> activePorts = tcpEndPoints.Select(ep => ep.Port).ToList();
+List<int> availablePorts = ports.Where(port => !activePorts.Contains(port)).ToList();
+var port = availablePorts.FirstOrDefault();
 app.Urls.Add($"http://localhost:{port}");
 //var startUrl = $"http://localhost:{port}/aidol/index.html";
 var startUrl = $"http://localhost:5173";
@@ -92,16 +99,19 @@ await app.StartAsync();
 var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
 {
     AutoHideMenuBar = true,
-    Height = 900,
-    Width = 1200,
+    Height = 600,
+    Width = 1000,
     WebPreferences = new WebPreferences
     {
         DevTools = true,//Ctrl + Shift + I
-
+        NodeIntegration = true,
     }
 }, startUrl);
 await browserWindow.WebContents.Session.ClearCacheAsync();
-browserWindow.OnReadyToShow += () => browserWindow.Show();
-browserWindow.SetTitle("ElectronAPI-" + port);
-
+browserWindow.OnReadyToShow += () =>
+{
+    browserWindow.Show();
+    browserWindow.SetTitle("ElectronAPI-" + port);
+    JavaScriptHelper.InjectJavaScript(browserWindow, $"sessionStorage.setItem('HttpPort',{port})");
+};
 app.WaitForShutdown();
