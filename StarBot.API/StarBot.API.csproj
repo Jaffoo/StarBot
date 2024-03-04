@@ -44,9 +44,4 @@
     <ProjectReference Include="..\StarBot.Service\StarBot.Service.csproj" />
     <ProjectReference Include="..\StarBot.Timer\StarBot.Timer.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Update="electron.manifest.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 </Project>

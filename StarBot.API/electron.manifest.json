@@ -1,15 +1,15 @@
 {
-  "executable": "AIdol.API",
+  "executable": "StarBot.API",
   "splashscreen": {
     "imageFile": ""
   },
-  "name": "AIdol.API",
+  "name": "StarBot.API",
   "author": "",
   "singleInstance": false,
   "environment": "Production",
   "build": {
-    "appId": "com.AIdol.API.app",
-    "productName": "AIdol.API",
+    "appId": "com.StarBot.API.app",
+    "productName": "StarBot.API",
     "copyright": "Copyright © 2020",
     "buildVersion": "1.0.0",
     "compression": "maximum",
