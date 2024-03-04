@@ -10,6 +10,9 @@ using FluentScheduler;
 using AIdol.Timer;
 using System.Net.NetworkInformation;
 using System.Net;
+using System.Diagnostics;
+
+var bot = new ConfigurationBuilder().AddJsonFile("bot.json").Build();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseElectron(args);
@@ -18,7 +21,8 @@ builder.Services.AddElectron();
 //设置基础配置
 ConfigHelper.SetConfig(builder.Configuration, builder.Environment.ContentRootPath, builder.Environment.WebRootPath);
 //注入数据
-builder.Services.AddDataService(ConfigHelper.GetConfiguration("NameSpace") + ".Service");
+var projectName = ConfigHelper.GetConfiguration("NameSpace")!;
+builder.Services.AddDataService(projectName + ".Service");
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -85,7 +89,17 @@ app.UseRouting();
 
 app.MapControllers();
 
-var portsStr = ConfigHelper.GetConfiguration("Ports")!;
+//是否允许多开
+var openMore = bot.GetValue<bool>("OpenMore")!;
+if (!openMore)
+{
+    var api = Process.GetProcessesByName(projectName + ".API");
+    var electron = Process.GetProcessesByName("Electron");
+    if (api != null && electron != null && api.Length > 0 && electron.Length > 0) return;
+    if (api != null) foreach (var item in api) item.Kill();
+    if (electron != null) foreach (var item in electron) item.Kill();
+}
+var portsStr = bot.GetValue<string>("Numbers")!;
 var ports = portsStr.Split("|").Select(int.Parse).ToList();
 IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
 IPEndPoint[] tcpEndPoints = properties.GetActiveTcpListeners();
@@ -110,8 +124,9 @@ var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWi
 await browserWindow.WebContents.Session.ClearCacheAsync();
 browserWindow.OnReadyToShow += () =>
 {
+    var botName = bot.GetValue<string>("BotName")!;
     browserWindow.Show();
-    browserWindow.SetTitle("ElectronAPI-" + port);
+    browserWindow.SetTitle(botName + "-" + port);
     JavaScriptHelper.InjectJavaScript(browserWindow, $"sessionStorage.setItem('HttpPort',{port})");
 };
 app.WaitForShutdown();
