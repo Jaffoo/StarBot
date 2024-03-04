@@ -1,5 +1,5 @@
 <template>
-    <el-affix target=".el-scrollbar__view" :offset="50">
+    <el-affix target=".el-scrollbar__view">
         <el-card id="enable">
             <template #header>
                 <el-button type="primary" native-type="button" :icon="Edit" @click="save()">保存</el-button>

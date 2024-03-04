@@ -99,7 +99,7 @@ await app.StartAsync();
 var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
 {
     AutoHideMenuBar = true,
-    Height = 600,
+    Height = 800,
     Width = 1000,
     WebPreferences = new WebPreferences
     {
