@@ -67,7 +67,7 @@ const enableChange = (enableNew: EnableModule) => {
 }
 
 const save = () => {
-    var valid = false;
+    var valid = true;
     if (model.value.EnableModule.shamrock) valid = botRef.value.validForm();
     if (model.value.EnableModule.wb) valid = wbRef.value.validForm();
     if (model.value.EnableModule.qq) valid = qqRef.value.validForm();
