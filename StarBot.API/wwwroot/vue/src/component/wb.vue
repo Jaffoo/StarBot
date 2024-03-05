@@ -8,7 +8,7 @@
                 <el-input v-model="wb.userAll" /><span style="color: red;">用于转发动态和图片保存，一般是填idol</span>
             </el-form-item>
             <el-form-item label="返图用户">
-                <el-input v-model="wb.userAll" /><span style="color: red;">仅用于图片保存，一般是填返图用户)</span>
+                <el-input v-model="wb.userPart" /><span style="color: red;">仅用于图片保存，一般是填返图用户)</span>
             </el-form-item>
             <el-form-item label="转发至群">
                 <el-switch v-model="wb.forwardGroup" active-text="转发" inactive-text="不转发" />
@@ -23,7 +23,7 @@
                 <el-input v-model="wb.qq" />
             </el-form-item>
             <el-form-item label="吃瓜用户">
-                <el-input v-model="wb.userAll" /><span style="color: red;">监听某些用户是否发送了包含关键词的动态</span>
+                <el-input v-model="wb.chiGuaUser" /><span style="color: red;">监听某些用户是否发送了包含关键词的动态</span>
             </el-form-item>
             <el-form-item label="关键词">
                 <el-input v-model="wb.keyword" />
@@ -79,7 +79,7 @@ const rules = ref<FormRules>(
     },
 )
 const validForm = async () => {
-    await wbform.value?.validate(valid => {
+    return await wbform.value?.validate(valid => {
         if (valid) {
             return true
         } else {

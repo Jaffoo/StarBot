@@ -50,7 +50,7 @@ const rules = ref<FormRules>(
     },
 )
 const validForm = async () => {
-    await bzform.value?.validate(valid => {
+    return await bzform.value?.validate(valid => {
         if (valid) {
             return true
         } else {

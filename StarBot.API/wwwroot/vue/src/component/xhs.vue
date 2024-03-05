@@ -51,7 +51,7 @@ const rules = ref<FormRules>(
     },
 )
 const validForm = async () => {
-    await xhsform.value?.validate(valid => {
+    return await xhsform.value?.validate(valid => {
         if (valid) {
             return true
         } else {

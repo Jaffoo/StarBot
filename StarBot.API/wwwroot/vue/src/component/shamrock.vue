@@ -44,7 +44,7 @@ const rules = ref<FormRules>(
     },
 )
 const validForm = async () => {
-    await botform.value?.validate(valid => {
+    return await botform.value?.validate(valid => {
         if (valid) {
             return true
         } else {

@@ -19,6 +19,7 @@
         <DY ref="dyRef" :dy="model.DY" v-if="model.EnableModule.dy" class="mt10 mb50" />
     </el-scrollbar>
 </template>
+
 <script setup lang="ts">
 import { Edit, Setting } from '@element-plus/icons-vue'
 import Enable from '@/component/enable.vue';
@@ -30,11 +31,24 @@ import BZ from '@/component/bz.vue';
 import XHS from '@/component/xhs.vue';
 import BD from '@/component/bd.vue';
 import DY from '@/component/dy.vue';
-import { onMounted, ref } from "vue"
+import { type PropType, onMounted, ref } from "vue"
 import type { Config, EnableModule } from "@/class/model";
-import { getConfig } from "@/api"
+import { getConfig, saveConfig } from "@/api"
 
-
+const props = defineProps({
+    enable: {
+        type: Object as PropType<EnableModule>,
+        default: {
+            qq: false,
+            wb: false,
+            bz: false,
+            kd: false,
+            xhs: false,
+            dy: false,
+            bd: false
+        }
+    }
+})
 const botRef = ref();
 const wbRef = ref();
 const qqRef = ref();
@@ -45,16 +59,7 @@ const xhsRef = ref();
 const dyRef = ref();
 
 const model = ref<Config>({
-    EnableModule: {
-        shamrock: false,
-        qq: false,
-        wb: false,
-        bz: false,
-        kd: false,
-        xhs: false,
-        dy: false,
-        bd: false
-    }
+    EnableModule: props.enable
 });
 // 定义子组件向父组件传值/事件
 const emit = defineEmits(['top-enable-change']);
@@ -64,35 +69,31 @@ const enableChange = (enableNew: EnableModule) => {
     emit("top-enable-change", enableNew)
 }
 
-const save =async () => {
-    console.log(model.value.EnableModule)
-    console.log(model.value.EnableModule.shamrock)
-    var valid = true;
+const save = async () => {
+    let valid = true;
     if (model.value.EnableModule.shamrock) valid = await botRef.value.validForm();
-    console.log('shamrock',valid)
-    if (model.value.EnableModule.wb) valid = wbRef.value.validForm();
-    console.log('wb',valid)
-    if (model.value.EnableModule.qq) valid = qqRef.value.validForm();
-    console.log('qq',valid)
-    if (model.value.EnableModule.bz) valid = bzRef.value.validForm();
-    console.log('bz',valid)
-    if (model.value.EnableModule.bd) valid = bdRef.value.validForm();
-    console.log('bd',valid)
-    if (model.value.EnableModule.kd) valid = kdRef.value.validForm();
-    console.log('kd',valid)
-    if (model.value.EnableModule.xhs) valid = xhsRef.value.validForm();
-    console.log('xhs',valid)
-    if (model.value.EnableModule.dy) valid = dyRef.value.validForm();
-    console.log('dy',valid)
+    if (model.value.EnableModule.wb) valid = await wbRef.value.validForm();
+    if (model.value.EnableModule.qq) valid = await qqRef.value.validForm();
+    if (model.value.EnableModule.bz) valid = await bzRef.value.validForm();
+    if (model.value.EnableModule.bd) valid = await bdRef.value.validForm();
+    if (model.value.EnableModule.kd) valid = await kdRef.value.validForm();
+    if (model.value.EnableModule.xhs) valid = await xhsRef.value.validForm();
+    if (model.value.EnableModule.dy) valid = await dyRef.value.validForm();
     if (!valid) {
         ElMessage.error("请填入配置中的必填项！");
         return;
     }
+    var res = await saveConfig(model.value);
+    if (res && res.success)
+        ElMessage.success(res.msg);
+    else
+        ElMessage.error(res.msg || "保存失败！")
 }
 
 const reset = async () => {
     var res = await getConfig();
     if (res && res.success) {
+        model.value.EnableModule = res.data.enableModule
         model.value.Shamrock = res.data.shamrock
         model.value.QQ = res.data.qq
         model.value.WB = res.data.wb
@@ -108,6 +109,7 @@ onMounted(async () => {
     await reset();
 })
 </script>
+
 <style>
 .mt10 {
     margin-top: 10px;

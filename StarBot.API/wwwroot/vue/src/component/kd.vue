@@ -265,7 +265,7 @@ const login = async () => {
 }
 const subtraction = () => {
     loginfo.value.sec = 60;
-    let timer: number;
+    let timer: NodeJS.Timeout;
     timer = setInterval(() => {
         if (loginfo.value.sec > 0) {
             loginfo.value.sec--;
@@ -277,7 +277,7 @@ const subtraction = () => {
     }, 1000);
 }
 const validForm = async () => {
-    await kdform.value?.validate(valid => {
+    return await kdform.value?.validate(valid => {
         if (valid) {
             return true
         } else {

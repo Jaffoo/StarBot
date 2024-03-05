@@ -50,7 +50,7 @@ const rules = ref<FormRules>(
     },
 )
 const validForm = async () => {
-    await dyform.value?.validate(valid => {
+    return await dyform.value?.validate(valid => {
         if (valid) {
             return true
         } else {

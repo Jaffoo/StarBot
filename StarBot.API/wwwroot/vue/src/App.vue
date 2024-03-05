@@ -1,45 +1,45 @@
 <template>
-    <el-container class="layout-container">
-      <el-card>
-        <el-aside width="15vw">
-          <el-scrollbar>
-            <el-menu :default-openeds="['2']" default-active="1">
-              <el-menu-item index="1" @click="changeMenu('index')">
-                <el-icon>
-                  <House />
-                </el-icon>
-                开始
-              </el-menu-item>
+  <el-container class="layout-container">
+    <el-card>
+      <el-aside width="15vw">
+        <el-scrollbar>
+          <el-menu :default-openeds="['2']" default-active="1">
+            <el-menu-item index="1" @click="changeMenu('index')">
+              <el-icon>
+                <House />
+              </el-icon>
+              开始
+            </el-menu-item>
 
-              <el-sub-menu index="2">
-                <template #title>
-                  <el-icon>
-                    <Cpu />
-                  </el-icon>配置
-                </template>
-                <el-menu-item index="2-0" @click="changeMenu('config')">启用模块</el-menu-item>
-                <el-menu-item index="2-1" @click="scrollSet('shamrock')" v-show="enable.shamrock">Shamrock</el-menu-item>
-                <el-menu-item index="2-2" @click="scrollSet('qq')" v-show="enable.qq">QQ</el-menu-item>
-                <el-menu-item index="2-3" @click="scrollSet('wb')" v-show="enable.wb">微博</el-menu-item>
-                <el-menu-item index="2-4" @click="scrollSet('kd')" v-show="enable.kd">口袋</el-menu-item>
-                <el-menu-item index="2-5" @click="scrollSet('bz')" v-show="enable.bz">B站</el-menu-item>
-                <el-menu-item index="2-6" @click="scrollSet('xhs')" v-show="enable.xhs">小红书</el-menu-item>
-                <el-menu-item index="2-7" @click="scrollSet('bd')" v-show="enable.bd">百度</el-menu-item>
-                <el-menu-item index="2-8" @click="scrollSet('dy')" v-show="enable.dy">抖音</el-menu-item>
-              </el-sub-menu>
-            </el-menu>
-          </el-scrollbar>
-        </el-aside>
-      </el-card>
-      <el-card style="width: 90%;margin-left: 10px;">
-        <el-container>
-          <el-main style="padding-left: 20px;padding-right: 20px;" id="parentContainer">
-            <Index v-show="component === 'index'" />
-            <Config v-if="component === 'config'" @top-enable-change="enableChange" />
-          </el-main>
-        </el-container>
-      </el-card>
-    </el-container>
+            <el-sub-menu index="2">
+              <template #title>
+                <el-icon>
+                  <Cpu />
+                </el-icon>配置
+              </template>
+              <el-menu-item index="2-0" @click="changeMenu('config')">启用模块</el-menu-item>
+              <el-menu-item index="2-1" @click="scrollSet('shamrock')" v-show="enable.shamrock">Shamrock</el-menu-item>
+              <el-menu-item index="2-2" @click="scrollSet('qq')" v-show="enable.qq">QQ</el-menu-item>
+              <el-menu-item index="2-3" @click="scrollSet('wb')" v-show="enable.wb">微博</el-menu-item>
+              <el-menu-item index="2-4" @click="scrollSet('kd')" v-show="enable.kd">口袋</el-menu-item>
+              <el-menu-item index="2-5" @click="scrollSet('bz')" v-show="enable.bz">B站</el-menu-item>
+              <el-menu-item index="2-6" @click="scrollSet('xhs')" v-show="enable.xhs">小红书</el-menu-item>
+              <el-menu-item index="2-7" @click="scrollSet('bd')" v-show="enable.bd">百度</el-menu-item>
+              <el-menu-item index="2-8" @click="scrollSet('dy')" v-show="enable.dy">抖音</el-menu-item>
+            </el-sub-menu>
+          </el-menu>
+        </el-scrollbar>
+      </el-aside>
+    </el-card>
+    <el-card style="width: 90%;margin-left: 10px;">
+      <el-container>
+        <el-main style="padding-left: 20px;padding-right: 20px;" id="parentContainer">
+          <Index v-show="component === 'index'" />
+          <Config :enable="enable" v-if="component === 'config'" @top-enable-change="enableChange" />
+        </el-main>
+      </el-container>
+    </el-card>
+  </el-container>
 </template>
 
 <script setup lang="ts">
@@ -71,6 +71,13 @@ const changeMenu = async (com: string) => {
 }
 
 const scrollSet = async (com: string) => {
+  if (component.value === "index") {
+    component.value = 'config';
+    console.log(9999)
+    setTimeout(async () => {
+      await scrollSet(com);
+    }, 100);
+  }
   const childElement = document.getElementById(com);
   const parentContainer = document.getElementById("pdom")?.parentElement;
 

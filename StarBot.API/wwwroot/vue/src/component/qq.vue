@@ -59,7 +59,7 @@ const rules = ref<FormRules>(
     }
 )
 const validForm = async () => {
-    await qqform.value?.validate(valid => {
+    return await qqform.value?.validate(valid => {
         if (valid) {
             return true
         } else {

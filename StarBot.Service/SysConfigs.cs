@@ -47,9 +47,11 @@ namespace StarBot.Service
                     if (newVal == "[]") newVal = "";
                     if (newVal == child.Value) continue;
                     child.Value = newVal;
+                    ClearConfig(pModel.Key);
                     updates.Add(child);
                 }
             }
+            if (updates.Count == 0) return true;
             return await UpdateRangeAsync(updates);
         }
 
@@ -58,7 +60,7 @@ namespace StarBot.Service
             var config = new Config();
             //EnableModule
             var enableModule = cache.GetCache<EnableModule>("EnableModule");
-            enableModule ??= await SetCache<EnableModule>(7, "EnableModule");
+            enableModule ??= await SetCache<EnableModule>(6, "EnableModule");
             config.EnableModule = enableModule;
 
             //shamrock
@@ -131,7 +133,7 @@ namespace StarBot.Service
         public void ClearConfig(string key = "")
         {
             if (!string.IsNullOrWhiteSpace(key))
-                cache.RemoveCache(key);
+                cache.RemoveCache(key == "Shamrock" ? "OpenShamrock" : key);
             else
             {
                 cache.RemoveCache("EnableModule");

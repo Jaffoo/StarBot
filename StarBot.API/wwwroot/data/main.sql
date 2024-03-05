@@ -104,7 +104,7 @@ INSERT INTO "SysConfig" VALUES (17, 8, 'Group', '群', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (18, 8, 'Save', '保存群消息', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (19, 8, 'Debug', '开启程序错误通知', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (20, 8, 'Notice', '开启消息通知', 'false', NULL, 'bool');
-INSERT INTO "SysConfig" VALUES (21, 8, 'FuncAdmin', '仅管理员可用', NULL, NULL, 'string');
+INSERT INTO "SysConfig" VALUES (21, 8, 'FuncAdmin', '仅管理员可用', NULL, NULL, 'list');
 INSERT INTO "SysConfig" VALUES (22, 9, 'UserAll', '微博用户', NULL, '转发动态，保存图片', 'string');
 INSERT INTO "SysConfig" VALUES (23, 9, 'UserPart', '微博用户', NULL, '仅用于保存图片', 'string');
 INSERT INTO "SysConfig" VALUES (24, 9, 'TimeSpan', '监听间隔', '3', '单位分钟', 'int');
