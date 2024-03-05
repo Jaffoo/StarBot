@@ -8,7 +8,7 @@
             <Enable :enable="model.EnableModule" @enable-change="enableChange" />
         </el-card>
     </el-affix>
-    <el-scrollbar style="height: calc(100vh - 280px);margin-top: 10px;" id="pdom">
+    <el-scrollbar style="height: calc(100vh - 230px);" id="pdom">
         <Shamrock ref="botRef" :shamrock="model.Shamrock" v-if="model.EnableModule.shamrock" class="mt10" />
         <QQ ref="qqRef" :qq="model.QQ" v-if="model.EnableModule.qq" class="mt10" />
         <WB ref="wbRef" :wb="model.WB" v-if="model.EnableModule.wb" class="mt10" />
