@@ -1,19 +1,20 @@
 <template>
     <el-form ref="bdform" label-width="150px" label-position="left">
         <el-form-item label="启用模块：">
-            <el-checkbox v-model="data.shamrock" label="Shamrock"></el-checkbox>
-            <el-checkbox v-model="data.qq" label="QQ"></el-checkbox>
-            <el-checkbox v-model="data.wb" label="微博"></el-checkbox>
-            <el-checkbox v-model="data.bz" label="B站"></el-checkbox>
-            <el-checkbox v-model="data.kd" label="口袋48"></el-checkbox>
-            <el-checkbox v-model="data.xhs" label="小红书"></el-checkbox>
-            <el-checkbox v-model="data.bd" label="百度"></el-checkbox>
-            <el-checkbox v-model="data.dy" label="抖音"></el-checkbox>
+            <el-checkbox v-model="enable.shamrock" label="Shamrock"></el-checkbox>
+            <el-checkbox v-model="enable.qq" label="QQ"></el-checkbox>
+            <el-checkbox v-model="enable.wb" label="微博"></el-checkbox>
+            <el-checkbox v-model="enable.bz" label="B站"></el-checkbox>
+            <el-checkbox v-model="enable.kd" label="口袋48"></el-checkbox>
+            <el-checkbox v-model="enable.xhs" label="小红书"></el-checkbox>
+            <el-checkbox v-model="enable.bd" label="百度"></el-checkbox>
+            <el-checkbox v-model="enable.dy" label="抖音"></el-checkbox>
         </el-form-item>
     </el-form>
 </template>
+
 <script setup lang="ts">
-import { toRef, type PropType, watch } from "vue"
+import { type PropType, watch } from "vue"
 import type { EnableModule } from "@/class/model";
 const props = defineProps({
     enable: {
@@ -31,8 +32,7 @@ const props = defineProps({
 })
 // 定义子组件向父组件传值/事件
 const emit = defineEmits(['enable-change']);
-const data = toRef(props.enable);
-watch(data.value, () => {
-    emit("enable-change", data.value)
+watch(props.enable, () => {
+    emit("enable-change", props.enable)
 })
 </script>

@@ -3,28 +3,28 @@
         <template #header>
             <span id="shamrock">Shamrock机器人</span>
         </template>
-        <el-form ref="botform" :rules="rules" :model="model" label-width="150px" label-position="left">
+        <el-form ref="botform" :rules="rules" :model="shamrock" label-width="150px" label-position="left">
             <el-form-item label="IP地址" prop="host">
-                <el-input v-model="model.host" />
+                <el-input v-model="shamrock.host" />
             </el-form-item>
             <el-form-item label="WebScoket端口" prop="websocktPort">
-                <el-input v-model="model.websocktPort" />
+                <el-input v-model="shamrock.websocktPort" />
             </el-form-item>
             <el-form-item label="Http端口" prop="httpPort">
-                <el-input v-model="model.httpPort" />
+                <el-input v-model="shamrock.httpPort" />
             </el-form-item>
             <el-form-item label="token">
-                <el-input v-model="model.token" />
+                <el-input v-model="shamrock.token" />
             </el-form-item>
         </el-form>
     </el-card>
 </template>
 
 <script setup lang="ts" name="bot">
-import { ref, type PropType, toRef, onMounted } from 'vue'
+import { ref, type PropType } from 'vue'
 import type { Shamrock } from '@/class/model'
 import type { FormInstance, FormRules } from 'element-plus';
-const props = defineProps({
+defineProps({
     shamrock: {
         type: Object as PropType<Shamrock>,
         default: {
@@ -35,7 +35,6 @@ const props = defineProps({
         }
     }
 })
-const model = toRef(props.shamrock);
 const botform = ref<FormInstance>();
 const rules = ref<FormRules>(
     {
@@ -44,8 +43,8 @@ const rules = ref<FormRules>(
         httpPort: [{ required: true, message: '请输入该值', trigger: 'blur' }]
     },
 )
-const validForm = () => {
-    botform.value?.validate(valid => {
+const validForm = async () => {
+    await botform.value?.validate(valid => {
         if (valid) {
             return true
         } else {
@@ -55,8 +54,5 @@ const validForm = () => {
 }
 defineExpose({
     validForm
-})
-onMounted(() => {
-    console.log(props.shamrock)
 })
 </script>

@@ -3,55 +3,55 @@
         <template #header>
             <span id="kd">口袋48</span>
         </template>
-        <el-form ref="kdform" :rules="rules" :model="model" label-width="150px" label-position="left">
+        <el-form ref="kdform" :rules="rules" :model="kd" label-width="150px" label-position="left">
             <el-form-item label="姓名" prop="idolName">
-                <el-input v-model="model.idolName"></el-input>
+                <el-input v-model="kd.idolName"></el-input>
             </el-form-item>
             <el-form-item label="IMServerId" prop="serverId">
-                <el-input v-model="model.serverId"></el-input>
+                <el-input v-model="kd.serverId"></el-input>
             </el-form-item>
             <el-form-item label="直播房间Id" prop="liveRoomId">
-                <el-input v-model="model.liveRoomId"></el-input>
+                <el-input v-model="kd.liveRoomId"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button @click="searchModel.show = true">查询小偶像信息</el-button>
                 <span style="color:red">*以上信息可通过查询获取</span>
             </el-form-item>
             <el-form-item label="IM账号" prop="account">
-                <el-input v-model="model.account" />
+                <el-input v-model="kd.account" />
             </el-form-item>
             <el-form-item label="IMtoken" prop="token">
-                <el-input v-model="model.token" />
+                <el-input v-model="kd.token" />
             </el-form-item>
             <el-form-item>
                 <el-button @click="loginKD = true">登录口袋48</el-button>
                 <span style="color:red">*IM账号和IMtoken可点此登录口袋后自动获取</span>
             </el-form-item>
             <el-form-item label="保存消息">
-                <el-radio-group v-model="model.saveMsg">
+                <el-radio-group v-model="kd.saveMsg">
                     <el-radio :label="0" :value="0">不保存</el-radio>
                     <el-radio :label="1" :value="1">仅小偶像</el-radio>
                     <el-radio :label="2" :value="2">全部</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="监听消息类型">
-                <el-checkbox-group v-model="model.msgType">
-                    <el-checkbox v-for="(item, index) in model.msgTypeAll" :label="item.value" :key="index">{{
+                <el-checkbox-group v-model="kd.msgType">
+                    <el-checkbox v-for="(item, index) in kd.msgTypeAll" :label="item.value" :key="index">{{
             item.name
         }}</el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
             <el-form-item label="转发至群">
-                <el-switch v-model="model.forwardGroup" active-text="转发" inactive-text="不转发" />
+                <el-switch v-model="kd.forwardGroup" active-text="转发" inactive-text="不转发" />
             </el-form-item>
-            <el-form-item label="群qq号" v-if="model.forwardGroup">
-                <el-input v-model="model.group" />
+            <el-form-item label="群qq号" v-if="kd.forwardGroup">
+                <el-input v-model="kd.group" />
             </el-form-item>
             <el-form-item label="转发至好友">
-                <el-switch v-model="model.forwardQQ" active-text="转发" inactive-text="不转发" />
+                <el-switch v-model="kd.forwardQQ" active-text="转发" inactive-text="不转发" />
             </el-form-item>
-            <el-form-item label="好友qq" v-if="model.forwardQQ">
-                <el-input v-model="model.qq" />
+            <el-form-item label="好友qq" v-if="kd.forwardQQ">
+                <el-input v-model="kd.qq" />
             </el-form-item>
         </el-form>
         <el-dialog title="登录口袋48" v-model="loginKD" :before-close="close" :close-on-click-modal="false">
@@ -96,7 +96,7 @@
 </template>
 
 <script setup lang="ts" name="qq">
-import { ref, type PropType, toRef } from 'vue'
+import { ref, type PropType } from 'vue'
 import type { KD, MsgType } from '@/class/model'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
 import { kdUserInfo, pocketLogin, sendSmsCode, searchIdol } from "@/api"
@@ -120,7 +120,6 @@ const props = defineProps({
         }
     }
 })
-const model = toRef(props.kd);
 const kdform = ref<FormInstance>();
 const rules = ref<FormRules>(
     {
@@ -195,9 +194,9 @@ const searchXox = async () => {
     var res = await searchIdol(searchModel.value.group.toString(), searchModel.value.name);
     if (res.success) {
         var data = res.data;
-        model.value.idolName = data.name;
-        model.value.liveRoomId = data.liveId;
-        model.value.serverId = data.serverId;
+        props.kd.idolName = data.name;
+        props.kd.liveRoomId = data.liveId;
+        props.kd.serverId = data.serverId;
         close();
     } else {
         searchModel.value.url = res.msg || "";
@@ -251,8 +250,8 @@ const login = async () => {
     if (res.success) {
         var tokenRes = await kdUserInfo(res.data.content.token);
         if (tokenRes.success) {
-            model.value.token = tokenRes.data.content.pwd;
-            model.value.account = tokenRes.data.content.accid;
+            props.kd.token = tokenRes.data.content.pwd;
+            props.kd.account = tokenRes.data.content.accid;
             setTimeout(() => {
                 close();
             }, 1000);
@@ -277,8 +276,8 @@ const subtraction = () => {
         }
     }, 1000);
 }
-const validForm = () => {
-    kdform.value?.validate(valid => {
+const validForm = async () => {
+    await kdform.value?.validate(valid => {
         if (valid) {
             return true
         } else {

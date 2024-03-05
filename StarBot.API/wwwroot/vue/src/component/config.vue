@@ -20,6 +20,7 @@
     </el-scrollbar>
 </template>
 <script setup lang="ts">
+import { Edit, Setting } from '@element-plus/icons-vue'
 import Enable from '@/component/enable.vue';
 import Shamrock from '@/component/shamrock.vue';
 import QQ from '@/component/qq.vue';
@@ -29,13 +30,10 @@ import BZ from '@/component/bz.vue';
 import XHS from '@/component/xhs.vue';
 import BD from '@/component/bd.vue';
 import DY from '@/component/dy.vue';
-
 import { onMounted, ref } from "vue"
 import type { Config, EnableModule } from "@/class/model";
 import { getConfig } from "@/api"
 
-import { Edit, Setting } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus';
 
 const botRef = ref();
 const wbRef = ref();
@@ -66,16 +64,26 @@ const enableChange = (enableNew: EnableModule) => {
     emit("top-enable-change", enableNew)
 }
 
-const save = () => {
+const save =async () => {
+    console.log(model.value.EnableModule)
+    console.log(model.value.EnableModule.shamrock)
     var valid = true;
-    if (model.value.EnableModule.shamrock) valid = botRef.value.validForm();
+    if (model.value.EnableModule.shamrock) valid = await botRef.value.validForm();
+    console.log('shamrock',valid)
     if (model.value.EnableModule.wb) valid = wbRef.value.validForm();
+    console.log('wb',valid)
     if (model.value.EnableModule.qq) valid = qqRef.value.validForm();
+    console.log('qq',valid)
     if (model.value.EnableModule.bz) valid = bzRef.value.validForm();
+    console.log('bz',valid)
     if (model.value.EnableModule.bd) valid = bdRef.value.validForm();
+    console.log('bd',valid)
     if (model.value.EnableModule.kd) valid = kdRef.value.validForm();
+    console.log('kd',valid)
     if (model.value.EnableModule.xhs) valid = xhsRef.value.validForm();
+    console.log('xhs',valid)
     if (model.value.EnableModule.dy) valid = dyRef.value.validForm();
+    console.log('dy',valid)
     if (!valid) {
         ElMessage.error("请填入配置中的必填项！");
         return;
@@ -85,7 +93,6 @@ const save = () => {
 const reset = async () => {
     var res = await getConfig();
     if (res && res.success) {
-        model.value.EnableModule = res.data.enableModule
         model.value.Shamrock = res.data.shamrock
         model.value.QQ = res.data.qq
         model.value.WB = res.data.wb
