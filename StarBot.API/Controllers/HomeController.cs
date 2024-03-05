@@ -7,6 +7,7 @@ using FluentScheduler;
 using Microsoft.AspNetCore.Mvc;
 using ShamrockCore;
 using System.Diagnostics;
+using TBC.CommonLib;
 
 namespace StarBot.Controllers
 {
@@ -130,7 +131,7 @@ namespace StarBot.Controllers
             {
                 Task.Run(() =>
                 {
-                    var path = Directory.GetCurrentDirectory() + "/wwwroot/script/AliDiskApi.exe";
+                    var path = "wwwroot/script/AliDiskApi.exe";
                     using Process p = Process.Start(path)!;
                 });
             }
@@ -146,18 +147,18 @@ namespace StarBot.Controllers
         {
 
             FileInfo fileInfo = new(path);
-            var root = Directory.GetCurrentDirectory();
-            root = Path.Combine(root, "wwwroot/images/standard");
-            if (!Directory.Exists(root))
-                Directory.CreateDirectory(root);
+            var dir = "wwwroot/images/standard";
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
             var name = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-            var fileName = "/" + name + fileInfo.Extension;
-            if (!System.IO.File.Exists(root + fileName))
-                fileInfo.CopyTo(root + fileName);
+            var fileName = name + fileInfo.Extension;
+            var full = Path.Combine(dir, fileName);
+            if (!System.IO.File.Exists(full))
+                fileInfo.CopyTo(full);
             else
             {
-                System.IO.File.Delete(root + fileName);
-                fileInfo.CopyTo(root + fileName);
+                System.IO.File.Delete(full);
+                fileInfo.CopyTo(full);
             }
             object obj = new
             {
@@ -187,7 +188,11 @@ namespace StarBot.Controllers
                 else
                     chain = await _sysIdol.GetListAsync(t => t.GroupName == groupList[0]);
             }
-            xox = chain?.FirstOrDefault(t => t.Name == name);
+            else
+            {
+                chain = await _sysIdol.GetListAsync(t => t.Name.Contains(name));
+            }
+            xox = chain?.FirstOrDefault(t => t.Name.Contains(name));
             if (xox == null) return Failed(url);
             return DataResult(xox);
         }
@@ -214,7 +219,7 @@ namespace StarBot.Controllers
         public async Task<ApiResult> SendSmsCode(string mobile, string area = "86")
         {
             var res = await Pocket.SmsCode(mobile, area);
-            return DataResult(res);
+            return DataResult(res.ToJObject());
         }
 
         /// <summary>
@@ -227,7 +232,7 @@ namespace StarBot.Controllers
         public async Task<ApiResult> PocketLogin(string mobile, string code)
         {
             var res = await Pocket.Login(mobile, code);
-            return DataResult(res);
+            return DataResult(res.ToJObject());
         }
 
         /// <summary>
@@ -239,7 +244,7 @@ namespace StarBot.Controllers
         public async Task<ApiResult> KDUserInfo(string token)
         {
             var res = await Pocket.UserInfo(token);
-            return DataResult(res);
+            return DataResult(res.ToJObject());
         }
     }
 }
