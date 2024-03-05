@@ -2,7 +2,7 @@ import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import type { Config, ApiResult } from '@/class/model';
 
-const _port = sessionStorage.getItem("HttpPort");
+const _port = sessionStorage.getItem("HttpPort") || 6051;
 const _baseUrl = `http://127.0.0.1:${_port}/api/v1`;
 
 export const startBot = async () => {

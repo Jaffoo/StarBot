@@ -188,14 +188,14 @@ namespace StarBot.Controllers
                     chain = await _sysIdol.GetListAsync(t => t.GroupName == groupList[0]);
             }
             xox = chain?.FirstOrDefault(t => t.Name == name);
-            if (xox == null) return Success(url, "未搜索到，请手动查询填入！");
+            if (xox == null) return Failed(url);
             return DataResult(xox);
         }
 
         /// <summary>
         /// 通过id保存微博
         /// </summary>
-        /// <param name="blogId">΢��id</param>
+        /// <param name="blogId"></param>
         /// <returns></returns>
         [HttpGet("savewbbyid")]
         public ApiResult SaveWbById(string blogId)

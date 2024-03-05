@@ -15,6 +15,7 @@
             </el-form-item>
             <el-form-item>
                 <el-button @click="searchModel.show = true">查询小偶像信息</el-button>
+                <span style="color:red">*以上信息可通过查询获取</span>
             </el-form-item>
             <el-form-item label="IM账号" prop="account">
                 <el-input v-model="model.account" />
@@ -33,7 +34,7 @@
                     <el-radio :label="2" :value="2">全部</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="监听消息类型" v-show="model.forwardGroup === true || model.forwardQQ === true">
+            <el-form-item label="监听消息类型">
                 <el-checkbox-group v-model="model.msgType">
                     <el-checkbox v-for="(item, index) in model.msgTypeAll" :label="item.value" :key="index">{{
             item.name
@@ -57,6 +58,7 @@
             <el-form label-width="100px" :rules="rules" :model="loginfo">
                 <el-form-item label="手机号" class="mt-4" prop="phone">
                     <el-input v-model="loginfo.phone" style="width:95%">
+
                         <template #prepend>+{{ loginfo.area }}</template>
                     </el-input>
                 </el-form-item>
@@ -198,7 +200,7 @@ const searchXox = async () => {
         model.value.serverId = data.serverId;
         close();
     } else {
-        searchModel.value.url = res.data.data;
+        searchModel.value.url = res.msg || "";
     }
     searchModel.value.loading = false;
 }

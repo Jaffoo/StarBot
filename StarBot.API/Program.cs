@@ -11,6 +11,7 @@ using StarBot.Timer;
 using System.Net.NetworkInformation;
 using System.Net;
 using System.Diagnostics;
+using ShamrockCore.Utils;
 
 var bot = new ConfigurationBuilder().AddJsonFile("bot.json").Build();
 
@@ -89,44 +90,56 @@ app.UseRouting();
 
 app.MapControllers();
 
-//是否允许多开
-var openMore = bot.GetValue<bool>("OpenMore")!;
-if (!openMore)
+var useElectron = ConfigHelper.GetConfiguration("UseElectron").ToBool(false);
+if (!useElectron)
 {
-    var api = Process.GetProcessesByName(projectName + ".API");
-    var electron = Process.GetProcessesByName("Electron");
-    if (api != null && electron != null && api.Length > 0 && electron.Length > 0) return;
-    if (api != null) foreach (var item in api) item.Kill();
-    if (electron != null) foreach (var item in electron) item.Kill();
+    var portsStr = bot.GetValue<string>("Numbers")!;
+    var ports = portsStr.Split("|").Select(int.Parse).ToList();
+    var port = ports.FirstOrDefault();
+    app.Urls.Add($"http://localhost:{port}");
+    app.Run();
 }
-var portsStr = bot.GetValue<string>("Numbers")!;
-var ports = portsStr.Split("|").Select(int.Parse).ToList();
-IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
-IPEndPoint[] tcpEndPoints = properties.GetActiveTcpListeners();
-List<int> activePorts = tcpEndPoints.Select(ep => ep.Port).ToList();
-List<int> availablePorts = ports.Where(port => !activePorts.Contains(port)).ToList();
-var port = availablePorts.FirstOrDefault();
-app.Urls.Add($"http://localhost:{port}");
-//var startUrl = $"http://localhost:{port}/bot/index.html";
-var startUrl = $"http://localhost:5173";
-await app.StartAsync();
-var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
+else
 {
-    AutoHideMenuBar = true,
-    Height = 800,
-    Width = 1000,
-    WebPreferences = new WebPreferences
+    //是否允许多开
+    var openMore = bot.GetValue<bool>("OpenMore")!;
+    if (!openMore)
     {
-        DevTools = true,//Ctrl + Shift + I
-        NodeIntegration = true,
+        var api = Process.GetProcessesByName(projectName + ".API");
+        var electron = Process.GetProcessesByName("Electron");
+        if (api != null && electron != null && api.Length > 0 && electron.Length > 0) return;
+        if (api != null) foreach (var item in api) item.Kill();
+        if (electron != null) foreach (var item in electron) item.Kill();
     }
-}, startUrl);
-await browserWindow.WebContents.Session.ClearCacheAsync();
-browserWindow.OnReadyToShow += () =>
-{
-    var botName = bot.GetValue<string>("BotName")!;
-    browserWindow.Show();
-    browserWindow.SetTitle(botName + "-" + port);
-    JavaScriptHelper.InjectJavaScript(browserWindow, $"sessionStorage.setItem('HttpPort',{port})");
-};
-app.WaitForShutdown();
+    var portsStr = bot.GetValue<string>("Numbers")!;
+    var ports = portsStr.Split("|").Select(int.Parse).ToList();
+    IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+    IPEndPoint[] tcpEndPoints = properties.GetActiveTcpListeners();
+    List<int> activePorts = tcpEndPoints.Select(ep => ep.Port).ToList();
+    List<int> availablePorts = ports.Where(port => !activePorts.Contains(port)).ToList();
+    var port = availablePorts.FirstOrDefault();
+    app.Urls.Add($"http://localhost:{port}");
+    //var startUrl = $"http://localhost:{port}/bot/index.html";
+    var startUrl = $"http://localhost:5173";
+    await app.StartAsync();
+    var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
+    {
+        AutoHideMenuBar = true,
+        Height = 800,
+        Width = 1000,
+        WebPreferences = new WebPreferences
+        {
+            DevTools = true,//Ctrl + Shift + I
+            NodeIntegration = true,
+        }
+    }, startUrl);
+    await browserWindow.WebContents.Session.ClearCacheAsync();
+    browserWindow.OnReadyToShow += () =>
+    {
+        var botName = bot.GetValue<string>("BotName")!;
+        browserWindow.Show();
+        browserWindow.SetTitle(botName + "-" + port);
+        JavaScriptHelper.InjectJavaScript(browserWindow, $"sessionStorage.setItem('HttpPort',{port})");
+    };
+    app.WaitForShutdown();
+}

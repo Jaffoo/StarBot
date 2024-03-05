@@ -188,7 +188,7 @@ INSERT INTO "SysConfig" VALUES (45, 11, 'MsgTypeAll', '所有消息类型', '[{
     "name":"礼物消息",
     "value":"PRESENT_NORMAL"
 }]', NULL, 'list');
-INSERT INTO "SysConfig" VALUES (46, 11, 'MsgType', '消息类型', NULL, '接收/转发消息类型', 'string');
+INSERT INTO "SysConfig" VALUES (46, 11, 'MsgType', '消息类型', NULL, '接收/转发消息类型', 'list');
 INSERT INTO "SysConfig" VALUES (47, 12, 'User', '小红书用户', NULL, NULL, 'string');
 INSERT INTO "SysConfig" VALUES (48, 12, 'TimeSpan', '监听间隔', '3', '单位分钟', 'int');
 INSERT INTO "SysConfig" VALUES (49, 12, 'Group', 'qq群', NULL, NULL, 'string');
