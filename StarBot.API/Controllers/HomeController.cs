@@ -117,7 +117,9 @@ namespace StarBot.Controllers
         public ApiResult GetFun()
         {
             var funs = new PluginHelper();
-            return DataResult(funs.Plugins);
+            funs.LoadPlugins();
+            var plugins = PluginHelper.Plugins.Select(t=>t.PluginInfo);
+            return DataResult(plugins);
         }
 
         /// <summary>

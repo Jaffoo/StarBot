@@ -12,7 +12,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "dotnetRunMessages": true
+      "dotnetRunMessages": true,
+      "workingDirectory": "bin\\Debug\\net8.0"
     }
   }
 }
