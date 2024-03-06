@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShamrockCore;
 using System.Diagnostics;
 using TBC.CommonLib;
+using System.Xml.Linq;
 
 namespace StarBot.Controllers
 {
@@ -116,10 +117,42 @@ namespace StarBot.Controllers
         [HttpGet("getfun")]
         public ApiResult GetFun()
         {
-            var funs = new PluginHelper();
-            funs.LoadPlugins();
-            var plugins = PluginHelper.Plugins.Select(t=>t.PluginInfo);
+            PluginHelper.LoadPlugins();
+            var plugins = PluginHelper.Plugins;
             return DataResult(plugins);
+        }
+
+        /// <summary>
+        /// 启用插件
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("startplugin")]
+        public ApiResult StartPlugin(string name)
+        {
+            var (b, msg) = PluginHelper.StartPlugin(name);
+            return AjaxResult(b, msg);
+        }
+
+        /// <summary>
+        /// 禁用插件
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("stopplugin")]
+        public ApiResult StopPlugin(string name)
+        {
+            var (b, msg) = PluginHelper.StopPlugin(name);
+            return AjaxResult(b, msg);
+        }
+
+        /// <summary>
+        /// 删除插件
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("delplugin")]
+        public ApiResult DelPlugin(string name)
+        {
+            var b = PluginHelper.DelPlugin(name);
+            return AjaxResult(b);
         }
 
         /// <summary>

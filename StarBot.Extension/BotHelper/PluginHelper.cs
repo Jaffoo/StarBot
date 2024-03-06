@@ -15,17 +15,15 @@ namespace StarBot.Extension
         {
             if (!Directory.Exists("Plugins")) Directory.CreateDirectory("Plugins");
         }
-        public PluginHelper? this[string name]
-        {
-            get { return Plugins.FirstOrDefault(t => t.PluginInfo?.Name == name); }
-        }
         public BasePlugin? PluginInfo { get; set; }
+        public bool Status { get; set; }
+        private string Path { get; set; } = "";
         private CustomAssemblyLoadContext? DLL { get; set; }
 
         /// <summary>
         /// 加载插件
         /// </summary>
-        public void LoadPlugins()
+        public static void LoadPlugins()
         {
             var files = new DirectoryInfo("Plugins").GetFiles();
             foreach (var item in files)
@@ -40,7 +38,7 @@ namespace StarBot.Extension
                 if (Activator.CreateInstance(type) is not BasePlugin instance) continue;
                 if (Plugins.Exists(t => t.PluginInfo?.Name == instance.Name))
                 {
-                    var model = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == instance.Name);
+                    var model = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == instance.Name && t.PluginInfo.Version != instance.Version);
                     model?.DLL?.Dispose();
                     model?.PluginInfo?.Dispose();
                     model?.Dispose();
@@ -50,37 +48,65 @@ namespace StarBot.Extension
                 {
                     PluginInfo = instance,
                     DLL = dll,
+                    Status = true,
+                    Path = item.FullName
                 });
             }
         }
 
         /// <summary>
-        /// 卸载插件（不会立即卸载完，但是插件不会被执行）
+        /// 禁用插件
         /// </summary>
         /// <param name="name"></param>
-        public void UnloadPlugins(string name)
+        public static (bool b, string msg) StopPlugin(string name)
         {
-            var plugin = this[name];
-            if (plugin == null) return;
+            var plugin = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == name);
+            if (plugin == null) return (false, "插件不存在！");
+            plugin.Status = false;
+            return (true, "禁用成功！");
+        }
+
+        /// <summary>
+        /// 启用插件
+        /// </summary>
+        /// <param name="name"></param>
+        public static (bool b, string msg) StartPlugin(string name)
+        {
+            var plugin = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == name);
+            if (plugin == null) return (false, "插件不存在！");
+            plugin.Status = false;
+            return (true, "启用成功！");
+        }
+
+        /// <summary>
+        /// 删除插件
+        /// </summary>
+        /// <param name="name"></param>
+        public static bool DelPlugin(string name)
+        {
+            var plugin = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == name);
+            if (plugin == null) return true;
             plugin.PluginInfo?.Dispose();
             plugin.DLL?.Unload();
             plugin.DLL?.Dispose();
             plugin.Dispose();
-            Plugins.Remove(plugin);
+            File.Delete(plugin.Path);
+            return true;
         }
 
         /// <summary>
-        /// 卸载插件（不会立即卸载完，但是插件不会被执行）
+        /// 卸载插件
         /// </summary>
         /// <param name="name"></param>
-        public void UnloadPlugins()
+        private static void UnloadPlugins()
         {
             foreach (var item in Plugins)
             {
                 item.PluginInfo?.Dispose();
-                item?.DLL?.Unload();
-                item?.DLL?.Dispose();
-                item?.Dispose();
+                item.DLL?.Unload();
+                item.DLL?.Dispose();
+                item.Dispose();
+                item.Status = false;
             }
             Plugins.Clear();
         }
@@ -88,7 +114,7 @@ namespace StarBot.Extension
         /// <summary>
         /// 重载插件
         /// </summary>
-        public void ReloadPlugins()
+        public static void ReloadPlugins()
         {
             UnloadPlugins();
             LoadPlugins();
@@ -99,11 +125,12 @@ namespace StarBot.Extension
         /// </summary>
         /// <param name="msgBase"></param>
         /// <param name="eventBase"></param>
-        public async Task Excute(MessageReceiverBase? msgBase = null, EventBase? eventBase = null)
+        public static async Task Excute(MessageReceiverBase? msgBase = null, EventBase? eventBase = null)
         {
             foreach (var item in Plugins)
             {
                 if (item.PluginInfo == null) continue;
+                if (item.Status == false) continue;
                 await item.PluginInfo.Excute(msgBase, eventBase);
             }
         }
