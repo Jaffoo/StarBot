@@ -25,11 +25,15 @@ import { getCache, saveImg, delImg } from '@/api'
 
 const tableData = ref();
 const save = async (id: number) => {
-    await saveImg(id);
+    let res = await saveImg(id);
+    if (res.success) ElMessage.success(res.msg)
+    else ElMessage.error(res.msg)
     await getData();
 }
 const del = async (id: number) => {
-    await delImg(id);
+    let res = await delImg(id);
+    if (res.success) ElMessage.success(res.msg)
+    else ElMessage.error(res.msg)
     await getData();
 }
 const getData = async () => {

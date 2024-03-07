@@ -45,6 +45,21 @@ export const getFun = async (): Promise<ApiResult> => {
     return response.data as ApiResult;
 };
 
+export const startPlugin = async (name: string): Promise<ApiResult> => {
+    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/startplugin?name=${name}`);
+    return response.data as ApiResult;
+};
+
+export const stopPlugin = async (name: string): Promise<ApiResult> => {
+    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/stopplugin?name=${name}`);
+    return response.data as ApiResult;
+};
+
+export const delPlugin = async (name: string): Promise<ApiResult> => {
+    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/delplugin?name=${name}`);
+    return response.data as ApiResult;
+};
+
 export const startAliYunPan = async () => {
     const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/startaliyunpan`);
     return response.data as ApiResult;

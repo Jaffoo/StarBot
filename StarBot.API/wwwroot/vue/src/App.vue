@@ -22,6 +22,12 @@
               </el-icon>
               图片
             </el-menu-item>
+            <el-menu-item index="4" @click="changeMenu('plugin')">
+              <el-icon>
+                <House />
+              </el-icon>
+              插件
+            </el-menu-item>
             <el-sub-menu index="99">
               <template #title>
                 <el-icon>
@@ -48,6 +54,7 @@
           <Index v-show="component === 'index'" />
           <Log v-show="component === 'log'" />
           <Pic v-show="component === 'pic'" />
+          <Plugin v-show="component === 'plugin' && enable.qq" />
           <Config :enable="enable" v-if="component === 'config'" @top-enable-change="enableChange" />
         </el-main>
       </el-container>
@@ -60,6 +67,7 @@ import Index from '@/component/index.vue'
 import Config from '@/component/config.vue'
 import Log from '@/component/log.vue'
 import Pic from '@/component/pic.vue'
+import Plugin from '@/component/plugin.vue'
 import { House, Cpu } from '@element-plus/icons-vue'
 import { onMounted, ref } from 'vue';
 import type { EnableModule } from './class/model';
