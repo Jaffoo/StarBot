@@ -1,5 +1,6 @@
 <template>
     <div>
+        <div><el-button>清空</el-button></div>
         <div v-for="(item, index) in logs">
             <span>{{ index + 1 }}.</span>
             <span><el-avatar :src="item.avarar" />{{ item.name }}:</span>

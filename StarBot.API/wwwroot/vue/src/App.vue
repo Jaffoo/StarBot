@@ -10,22 +10,33 @@
               </el-icon>
               开始
             </el-menu-item>
-
-            <el-sub-menu index="2">
+            <el-menu-item index="2" @click="changeMenu('log')">
+              <el-icon>
+                <House />
+              </el-icon>
+              日志
+            </el-menu-item>
+            <el-menu-item index="3" @click="changeMenu('pic')">
+              <el-icon>
+                <House />
+              </el-icon>
+              图片
+            </el-menu-item>
+            <el-sub-menu index="99">
               <template #title>
                 <el-icon>
                   <Cpu />
                 </el-icon>配置
               </template>
-              <el-menu-item index="2-0" @click="changeMenu('config')">启用模块</el-menu-item>
-              <el-menu-item index="2-1" @click="scrollSet('shamrock')" v-show="enable.shamrock">Shamrock</el-menu-item>
-              <el-menu-item index="2-2" @click="scrollSet('qq')" v-show="enable.qq">QQ</el-menu-item>
-              <el-menu-item index="2-3" @click="scrollSet('wb')" v-show="enable.wb">微博</el-menu-item>
-              <el-menu-item index="2-4" @click="scrollSet('kd')" v-show="enable.kd">口袋</el-menu-item>
-              <el-menu-item index="2-5" @click="scrollSet('bz')" v-show="enable.bz">B站</el-menu-item>
-              <el-menu-item index="2-6" @click="scrollSet('xhs')" v-show="enable.xhs">小红书</el-menu-item>
-              <el-menu-item index="2-7" @click="scrollSet('bd')" v-show="enable.bd">百度</el-menu-item>
-              <el-menu-item index="2-8" @click="scrollSet('dy')" v-show="enable.dy">抖音</el-menu-item>
+              <el-menu-item index="99-0" @click="changeMenu('config')">启用模块</el-menu-item>
+              <el-menu-item index="99-1" @click="scrollSet('shamrock')" v-show="enable.shamrock">Shamrock</el-menu-item>
+              <el-menu-item index="99-2" @click="scrollSet('qq')" v-show="enable.qq">QQ</el-menu-item>
+              <el-menu-item index="99-3" @click="scrollSet('wb')" v-show="enable.wb">微博</el-menu-item>
+              <el-menu-item index="99-4" @click="scrollSet('kd')" v-show="enable.kd">口袋</el-menu-item>
+              <el-menu-item index="99-5" @click="scrollSet('bz')" v-show="enable.bz">B站</el-menu-item>
+              <el-menu-item index="99-6" @click="scrollSet('xhs')" v-show="enable.xhs">小红书</el-menu-item>
+              <el-menu-item index="99-7" @click="scrollSet('bd')" v-show="enable.bd">百度</el-menu-item>
+              <el-menu-item index="99-8" @click="scrollSet('dy')" v-show="enable.dy">抖音</el-menu-item>
             </el-sub-menu>
           </el-menu>
         </el-scrollbar>
@@ -35,6 +46,8 @@
       <el-container>
         <el-main style="padding-left: 20px;padding-right: 20px;" id="parentContainer">
           <Index v-show="component === 'index'" />
+          <Log v-show="component === 'log'" />
+          <Pic v-show="component === 'pic'" />
           <Config :enable="enable" v-if="component === 'config'" @top-enable-change="enableChange" />
         </el-main>
       </el-container>
@@ -45,6 +58,8 @@
 <script setup lang="ts">
 import Index from '@/component/index.vue'
 import Config from '@/component/config.vue'
+import Log from '@/component/log.vue'
+import Pic from '@/component/pic.vue'
 import { House, Cpu } from '@element-plus/icons-vue'
 import { onMounted, ref } from 'vue';
 import type { EnableModule } from './class/model';
