@@ -2,7 +2,7 @@
   <el-container class="layout-container">
     <el-card>
       <el-aside width="15vw">
-        <el-scrollbar>
+        <el-scrollbar style="height: calc(100vh - 30px);">
           <el-menu :default-openeds="['2']" default-active="1">
             <el-menu-item index="1" @click="changeMenu('index')">
               <el-icon>

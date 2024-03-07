@@ -1,5 +1,12 @@
 <template>
-    <h1>Index.Vue</h1>
+    <div>
+        <el-container>
+            <el-header>
+                <h1>Index.Vue</h1>
+            </el-header>
+            <el-main>Main</el-main>
+        </el-container>
+    </div>
 </template>
 
 <!-- <template>

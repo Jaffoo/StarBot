@@ -10,6 +10,8 @@ using System.Diagnostics;
 using TBC.CommonLib;
 using System.Xml.Linq;
 using ElectronNET.API;
+using Newtonsoft.Json.Linq;
+using SqlSugar.Extensions;
 
 namespace StarBot.Controllers
 {
@@ -61,9 +63,42 @@ namespace StarBot.Controllers
         public async Task<ApiResult> SaveConfig(Config config)
         {
             var b = await _sysConfig.SaveConfig(config);
+            if (b)
+            {
+                var enable = JObject.FromObject(config.EnableModule);
+                foreach (var item in enable)
+                {
+                    if (item.Value.ObjToBool() == false)
+                    {
+                        var job = JobManager.GetSchedule(item.Key);
+                        job.Disable();
+                        if (item.Key == "WB")
+                        {
+                            job = JobManager.GetSchedule("WBChiGua");
+                            job.Disable();
+                        }
+                    }
+                    else
+                    {
+                        var job = JobManager.GetSchedule(item.Key);
+                        job.Enable();
+                        if (item.Key == "WB")
+                        {
+                            job = JobManager.GetSchedule("WBChiGua");
+                            job.Enable();
+                        }
+                    }
+                }
+            }
             return AjaxResult(b);
         }
 
+        /// <summary>
+        /// 接受口袋推送的消息
+        /// </summary>
+        /// <param name="msgBody"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         [HttpPost("postmsg")]
         public async Task<ApiResult> PostMsg([FromBody] string msgBody, int type = 0)
         {
@@ -71,7 +106,7 @@ namespace StarBot.Controllers
                 await Pocket.Instance.PocketMessageReceiver(msgBody);
             if (type == 1)
                 await Pocket.Instance.LiveMsgReceiver(msgBody);
-            return Success(true);
+            return Success();
         }
 
         /// <summary>
@@ -96,7 +131,7 @@ namespace StarBot.Controllers
         {
             var model = await _sysCache.GetModelAsync(id);
             var b = await new FileHelper().Save(model.Content);
-            return Success(b);
+            return AjaxResult(b);
         }
 
         /// <summary>
