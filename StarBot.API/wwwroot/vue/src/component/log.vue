@@ -7,7 +7,8 @@
                 @click="openUrl(item.url)">
                 {{ item.url }}
             </span>
-            <span v-if="item.type == 'pic'" :style="{ color: item.color }">{{ item.content }}</span>
+            <el-image v-if="item.type == 'pic'" :src="item.url" :initial-index="getIndex(item.url)"
+                :preview-src-list="imgList()" />
         </div>
     </div>
 </template>
@@ -31,6 +32,17 @@ const openUrl = async (url?: string) => {
 }
 
 const logs = ref<Array<log>>(new Array<log>)
+
+const imgList = (): string[] => {
+    var res = logs.value.filter(x => x.url != undefined && x.url.length > 0).map(e => e.url)
+    if (res == undefined) return [] as string[]
+    return res as string[];
+}
+
+const getIndex = (url?: string): number => {
+    var index = imgList().findIndex(x => x == url)
+    return index;
+}
 
 const add = (model: log) => {
     logs.value.push(model)
