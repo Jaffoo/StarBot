@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div v-for="item in logs">
+        <div v-for="(item, index) in logs">
+            <span>{{ index + 1 }}.</span>
             <span><el-avatar :src="item.avarar" />{{ item.name }}:</span>
             <span v-if="item.type == 'text'" :style="{ color: item.color }">{{ item.content }}</span>
             <span v-if="item.type == 'link'" :style="{ color: item.color, 'text-decoration': 'underline' }"
