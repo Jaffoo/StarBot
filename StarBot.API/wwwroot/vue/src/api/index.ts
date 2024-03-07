@@ -79,3 +79,8 @@ export const kdUserInfo = async (token: string) => {
     const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/kduserinfo?token=${token}`);
     return response.data as ApiResult;
 }
+
+export const openWindow = async (url: string) => {
+    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/openwindow?url=${url}`);
+    return response.data as ApiResult;
+}

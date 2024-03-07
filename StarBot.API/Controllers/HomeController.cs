@@ -9,6 +9,7 @@ using ShamrockCore;
 using System.Diagnostics;
 using TBC.CommonLib;
 using System.Xml.Linq;
+using ElectronNET.API;
 
 namespace StarBot.Controllers
 {
@@ -280,6 +281,19 @@ namespace StarBot.Controllers
         {
             var res = await Pocket.UserInfo(token);
             return DataResult(res.ToJObject());
+        }
+
+        /// <summary>
+        /// 打开新窗口
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [HttpGet("openwindow")]
+        public async Task<ApiResult> OpenWindow(string url)
+        {
+            // 使用 Electron.NET 的 API 创建一个新窗口
+            await Electron.WindowManager.CreateWindowAsync(url);
+            return Success();
         }
     }
 }

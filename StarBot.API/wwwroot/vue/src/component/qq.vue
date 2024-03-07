@@ -30,7 +30,6 @@
 import { ref, type PropType, onMounted } from 'vue'
 import type { QQ } from '@/class/model'
 import type { FormInstance, FormRules } from 'element-plus';
-import { getFun } from '@/api'
 
 defineProps({
     qq: {
@@ -46,10 +45,6 @@ defineProps({
         }
     }
 })
-const getQQFuns = async () => {
-    var res = await getFun();
-    console.log(res)
-}
 const qqform = ref<FormInstance>();
 const rules = ref<FormRules>(
     {
@@ -69,8 +64,5 @@ const validForm = async () => {
 }
 defineExpose({
     validForm
-})
-onMounted(async () => {
-    await getQQFuns();
 })
 </script>
