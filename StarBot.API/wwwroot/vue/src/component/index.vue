@@ -4,11 +4,33 @@
             <el-header>
                 <h1>Index.Vue</h1>
             </el-header>
-            <el-main>Main</el-main>
+            <el-main>
+                <el-row>
+                    
+                </el-row>
+            </el-main>
         </el-container>
     </div>
 </template>
+<script setup lang="ts" name="index">
+import type { EnableModule } from '@/class/model';
+import type { PropType } from 'vue';
 
+const props = defineProps({
+    enable: {
+        type: Object as PropType<EnableModule>,
+        default: {
+            qq: false,
+            wb: false,
+            bz: false,
+            kd: false,
+            xhs: false,
+            dy: false,
+            bd: false
+        }
+    }
+})
+</script>
 <!-- <template>
     <el-container>
         <el-header height="50px">

@@ -405,6 +405,11 @@ namespace StarBot.Model
         /// 0-不保存，1-小偶像消息，2-全部消息
         /// </summary>
         public int SaveMsg { get; set; }
+
+        /// <summary>
+        /// 保存图片
+        /// </summary>
+        public bool SaveImg { get; set; }
     }
 
     /// <summary>

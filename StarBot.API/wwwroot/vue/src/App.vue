@@ -3,7 +3,7 @@
     <el-card>
       <el-aside width="15vw">
         <el-scrollbar style="height: calc(100vh - 30px);">
-          <el-menu :default-openeds="['2']" default-active="1">
+          <el-menu :default-openeds="['99']" default-active="1">
             <el-menu-item index="1" @click="changeMenu('index')">
               <el-icon>
                 <House />
@@ -51,11 +51,11 @@
     <el-card style="width: 90%;margin-left: 10px;">
       <el-container>
         <el-main style="padding-left: 20px;padding-right: 20px;" id="parentContainer">
-          <Index v-show="component === 'index'" />
+          <Index :enable="enable" v-show="component === 'index'" />
           <Log v-show="component === 'log'" />
           <Pic v-show="component === 'pic'" />
           <Plugin v-show="component === 'plugin' && enable.qq" />
-          <Config :enable="enable" v-if="component === 'config'" @top-enable-change="enableChange" />
+          <Config ref="configRef" :enable="enable" v-if="component === 'config'" @top-enable-change="enableChange" />
         </el-main>
       </el-container>
     </el-card>
@@ -72,6 +72,7 @@ import { House, Cpu } from '@element-plus/icons-vue'
 import { onMounted, ref } from 'vue';
 import type { EnableModule } from './class/model';
 import { getConfig } from './api';
+const startEnble = ref<EnableModule>();
 const enable = ref<EnableModule>({
   shamrock: false,
   qq: false,
@@ -82,21 +83,24 @@ const enable = ref<EnableModule>({
   dy: false,
   bd: false
 })
-
+const menu = ["index", "log", "pic", "plugin"]
+const configRef = ref();
 const component = ref("index");
 const changeMenu = async (com: string) => {
-  component.value = com;
-  if (component.value === "index") {
-    await getEnableModule();
+  if (menu.find(x => x === com)) {
+    if (configRef.value) {
+      await configRef.value.checkData();
+      await getEnableModule();
+    }
+    component.value = com;
   } else {
     scrollSet('enable');
   }
 }
 
 const scrollSet = async (com: string) => {
-  if (component.value === "index") {
+  if (menu.find(x => x === component.value)) {
     component.value = 'config';
-    console.log(9999)
     setTimeout(async () => {
       await scrollSet(com);
     }, 100);
@@ -119,8 +123,11 @@ const enableChange = (enableNew: EnableModule) => {
   enable.value = enableNew
 }
 const getEnableModule = async () => {
-  var res = await getConfig();
+  let res = await getConfig();
   enable.value = res.data.enableModule
+  let deepStr = JSON.stringify(res.data.enableModule);
+  let deepObj = JSON.parse(deepStr);
+  startEnble.value = deepObj
 }
 onMounted(async () => {
   await getEnableModule();

@@ -41,7 +41,8 @@ export interface KD extends Base {
     liveRoomId?: string,
     msgTypeAll?: Array<MsgType>,
     msgType?: Array<string>,
-    saveMsg?: number
+    saveMsg?: number,
+    saveImg?: boolean
 }
 export interface WB extends Listing {
     userAll?: string,
@@ -73,7 +74,7 @@ export interface Shamrock {
     token?: string,
 }
 export interface EnableModule {
-    shamrock:boolean,
+    shamrock: boolean,
     qq: boolean,
     wb: boolean,
     kd: boolean,

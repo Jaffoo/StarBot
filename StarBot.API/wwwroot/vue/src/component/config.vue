@@ -61,6 +61,7 @@ const dyRef = ref();
 const model = ref<Config>({
     EnableModule: props.enable
 });
+const startModel = ref<Config>();
 // 定义子组件向父组件传值/事件
 const emit = defineEmits(['top-enable-change']);
 
@@ -103,10 +104,37 @@ const reset = async () => {
         model.value.XHS = res.data.xhs
         model.value.DY = res.data.dy
     }
+    let deepStr = JSON.stringify(model.value)
+    let deepObj = JSON.parse(deepStr);
+    startModel.value = deepObj;
+}
+
+const checkData = (): Promise<boolean> => {
+    let temp1 = JSON.stringify(startModel.value);
+    let temp2 = JSON.stringify(model.value)
+    if (temp1 != temp2) {
+        return ElMessageBox.confirm("配置已被修改，但未保存，是否保存", "警告", {
+            confirmButtonText: '保存',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }).then(async () => {
+            await save();
+            return true;
+        }).catch(async () => {
+            return true;
+        })
+    } else
+        return new Promise<boolean>((resolve, reject) => {
+            resolve(true)
+        });
 }
 
 onMounted(async () => {
     await reset();
+})
+
+defineExpose({
+    checkData
 })
 </script>
 

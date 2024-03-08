@@ -2,7 +2,7 @@
     <el-scrollbar style="height: calc(100vh - 230px);">
         <el-table :data="tableData" stripe style="width: 100%">
             <el-table-column type="index" width="50" />
-            <el-table-column prop="time" label="时间"></el-table-column>
+            <el-table-column prop="createDate" label="时间"></el-table-column>
             <el-table-column prop="content" label="图片">
                 <template #default="scope">
                     <el-image style="width: auto; height: 120px" :src="scope.row.content"

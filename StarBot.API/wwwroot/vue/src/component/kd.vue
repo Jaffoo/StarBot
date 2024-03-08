@@ -34,6 +34,12 @@
                     <el-radio :label="2" :value="2">全部</el-radio>
                 </el-radio-group>
             </el-form-item>
+            <el-form-item label="保存图片">
+                <el-radio-group v-model="kd.saveImg">
+                    <el-radio :label="false" :value="false">不保存</el-radio>
+                    <el-radio :label="true" :value="true">保存</el-radio>
+                </el-radio-group>
+            </el-form-item>
             <el-form-item label="监听消息类型">
                 <el-checkbox-group v-model="kd.msgType">
                     <el-checkbox v-for="(item, index) in kd.msgTypeAll" :label="item.value" :key="index">{{
@@ -87,8 +93,8 @@
                     <el-button type="primary" :loading="searchModel.loading" @click="searchXox">查询</el-button>
                 </el-form-item>
                 <div v-if="searchModel.url" style="width:95%;margin-top:5px">
-                    <span>未查询到小偶像，检查名称等后重新查询或者自行通过下方地址获取小偶像信息填入：</span>
-                    <div style="word-break:break-all">{{ searchModel.url }}</div>
+                    <span>未查询到小偶像，检查名称等后重新查询或者点击下方地址自行获取小偶像信息填入：</span>
+                    <a style="word-break:break-all" @click="idolWindow(searchModel.url)">{{ searchModel.url }}</a>
                 </div>
             </el-form>
         </el-dialog>
@@ -99,7 +105,7 @@
 import { ref, type PropType } from 'vue'
 import type { KD, MsgType } from '@/class/model'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
-import { kdUserInfo, pocketLogin, sendSmsCode, searchIdol } from "@/api"
+import { kdUserInfo, pocketLogin, sendSmsCode, searchIdol, openWindow } from "@/api"
 
 const props = defineProps({
     kd: {
@@ -116,7 +122,8 @@ const props = defineProps({
             liveRoomId: '',
             msgTypeAll: new Array<MsgType>,
             msgType: [],
-            saveMsg: 0
+            saveMsg: 0,
+            saveImg: false
         }
     }
 })
@@ -265,7 +272,7 @@ const login = async () => {
 }
 const subtraction = () => {
     loginfo.value.sec = 60;
-    let timer: NodeJS.Timeout;
+    let timer: any;
     timer = setInterval(() => {
         if (loginfo.value.sec > 0) {
             loginfo.value.sec--;
@@ -285,6 +292,11 @@ const validForm = async () => {
         }
     })
 }
+
+const idolWindow = (url: string) => {
+    openWindow(url);
+}
+
 defineExpose({
     validForm
 })

@@ -36,8 +36,8 @@ interface logI {
     color?: '#409eff' | '#67c23a' | '#f56c6c'
 }
 const logs = ref<Array<logI>>(new Array<logI>)
-const openUrl = async (url?: string) => {
-    if (url) await openWindow(url)
+const openUrl = (url?: string) => {
+    if (url) openWindow(url)
 }
 const clear = async () => {
     logs.value = new Array<logI>;
@@ -69,6 +69,15 @@ const getIndex = (url?: string): number => {
 
 const add = (model: logI) => {
     logs.value.push(model)
+    var localLog = localStorage.getItem("localLog");
+    if (localLog) {
+        localStorage.removeItem("localLog");
+    }
+    var logmodel = {
+        count: logs.value.length,
+        newLog: model
+    }
+    localStorage.setItem("localLog", JSON.stringify(logmodel))
 }
 const addRange = (models: Array<logI>) => {
     if (!logs.value) logs.value = [];

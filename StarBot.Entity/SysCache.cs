@@ -18,11 +18,11 @@ namespace StarBot.Entity
         /// 描述
         /// </summary>
         public string Content { get; set; } = "";
-        
+
         /// <summary>
         /// 创建日期
         /// </summary>
-        public DateTime Time { get; set; }
+        public DateTime CreateDate { get; set; }
 
         /// <summary>
         /// 类型1-微博

@@ -71,21 +71,27 @@ namespace StarBot.Controllers
                     if (item.Value.ObjToBool() == false)
                     {
                         var job = JobManager.GetSchedule(item.Key);
-                        job.Disable();
-                        if (item.Key == "WB")
+                        if (job != null)
                         {
-                            job = JobManager.GetSchedule("WBChiGua");
                             job.Disable();
+                            if (item.Key == "WB")
+                            {
+                                job = JobManager.GetSchedule("WBChiGua");
+                                job.Disable();
+                            }
                         }
                     }
                     else
                     {
                         var job = JobManager.GetSchedule(item.Key);
-                        job.Enable();
-                        if (item.Key == "WB")
+                        if (job != null)
                         {
-                            job = JobManager.GetSchedule("WBChiGua");
                             job.Enable();
+                            if (item.Key == "WB")
+                            {
+                                job = JobManager.GetSchedule("WBChiGua");
+                                job.Enable();
+                            }
                         }
                     }
                 }
