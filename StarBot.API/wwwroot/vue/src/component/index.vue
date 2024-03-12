@@ -1,43 +1,82 @@
 <template>
-  <div>
-    <el-container>
-      <el-header>欢迎使用！！！</el-header>
-      <el-main>
-        <div style="height: calc(100vh - 200px)">
-          <div>
-            <el-space wrap>
-              <el-card class="card" v-if="enable.shamrock">
-                <template #header> Bot </template>
-              </el-card>
-              <el-card class="card" v-if="enable.qq">
-                <template #header> QQ </template>
-              </el-card>
-              <el-card class="card" v-if="enable.kd">
-                <template #header> 口袋48 </template>
-              </el-card>
-              <el-card class="card">
-                <template #header> 动态 </template>
-              </el-card>
-              <el-card class="card">
-                <template #header> 错误日志 </template>
-                <el-collapse>
-                  <el-scrollbar style="height: 150px">
-                    <el-collapse-item
-                      v-for="(item, index) in errLogs"
-                      :key="index"
-                      :title="item.content.substring(0, 10)"
-                      :name="index"
-                    >
-                      {{ item.content }}
-                    </el-collapse-item>
-                  </el-scrollbar>
-                </el-collapse>
-              </el-card>
-            </el-space>
+  <div class="personal layout-pd">
+    <el-row>
+      <!-- 个人信息 -->
+      <el-col :xs="24" :sm="16">
+        <el-card shadow="hover" header="个人信息">
+          <div class="personal-user">
+            <div class="personal-user-right">
+              <el-row>
+                <el-col :span="24" class="personal-title mb18"
+                  >{{
+                    currentTimeType
+                  }}，admin，生活变的再糟糕，也不妨碍我变得更好！
+                </el-col>
+                <el-col :span="24">
+                  <el-row>
+                    <el-col :xs="24" :sm="8" class="personal-item mb6">
+                      <div class="personal-item-label">昵称：</div>
+                      <div class="personal-item-value">小柒</div>
+                    </el-col>
+                    <el-col :xs="24" :sm="16" class="personal-item mb6">
+                      <div class="personal-item-label">身份：</div>
+                      <div class="personal-item-value">超级管理</div>
+                    </el-col>
+                  </el-row>
+                </el-col>
+                <el-col :span="24">
+                  <el-row>
+                    <el-col :xs="24" :sm="8" class="personal-item mb6">
+                      <div class="personal-item-label">登录IP：</div>
+                      <div class="personal-item-value">192.168.1.1</div>
+                    </el-col>
+                    <el-col :xs="24" :sm="16" class="personal-item mb6">
+                      <div class="personal-item-label">登录时间：</div>
+                      <div class="personal-item-value">{{ currentTime }}</div>
+                    </el-col>
+                  </el-row>
+                </el-col>
+              </el-row>
+            </div>
           </div>
-        </div>
-      </el-main>
-    </el-container>
+        </el-card>
+      </el-col>
+
+      <!-- 消息通知 -->
+      <el-col :xs="24" :sm="8" class="pl15 personal-info">
+        <el-card shadow="hover">
+          <template #header>
+            <span>消息通知</span>
+            <span class="personal-info-more">更多</span>
+          </template>
+          <div class="personal-info-box">
+            <ul class="personal-info-ul">
+              <li
+                v-for="(v, k) in [] as any[]"
+                :key="k"
+                class="personal-info-li"
+              >
+                <a
+                  :href="v.link"
+                  target="_block"
+                  class="personal-info-li-title"
+                  >{{ v.title }}</a
+                >
+              </li>
+            </ul>
+          </div>
+        </el-card>
+      </el-col>
+
+      <!-- 营销推荐 -->
+      <el-col :span="24">
+        <el-card shadow="hover" class="mt15" header="营销推荐">
+          <el-row :gutter="15" class="personal-recommend-row">
+            <el-col :sm="6" class="personal-recommend-col"> </el-col>
+          </el-row>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script setup lang="ts" name="index">
@@ -60,17 +99,141 @@ const props = defineProps({
     },
   },
 });
-
+const currentTime = ref();
+const currentTimeType = ref();
 const errLogs = ref();
 
 onMounted(async () => {
   errLogs.value = (await getLogs()).data;
+  setInterval(() => {
+    var date = new Date();
+    var hour = date.getHours();
+    currentTime.value = date.toLocaleString();
+    if (hour >= 0 && hour < 6) currentTimeType.value = "凌晨好";
+    if (hour >= 6 && hour < 10 ) currentTimeType.value = "早上好";
+    if (hour >= 10 && hour < 14) currentTimeType.value = "中午好";
+    if (hour >= 14 && hour < 17) currentTimeType.value = "下午好";
+    if (hour >= 17 && hour < 19) currentTimeType.value = "傍晚好";
+    if (hour >= 19 && hour < 0) currentTimeType.value = "晚上好";
+  }, 1000);
 });
 </script>
 <style>
-.card {
-  height: 35vh;
-  width: 35vw;
+.personal {
+  .personal-user {
+    height: 130px;
+    display: flex;
+    align-items: center;
+    .personal-user-left {
+      width: 100px;
+      height: 130px;
+      border-radius: 3px;
+      :deep(.el-upload) {
+        height: 100%;
+      }
+      .personal-user-left-upload {
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 3px;
+        }
+        &:hover {
+          img {
+            animation: logoAnimation 0.3s ease-in-out;
+          }
+        }
+      }
+    }
+    .personal-user-right {
+      flex: 1;
+      padding: 0 15px;
+      .personal-title {
+        font-size: 18px;
+        @include text-ellipsis(1);
+      }
+      .personal-item {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        .personal-item-label {
+          color: var(--el-text-color-secondary);
+          @include text-ellipsis(1);
+        }
+        .personal-item-value {
+          @include text-ellipsis(1);
+        }
+      }
+    }
+  }
+  .personal-info {
+    .personal-info-more {
+      float: right;
+      color: var(--el-text-color-secondary);
+      font-size: 13px;
+      &:hover {
+        color: var(--el-color-primary);
+        cursor: pointer;
+      }
+    }
+    .personal-info-box {
+      height: 130px;
+      overflow: hidden;
+      .personal-info-ul {
+        list-style: none;
+        .personal-info-li {
+          font-size: 13px;
+          padding-bottom: 10px;
+          .personal-info-li-title {
+            display: inline-block;
+            @include text-ellipsis(1);
+            color: var(--el-text-color-secondary);
+            text-decoration: none;
+          }
+          & a:hover {
+            color: var(--el-color-primary);
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+  .personal-recommend-row {
+    .personal-recommend-col {
+      .personal-recommend {
+        position: relative;
+        height: 100px;
+        border-radius: 3px;
+        overflow: hidden;
+        cursor: pointer;
+        &:hover {
+          i {
+            right: 0px !important;
+            bottom: 0px !important;
+            transition: all ease 0.3s;
+          }
+        }
+        i {
+          position: absolute;
+          right: -10px;
+          bottom: -10px;
+          font-size: 70px;
+          transform: rotate(-30deg);
+          transition: all ease 0.3s;
+        }
+        .personal-recommend-auto {
+          padding: 15px;
+          position: absolute;
+          left: 0;
+          top: 5%;
+          color: var(--next-color-white);
+          .personal-recommend-msg {
+            font-size: 12px;
+            margin-top: 10px;
+          }
+        }
+      }
+    }
+  }
 }
 </style>
 <!-- <template>
