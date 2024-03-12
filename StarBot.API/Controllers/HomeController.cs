@@ -15,11 +15,12 @@ using SqlSugar.Extensions;
 
 namespace StarBot.Controllers
 {
-    public class HomeController(ISysConfig sysConfig, ISysCache sysCache, ISysIdol sysIdol) : BaseController
+    public class HomeController(ISysConfig sysConfig, ISysCache sysCache, ISysIdol sysIdol,ISysLog sysLog) : BaseController
     {
         ISysConfig _sysConfig = sysConfig;
         ISysCache _sysCache = sysCache;
         ISysIdol _sysIdol = sysIdol;
+        ISysLog _sysLog = sysLog;
 
         public Config Config
         {
@@ -41,6 +42,21 @@ namespace StarBot.Controllers
             ReciverMsg.Instance.BotStart(bot);
             JobManager.Initialize(new FluentSchedulerFactory());
             return Success();
+        }
+
+        /// <summary>
+        /// 获取qq信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("botinfo")]
+        public ApiResult BotInfo()
+        {
+            dynamic obj = new System.Dynamic.ExpandoObject();
+            obj.Start = Bot.Instance?.StartTime;
+            obj.Info = Bot.Instance?.LoginInfo;
+            obj.Battery = Bot.Instance?.Battery;
+            obj.NewLog = Bot.Instance?.GetLog(0, true);
+            return DataResult(obj);
         }
 
         /// <summary>
@@ -335,6 +351,19 @@ namespace StarBot.Controllers
             // 使用 Electron.NET 的 API 创建一个新窗口
             await Electron.WindowManager.CreateWindowAsync(url);
             return Success();
+        }
+
+
+        /// <summary>
+        /// 获取错误日志最新10条
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [HttpGet("getlogs")]
+        public async Task<ApiResult> GetLogs()
+        {
+            var logs = await _sysLog.GetListAsync(5);
+            return DataResult(logs);
         }
     }
 }

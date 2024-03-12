@@ -1,5 +1,5 @@
 {
-  "name": "StarBot",
+  "name": "starbot",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -17,8 +17,7 @@
     "element-plus": "^2.3.4",
     "file-saver": "^2.0.5",
     "nim-web-sdk-ng": "^0.13.1",
-    "vue": "^3.2.47",
-    "vue-scrollto": "^2.20.0"
+    "vue": "^3.2.47"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.7",

@@ -1,36 +1,78 @@
 <template>
-    <div>
-        <el-container>
-            <el-header>
-                <h1>Index.Vue</h1>
-            </el-header>
-            <el-main>
-                <el-row>
-                    
-                </el-row>
-            </el-main>
-        </el-container>
-    </div>
+  <div>
+    <el-container>
+      <el-header>欢迎使用！！！</el-header>
+      <el-main>
+        <div style="height: calc(100vh - 200px)">
+          <div>
+            <el-space wrap>
+              <el-card class="card" v-if="enable.shamrock">
+                <template #header> Bot </template>
+              </el-card>
+              <el-card class="card" v-if="enable.qq">
+                <template #header> QQ </template>
+              </el-card>
+              <el-card class="card" v-if="enable.kd">
+                <template #header> 口袋48 </template>
+              </el-card>
+              <el-card class="card">
+                <template #header> 动态 </template>
+              </el-card>
+              <el-card class="card">
+                <template #header> 错误日志 </template>
+                <el-collapse>
+                  <el-scrollbar style="height: 150px">
+                    <el-collapse-item
+                      v-for="(item, index) in errLogs"
+                      :key="index"
+                      :title="item.content.substring(0, 10)"
+                      :name="index"
+                    >
+                      {{ item.content }}
+                    </el-collapse-item>
+                  </el-scrollbar>
+                </el-collapse>
+              </el-card>
+            </el-space>
+          </div>
+        </div>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 <script setup lang="ts" name="index">
-import type { EnableModule } from '@/class/model';
-import type { PropType } from 'vue';
+import type { EnableModule } from "@/class/model";
+import { ref, type PropType, computed, onMounted } from "vue";
+import { getLogs } from "@/api";
 
 const props = defineProps({
-    enable: {
-        type: Object as PropType<EnableModule>,
-        default: {
-            qq: false,
-            wb: false,
-            bz: false,
-            kd: false,
-            xhs: false,
-            dy: false,
-            bd: false
-        }
-    }
-})
+  enable: {
+    type: Object as PropType<EnableModule>,
+    default: {
+      shamrock: false,
+      qq: false,
+      wb: false,
+      bz: false,
+      kd: false,
+      xhs: false,
+      dy: false,
+      bd: false,
+    },
+  },
+});
+
+const errLogs = ref();
+
+onMounted(async () => {
+  errLogs.value = (await getLogs()).data;
+});
 </script>
+<style>
+.card {
+  height: 35vh;
+  width: 35vw;
+}
+</style>
 <!-- <template>
     <el-container>
         <el-header height="50px">

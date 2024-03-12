@@ -11,10 +11,6 @@ namespace StarBot.Extension
     public class PluginHelper : IDisposable
     {
         public static List<PluginHelper> Plugins { get; } = [];
-        public PluginHelper()
-        {
-            if (!Directory.Exists("Plugins")) Directory.CreateDirectory("Plugins");
-        }
         public BasePlugin? PluginInfo { get; set; }
         public bool Status { get; set; }
         private string Path { get; set; } = "";
@@ -25,6 +21,7 @@ namespace StarBot.Extension
         /// </summary>
         public static void LoadPlugins()
         {
+            if (!Directory.Exists("Plugins")) Directory.CreateDirectory("Plugins");
             var files = new DirectoryInfo("Plugins").GetFiles();
             foreach (var item in files)
             {

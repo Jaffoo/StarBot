@@ -40,22 +40,22 @@ export const delImg = async (id: number) => {
     return response.data as ApiResult;
 }
 
-export const getFun = async (): Promise<ApiResult> => {
+export const getFun = async () => {
     const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/getfun`);
     return response.data as ApiResult;
 };
 
-export const startPlugin = async (name: string): Promise<ApiResult> => {
+export const startPlugin = async (name: string) => {
     const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/startplugin?name=${name}`);
     return response.data as ApiResult;
 };
 
-export const stopPlugin = async (name: string): Promise<ApiResult> => {
+export const stopPlugin = async (name: string) => {
     const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/stopplugin?name=${name}`);
     return response.data as ApiResult;
 };
 
-export const delPlugin = async (name: string): Promise<ApiResult> => {
+export const delPlugin = async (name: string) => {
     const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/delplugin?name=${name}`);
     return response.data as ApiResult;
 };
@@ -97,5 +97,15 @@ export const kdUserInfo = async (token: string) => {
 
 export const openWindow = async (url: string) => {
     const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/openwindow?url=${url}`);
+    return response.data as ApiResult;
+}
+
+export const botInfo = async () => {
+    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/botinfo`);
+    return response.data as ApiResult;
+}
+
+export const getLogs = async () => {
+    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/getlogs`);
     return response.data as ApiResult;
 }
