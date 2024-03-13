@@ -98,7 +98,7 @@
           style="padding-left: 20px; padding-right: 20px"
           id="parentContainer"
         >
-          <Index :enable="enable" v-show="component === 'index'" />
+          <Index :enable="enable" v-show="component === 'index'"/>
           <Log v-show="component === 'log'" />
           <Pic v-show="component === 'pic'" />
           <Plugin v-if="component === 'plugin' && enable.qq" />
