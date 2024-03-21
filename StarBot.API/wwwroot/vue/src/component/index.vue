@@ -1,64 +1,55 @@
 <template>
-  <el-scrollbar style="height: calc(100vh - 60px)">
-    <el-row>
-      <el-col :span="13">
-        <el-card shadow="hover" header="个人信息" class="ch250">
-          <el-col :span="24"
-            >{{ currentTimeType }}，admin，生活变的再糟糕，也不妨碍我变得更好！
-          </el-col>
-          <el-col :span="24">
-            <el-row>
-              <el-col :span="8">
-                <span>昵称：小柒</span>
-              </el-col>
-              <el-col :span="16">
-                <span>身份：超级管理</span>
-              </el-col>
-            </el-row>
-          </el-col>
-          <el-col :span="24">
-            <el-row>
-              <el-col :span="8">
-                <span>登录IP：192.168.1.1</span>
-              </el-col>
-              <el-col :span="16">
-                <span>登录时间：{{ currentTime }}</span>
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-card>
-      </el-col>
-      <el-col :span="1"></el-col>
-      <!-- 消息通知 -->
-      <el-col :span="10">
-        <el-card shadow="hover" class="ch250">
-          <template #header>
-            <el-row>
-              <el-col :span="22">消息通知</el-col>
-              <el-col :span="2">更多</el-col>
-            </el-row>
-          </template>
-          <div>
-            <ul>
-              <li v-for="(v, k) in [] as any[]" :key="k">
-                <a :href="v.link" target="_block">{{ v.title }}</a>
-              </li>
-            </ul>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row style="margin-top: 20px">
-      <!-- 营销推荐 -->
-      <el-col :span="24">
-        <el-card shadow="hover" header="营销推荐" class="ch350">
-          <el-row :gutter="15">
-            <el-col :span="6"> </el-col>
-          </el-row>
-        </el-card>
-      </el-col>
-    </el-row>
-  </el-scrollbar>
+    <el-scrollbar style="height: calc(100vh - 30px)">
+        <el-row>
+            <el-col :span="13">
+                <el-card shadow="hover" class="ch250">
+                    <template #header>导航
+                        <span style="color:#909399;font-size: 14px;">
+                            {{ currentTime }}生活变的再糟糕，也不妨碍我变得更好！
+                        </span>
+                    </template>
+                    写日志，插件，图片的数量等
+                </el-card>
+            </el-col>
+            <el-col :span="1"></el-col>
+            <!-- 消息通知 -->
+            <el-col :span="10">
+                <el-card shadow="hover" class="ch250">
+                    <template #header>
+                        <el-row>
+                            <el-col>最新日志</el-col>
+                        </el-row>
+                    </template>
+                    <div>
+                        <ul>
+                            <li v-for="(v, k) in [] as any[]" :key="k">
+                                <a :href="v.link" target="_block">{{ v.title }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-row>
+        <el-row style="margin-top: 20px;">
+            <!-- 营销推荐 -->
+            <el-col :span="24">
+                <el-card shadow="hover" header="营销推荐" class="ch350">
+                    <el-row :gutter="15">
+                        <el-col :span="6">
+                            <el-card shadow="hover" class="ch250">
+                                <template #header>导航
+                                    <span style="color:#909399;font-size: 14px;">
+                                        {{ currentTime }}生活变的再糟糕，也不妨碍我变得更好！
+                                    </span>
+                                </template>
+                                写日志，插件，图片的数量等
+                            </el-card>
+                        </el-col>
+                    </el-row>
+                </el-card>
+            </el-col>
+        </el-row>
+    </el-scrollbar>
 </template>
 <script setup lang="ts" name="index">
 import type { EnableModule } from "@/class/model";
@@ -66,46 +57,48 @@ import { ref, type PropType, computed, onMounted } from "vue";
 import { getLogs } from "@/api";
 
 const props = defineProps({
-  enable: {
-    type: Object as PropType<EnableModule>,
-    default: {
-      shamrock: false,
-      qq: false,
-      wb: false,
-      bz: false,
-      kd: false,
-      xhs: false,
-      dy: false,
-      bd: false,
+    enable: {
+        type: Object as PropType<EnableModule>,
+        default: {
+            shamrock: false,
+            qq: false,
+            wb: false,
+            bz: false,
+            kd: false,
+            xhs: false,
+            dy: false,
+            bd: false,
+        },
     },
-  },
 });
 const currentTime = ref();
 const currentTimeType = ref();
 const errLogs = ref();
 
 onMounted(async () => {
-  errLogs.value = (await getLogs()).data;
-  setInterval(() => {
-    var date = new Date();
-    var hour = date.getHours();
-    currentTime.value = date.toLocaleString();
-    if (hour >= 0 && hour < 6) currentTimeType.value = "凌晨好";
-    if (hour >= 6 && hour < 10) currentTimeType.value = "早上好";
-    if (hour >= 10 && hour < 14) currentTimeType.value = "中午好";
-    if (hour >= 14 && hour < 17) currentTimeType.value = "下午好";
-    if (hour >= 17 && hour < 19) currentTimeType.value = "傍晚好";
-    if (hour >= 19 && hour < 0) currentTimeType.value = "晚上好";
-  }, 1000);
+    errLogs.value = (await getLogs()).data;
+    setInterval(() => {
+        var date = new Date();
+        var hour = date.getHours();
+        currentTime.value = date.toLocaleString();
+        if (hour >= 0 && hour < 6) currentTimeType.value = "凌晨好";
+        if (hour >= 6 && hour < 10) currentTimeType.value = "早上好";
+        if (hour >= 10 && hour < 14) currentTimeType.value = "中午好";
+        if (hour >= 14 && hour < 17) currentTimeType.value = "下午好";
+        if (hour >= 17 && hour < 19) currentTimeType.value = "傍晚好";
+        if (hour >= 19 && hour < 0) currentTimeType.value = "晚上好";
+    }, 1000);
 });
 </script>
 <style>
 .ch250 {
-  height: 250px;
+    height: 250px;
 }
+
 .ch350 {
-  height: 420px;
+    height: calc(100vh - 340px);
 }
+
 </style>
 <!-- <template>
     <el-container>

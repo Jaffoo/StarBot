@@ -15,7 +15,7 @@ using SqlSugar.Extensions;
 
 namespace StarBot.Controllers
 {
-    public class HomeController(ISysConfig sysConfig, ISysCache sysCache, ISysIdol sysIdol,ISysLog sysLog) : BaseController
+    public class HomeController(ISysConfig sysConfig, ISysCache sysCache, ISysIdol sysIdol, ISysLog sysLog) : BaseController
     {
         ISysConfig _sysConfig = sysConfig;
         ISysCache _sysCache = sysCache;
@@ -37,11 +37,18 @@ namespace StarBot.Controllers
         [HttpGet("startbot")]
         public ApiResult StartBot()
         {
-            var connectConfig = new ConnectConfig(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, Config.Shamrock.Token);
-            var bot = new Bot(connectConfig);
-            ReciverMsg.Instance.BotStart(bot);
-            JobManager.Initialize(new FluentSchedulerFactory());
-            return Success();
+            try
+            {
+                var connectConfig = new ConnectConfig(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, Config.Shamrock.Token);
+                var bot = new Bot(connectConfig);
+                ReciverMsg.Instance.BotStart(bot);
+                JobManager.Initialize(new FluentSchedulerFactory());
+                return Success();
+            }
+            catch (Exception)
+            {
+                return Failed();
+            }
         }
 
         /// <summary>
