@@ -153,5 +153,8 @@ export const logApi = () => {
             return undefined
         }
     }
-    return { add, addRange, getLogs, addSystem }
+    const clearLog = () => {
+        localStorage.removeItem("localLog")
+    }
+    return { add, addRange, getLogs, addSystem,clearLog }
 }

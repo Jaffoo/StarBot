@@ -34,6 +34,7 @@ const openUrl = (url?: string) => {
 }
 const clear = async () => {
     logs.value = new Array<logI>;
+    logApi().clearLog();
 }
 
 const exportLog = () => {

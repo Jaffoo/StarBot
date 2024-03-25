@@ -13,7 +13,7 @@
                             <img title="点击启动" v-else @click="startBot" src="/src/asset/rocket.png"
                                 style="width: 100px;height: 100px;cursor: pointer;" />
                             <div :style="{ color: (botStart ? 'green' : 'red'), marginLeft: '17px' }">
-                                <span>{{ botStart ? '正在运行' : '点击启动' }}</span>
+                                <span>{{ startMsg }}</span>
                             </div>
                         </el-col>
                         <el-col :span="18">
@@ -40,13 +40,15 @@
                 <el-card shadow="hover" class="ch250">
                     <template #header>
                         <el-row>
-                            <el-col>系统日志</el-col>
+                            <el-col><span title="每分钟更新一次">错误日志</span></el-col>
                         </el-row>
                     </template>
                     <div>
                         <ul>
-                            <li v-for="( v, k ) in  [] as any[] " :key="k">
-                                <a :href="v.link" target="_block">{{ v.title }}</a>
+                            <li v-for="item in errLogs">
+                                <span @click="viewLog(item.content)" title="点击查看">
+                                    {{ item.content.substring(0, 20) }}--{{ item.time }}
+                                </span>
                             </li>
                         </ul>
                     </div>
@@ -60,25 +62,43 @@
                     <el-row :gutter="15">
                         <el-col :span="6">
                             <el-card shadow="hover" class="ch250">
-                                <template #header>插件
+                                <template #header><span title="每分钟更新一次">数据总览</span>
                                 </template>
+                                <div>
+                                    <label>日志信息({{ info.log.total }}条)</label>
+                                    <span>主要日志:{{ info.log.idol }};其他日志:{{ info.log.other }}</span>
+                                </div>
+                                <div>
+                                    <label>图片信息({{ info.pic.total }}张)</label>
+                                    <span>今日图片:{{ info.pic.today }};更早图片:{{ info.pic.old }}</span>
+                                </div>
+                                <div>
+                                    <label>插件信息({{ info.plugin.total }}个)</label>
+                                    <span>使用中:{{ info.plugin.using }};未使用:{{ info.plugin.unusing }}}</span>
+                                </div>
+                            </el-card>
+                        </el-col>
+                        <el-col :span="6" v-if="enable.kd">
+                            <el-card shadow="hover" class="ch250">
+                                <template #header><span title="实时更新">口袋消息</span>
+                                </template>
+                                <div>
+                                    <ul>
+                                        <li v-for="item in kdLogs">
+                                            <span v-if="item.type == 'text'"
+                                                @click="viewLog(item.name + ':' + item.content + '--' + item.time, '口袋消息')"
+                                                title="点击查看">
+                                                {{ item.name + ':' + item.content?.substring(0, 20) }}--{{ item.time }}
+                                            </span>
+                                            <span v-if="item.type == 'pic' || item.type == 'link'">{{ item.url }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
                             </el-card>
                         </el-col>
                         <el-col :span="6">
                             <el-card shadow="hover" class="ch250">
-                                <template #header>图片
-                                </template>
-                            </el-card>
-                        </el-col>
-                        <el-col :span="6">
-                            <el-card shadow="hover" class="ch250">
-                                <template #header>口袋消息
-                                </template>
-                            </el-card>
-                        </el-col>
-                        <el-col :span="6">
-                            <el-card shadow="hover" class="ch250">
-                                <template #header>帮助
+                                <template #header>帮助和反馈
                                 </template>
                             </el-card>
                         </el-col>
@@ -92,12 +112,10 @@
 import { type EnableModule, type Config, logApi, type logI } from "@/class/model";
 import { ref, type PropType, onMounted } from "vue";
 import { ElMessageBox, dayjs } from 'element-plus'
-import { getLogs, getConfig, startBot as startBotAPI, postMsg } from "@/api";
+import { getLogs, getConfig, startBot as startBotAPI, postMsg, getFun, getCache } from "@/api";
 import NimChatroomSocket from "@/class/live";
 import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
 import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
-import PocketMessage from "@/class/type";
-import axios from "axios";
 import type { SubscribeAllChannelResult } from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK/QChatServerServiceInterface";
 import type { LiveRoomMessage } from "@/class/messageType";
 
@@ -118,13 +136,31 @@ const props = defineProps({
 });
 
 const config = ref<Config>()
-
+const startMsg = ref("点击启动")
 const currentTime = ref();
 const currentTimeType = ref();
 const errLogs = ref();
 const botStart = ref(false);
 const lastStart = ref("无记录");
 const runTime = ref('0小时0分钟');
+const kdLogs = ref<logI[]>()
+const info = ref({
+    pic: {
+        total: 0,
+        today: 0,
+        old: 0
+    },
+    plugin: {
+        total: 0,
+        using: 0,
+        unusing: 0
+    },
+    log: {
+        total: 0,
+        idol: 0,
+        other: 0
+    }
+})
 
 const nim = ref<NIMSDK>();
 const qChat = ref<QChatSDK>();
@@ -132,21 +168,33 @@ const liveNim = ref<NimChatroomSocket>();
 
 
 const startBot = async () => {
-    botStart.value = true;
-    lastStart.value = currentTime.value;
+    startMsg.value = "启动中！"
     destroy()
-    await initPocket()
-    initPocketLive()
+    let startRes = await startBotAPI();
+    if (startRes.success) {
+        botStart.value = true;
+        startMsg.value = "正在运行";
+        lastStart.value = currentTime.value;
+        await initPocket()
+        initPocketLive()
+    } else {
+        logApi().addSystem(startRes.msg ?? "启动失败：未知错误");
+        getTenLog();
+        startMsg.value = "点击启动"
+    }
 }
 const closeBot = () => {
-    ElMessageBox.alert("确定要停止机器人吗？", "温馨提示！", { type: 'warning', confirmButtonText: '关闭', cancelButtonText: '我点错了' })
+    startMsg.value = "关闭中！"
+    ElMessageBox.alert("确定要关闭机器人吗？", "温馨提示！", { type: 'warning', confirmButtonText: '关闭', cancelButtonText: '我点错了' })
         .then(() => {
             //关闭
             botStart.value = false;
+            startMsg.value = "点击启动"
         })
         .catch(() => {
             //不关闭
             botStart.value = true;
+            startMsg.value = "正在运行"
         })
 }
 
@@ -187,7 +235,7 @@ const initPocket = async () => {
             await qChat.value.login();
         }
         catch (e) {
-            console.log("初始化口袋发生错误", e)
+            throw (e)
         }
     }
 }
@@ -198,21 +246,22 @@ const initPocketLive = () => {
 }
 
 const handleLogined = async function () {
-    var msg = `口袋已登录。正在订阅小偶像${config.value?.KD?.idolName}的房间。`;
+    var msg = `口袋已登录。正在进入小偶像${config.value?.KD?.idolName}的口袋房间。`;
     logApi().addSystem(msg);
-    if (qChat.value == null) throw ("聊天室未成功实例化");
+    if (qChat.value == null) throw ("进入口袋房间失败，聊天室未成功实例化");
     const result: SubscribeAllChannelResult =
         await qChat.value.qchatServer.subscribeAllChannel({
             type: 1,
             serverIds: [config.value?.KD?.serverId ?? ""],
         });
     if (result.failServerIds.length) {
-        msg = `小偶像${config.value?.KD?.idolName}的房间订阅失败。请检查配置后重试，如仍有问题，请联系开发者。`;
+        msg = `进入小偶像${config.value?.KD?.idolName}的口袋房间失败。请检查配置后重试，如仍有问题，请联系开发者。`;
         logApi().addSystem(msg);
         return;
     }
-    msg = `小偶像${config.value?.KD?.idolName}的房间订阅成功。`;
+    msg = `成功进入小偶像${config.value?.KD?.idolName}的口袋房间。`;
     logApi().addSystem(msg);
+    getTenLog();
 };
 
 const handleMessage = async function (msg: any) {
@@ -243,10 +292,12 @@ const handleMessage = async function (msg: any) {
         kdMsg.content = '发送了一条特殊消息！'
     }
     logApi().add(kdMsg);
+    getTenLog();
 };
 
 const handleRoomSocketDisconnect = function (...context: any): void {
     logApi().addSystem("口袋登录连接状态已断开。");
+    getTenLog();
 };
 
 const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
@@ -256,7 +307,7 @@ const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
 }
 
 const getChannel = async function (id: number) {
-    if (qChat.value == null) throw ("聊天室未成功实例化。");
+    if (qChat.value == null) return;
     const channelResult = await qChat.value.qchatChannel.getChannels({
         channelIds: [`${id}`],
     });
@@ -265,11 +316,40 @@ const getChannel = async function (id: number) {
     }
     return "";
 };
+const getTenLog = () => {
+    let logs = logApi().getLogs();
+    if (!logs || logs.length <= 0) return
+    if (!props.enable.kd || !config.value || !config.value.KD || !config.value.KD.idolName) return
+    logs = logs.filter(x => x.name && x.name.includes(config.value!.KD!.idolName!))
+    kdLogs.value = logs.slice(-10);
+}
+const viewLog = (log: string, title = '日志') => {
+    ElMessageBox.alert(log, title + "详情")
+}
 
 onMounted(async () => {
     let configTemp = await getConfig();
     config.value = configTemp.data;
-    errLogs.value = (await getLogs()).data;
+    setInterval(async () => {
+        errLogs.value = (await getLogs()).data
+        let plugInfo = (await getFun()).data
+        let picInfo = await (await getCache()).data
+        info.value.plugin.total = plugInfo.length
+        info.value.plugin.unusing = plugInfo.filter((x: any) => !x.statue).length
+        info.value.plugin.using = plugInfo.filter((x: any) => x.statue).length
+
+        info.value.pic.total = picInfo.length
+        info.value.pic.today = picInfo.filter((x: any) => new Date(x.createDate).getDate() === new Date().getDate()).length
+        info.value.pic.old = info.value.pic.total - info.value.pic.today
+
+        let tempLogs = logApi().getLogs();
+        if (tempLogs) {
+            info.value.log.total = tempLogs.length ?? 0
+            if (config.value?.KD?.idolName)
+                info.value.log.idol = tempLogs.filter(x => x.name?.includes(config.value!.KD!.idolName!)).length
+            info.value.log.other = info.value.log.total - info.value.log.idol
+        }
+    }, 1000 * 60)
     setInterval(() => {
         var date = new Date();
         var hour = date.getHours();
@@ -289,6 +369,7 @@ onMounted(async () => {
             runTime.value = `${hoursDiff}小时${minutesDiff}分钟`;
         }
     }, 1000);
+    getTenLog();
 });
 </script>
 <style>
