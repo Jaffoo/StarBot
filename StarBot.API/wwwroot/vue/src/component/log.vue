@@ -7,7 +7,8 @@
         <el-scrollbar style="height: calc(100vh - 230px);">
             <div v-for="(item, index) in logs">
                 <span>{{ index + 1 }}.</span>
-                <span><el-avatar :src="item.avarar" />{{ item.name }}:</span>
+                <span v-if="item.type !== 'system'"><el-avatar :src="item.avatar" />{{ item.name }}:</span>
+                <span v-else>系统信息:</span>
                 <span v-if="item.type == 'text'" :style="{ color: item.color }">{{ item.content }}</span>
                 <span v-if="item.type == 'link'" :style="{ color: item.color, 'text-decoration': 'underline' }"
                     @click="openUrl(item.url)">
@@ -22,19 +23,11 @@
 </template>
 
 <script setup lang="ts" name="log">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { openWindow } from '@/api'
 import { saveAs } from "file-saver";
+import { type logI, logApi } from '@/class/model';
 
-interface logI {
-    name?: string,
-    time?: Date,
-    avarar?: string,
-    type: 'pic' | 'text' | 'link',
-    content?: string,
-    url?: string,
-    color?: '#409eff' | '#67c23a' | '#f56c6c'
-}
 const logs = ref<Array<logI>>(new Array<logI>)
 const openUrl = (url?: string) => {
     if (url) openWindow(url)
@@ -66,28 +59,8 @@ const getIndex = (url?: string): number => {
     var index = imgList().findIndex(x => x == url)
     return index;
 }
-
-const add = (model: logI) => {
-    logs.value.push(model)
-    var localLog = localStorage.getItem("localLog");
-    if (localLog) {
-        localStorage.removeItem("localLog");
-    }
-    var logmodel = {
-        count: logs.value.length,
-        newLog: model
-    }
-    localStorage.setItem("localLog", JSON.stringify(logmodel))
-}
-const addRange = (models: Array<logI>) => {
-    if (!logs.value) logs.value = [];
-    models.forEach(item => {
-        logs.value?.push(item)
-    })
-}
-
-defineExpose({
-    add,
-    addRange
+onMounted(() => {
+    let tempLogs = logApi().getLogs();
+    if (tempLogs) logs.value = tempLogs
 })
 </script>

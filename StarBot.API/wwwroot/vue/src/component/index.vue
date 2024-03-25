@@ -89,9 +89,17 @@
     </el-scrollbar>
 </template>
 <script setup lang="ts" name="index">
-import type { EnableModule } from "@/class/model";
-import { ref, type PropType, computed, onMounted } from "vue";
-import { getLogs } from "@/api";
+import { type EnableModule, type Config, logApi, type logI } from "@/class/model";
+import { ref, type PropType, onMounted } from "vue";
+import { ElMessageBox, dayjs } from 'element-plus'
+import { getLogs, getConfig, startBot as startBotAPI, postMsg } from "@/api";
+import NimChatroomSocket from "@/class/live";
+import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
+import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
+import PocketMessage from "@/class/type";
+import axios from "axios";
+import type { SubscribeAllChannelResult } from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK/QChatServerServiceInterface";
+import type { LiveRoomMessage } from "@/class/messageType";
 
 const props = defineProps({
     enable: {
@@ -108,6 +116,9 @@ const props = defineProps({
         },
     },
 });
+
+const config = ref<Config>()
+
 const currentTime = ref();
 const currentTimeType = ref();
 const errLogs = ref();
@@ -115,15 +126,149 @@ const botStart = ref(false);
 const lastStart = ref("无记录");
 const runTime = ref('0小时0分钟');
 
-const startBot = () => {
+const nim = ref<NIMSDK>();
+const qChat = ref<QChatSDK>();
+const liveNim = ref<NimChatroomSocket>();
+
+
+const startBot = async () => {
     botStart.value = true;
     lastStart.value = currentTime.value;
+    destroy()
+    await initPocket()
+    initPocketLive()
 }
 const closeBot = () => {
-    botStart.value = false;
+    ElMessageBox.alert("确定要停止机器人吗？", "温馨提示！", { type: 'warning', confirmButtonText: '关闭', cancelButtonText: '我点错了' })
+        .then(() => {
+            //关闭
+            botStart.value = false;
+        })
+        .catch(() => {
+            //不关闭
+            botStart.value = true;
+        })
 }
 
+const destroy = () => {
+    if (nim.value) {
+        nim.value.destroy()
+    }
+    if (qChat.value) {
+        qChat.value.destroy()
+    }
+    if (liveNim.value) {
+        liveNim.value.disconnect();
+    }
+}
+
+const initPocket = async () => {
+    destroy();
+    if (config.value && config.value.KD) {
+        try {
+            nim.value = new NIMSDK({
+                appkey: atob(config.value.KD.appKey ?? ""),
+                account: config.value.KD.account ?? "",
+                token: config.value.KD.token ?? "",
+            });
+            await nim.value.connect();
+            qChat.value = new QChatSDK({
+                appkey: atob(config.value.KD.appKey ?? ""),
+                account: config.value.KD.account ?? "",
+                token: config.value.KD.token ?? "",
+                linkAddresses: await nim.value.plugin.getQChatAddress({
+                    ipType: 2,
+                }),
+            })
+
+            qChat.value.on("logined", handleLogined);
+            qChat.value.on("message", handleMessage);
+            qChat.value.on("disconnect", handleRoomSocketDisconnect);
+            await qChat.value.login();
+        }
+        catch (e) {
+            console.log("初始化口袋发生错误", e)
+        }
+    }
+}
+
+const initPocketLive = () => {
+    liveNim.value = new NimChatroomSocket({ liveId: config.value?.KD?.liveRoomId ?? "", onMessage: liveMsg })
+    liveNim.value.init(config.value?.KD?.appKey ?? "");
+}
+
+const handleLogined = async function () {
+    var msg = `口袋已登录。正在订阅小偶像${config.value?.KD?.idolName}的房间。`;
+    logApi().addSystem(msg);
+    if (qChat.value == null) throw ("聊天室未成功实例化");
+    const result: SubscribeAllChannelResult =
+        await qChat.value.qchatServer.subscribeAllChannel({
+            type: 1,
+            serverIds: [config.value?.KD?.serverId ?? ""],
+        });
+    if (result.failServerIds.length) {
+        msg = `小偶像${config.value?.KD?.idolName}的房间订阅失败。请检查配置后重试，如仍有问题，请联系开发者。`;
+        logApi().addSystem(msg);
+        return;
+    }
+    msg = `小偶像${config.value?.KD?.idolName}的房间订阅成功。`;
+    logApi().addSystem(msg);
+};
+
+const handleMessage = async function (msg: any) {
+    msg.fromType = 1;
+    msg.ext = JSON.parse(msg.ext as string);
+    msg.channelName = await getChannel(msg.channelId);
+    msg.time = dayjs(msg.time).format("YYYY-MM-DD HH:mm:ss");
+    await postMsg(JSON.stringify(msg));
+    let kdMsg: logI = {
+        type: 'text',
+        name: config.value?.KD?.idolName + `【${msg.channelName}】`,
+        time: msg.time,
+        avatar: msg.ext.avatar ?? '',
+        color: '#409eff',
+    }
+    if (msg.type == "text") {
+        kdMsg.content = msg.body;
+    }
+    else if (msg.type == "image") {
+        kdMsg.type = 'pic'
+        kdMsg.url = msg?.attach?.url;
+    }
+    else if (msg.type == "video" || msg.type == "audio") {
+        kdMsg.type = 'link'
+        kdMsg.url = msg?.attach?.url;
+    }
+    else {
+        kdMsg.content = '发送了一条特殊消息！'
+    }
+    logApi().add(kdMsg);
+};
+
+const handleRoomSocketDisconnect = function (...context: any): void {
+    logApi().addSystem("口袋登录连接状态已断开。");
+};
+
+const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
+    event.forEach(item => {
+        postMsg(JSON.stringify(item), 1);
+    })
+}
+
+const getChannel = async function (id: number) {
+    if (qChat.value == null) throw ("聊天室未成功实例化。");
+    const channelResult = await qChat.value.qchatChannel.getChannels({
+        channelIds: [`${id}`],
+    });
+    if (channelResult) {
+        return channelResult[0].name;
+    }
+    return "";
+};
+
 onMounted(async () => {
+    let configTemp = await getConfig();
+    config.value = configTemp.data;
     errLogs.value = (await getLogs()).data;
     setInterval(() => {
         var date = new Date();
@@ -251,7 +396,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 const started = ref<boolean>(false);
 const windStatus = ref<boolean>(false);
-const baseConfig = ref({} as any);
+const config = ref({} as any);
 const mirai = ref({} as any);
 const useMirai = ref(false);
 const useAli = ref(false);
@@ -308,7 +453,7 @@ const start = async () => {
         liveNim.value.disconnect();
     }
     const res = await getConfig();
-    baseConfig.value = res.data.config;
+    config.value = res.data.config;
     const myConfig = res.data.config.KD;
 
     var useKd: boolean = false;
@@ -378,24 +523,24 @@ const close = () => {
 }
 
 const handleLogined = async function () {
-    var msg = `口袋登录成功。订阅小偶像${baseConfig.value.KD.name}的房间。`;
+    var msg = `口袋登录成功。订阅小偶像${config.value.KD.name}的房间。`;
     log.value.push(new PocketMessage().add(msg));
     if (qChat.value == null) throw ("聊天室未成功实例化");
     const result: SubscribeAllChannelResult =
         await qChat.value.qchatServer.subscribeAllChannel({
             type: 1,
-            serverIds: [baseConfig.value.KD.serverId],
+            serverIds: [config.value.KD.serverId],
         });
     if (result.failServerIds.length) {
-        msg = `小偶像${baseConfig.value.KD.name}的房间订阅失败。请检查配置后重试，如仍有问题，请联系开发者。`;
+        msg = `小偶像${config.value.KD.name}的房间订阅失败。请检查配置后重试，如仍有问题，请联系开发者。`;
         log.value.push(new PocketMessage().add(msg));
         return;
     }
-    msg = `小偶像${baseConfig.value.KD.name}的房间订阅成功。`;
+    msg = `小偶像${config.value.KD.name}的房间订阅成功。`;
     log.value.push(new PocketMessage().add(msg));
     //同时订阅直播间
-    liveNim.value = new NimChatroomSocket({ liveId: baseConfig.value.KD.liveRoomId, onMessage: liveMsg })
-    liveNim.value.init(baseConfig.value.KD.appKey);
+    liveNim.value = new NimChatroomSocket({ liveId: config.value.KD.liveRoomId, onMessage: liveMsg })
+    liveNim.value.init(config.value.KD.appKey);
 
     var res = await axios({ url: "http://parkerbot.api/api/start" });
     ws.value = new window.WebSocket("ws://localhost:6001");
@@ -498,7 +643,7 @@ const getConfig = async (): Promise<any> => {
 };
 onMounted(async () => {
     const res = await getConfig();
-    baseConfig.value = res.data.config;
+    config.value = res.data.config;
     mirai.value = res.data.mirai;
     useMirai.value = res.data.mirai.useMirai;
     res.data.enable.forEach((item: any) => {

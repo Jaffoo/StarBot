@@ -1,6 +1,7 @@
 import NIM_SDK from '@yxim/nim-web-sdk/dist/SDK/NIM_Web_SDK.js';
 import type NIM_Web_Chatroom from '@yxim/nim-web-sdk/dist/SDK/NIM_Web_Chatroom';
 import type { LiveRoomMessage } from './messageType';
+import { logApi } from './model';
 
 type OnMessage = (t: NimChatroomSocket, event: Array<LiveRoomMessage>) => void | Promise<void>;
 
@@ -51,16 +52,19 @@ class NimChatroomSocket {
   onConnet: Function = (event: any): void => {
     let msg = `进入小偶像的直播间成功。`;
     console.log(msg);
+    logApi().addSystem(msg);
   };
 
   // 进入房间失败
   handleRoomSocketError: Function = (err: NIMError, event: any): void => {
     console.log('发生错误', err, event);
+    logApi().addSystem('发生错误' + err);
   };
 
   // 断开连接
   handleRoomSocketDisconnect: Function = (err: NIMError): void => {
     console.log('连接断开', err);
+    logApi().addSystem('直播间连接断开');
   };
 
   // 断开连接

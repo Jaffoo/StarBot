@@ -42,7 +42,8 @@ export interface KD extends Base {
     msgTypeAll?: Array<MsgType>,
     msgType?: Array<string>,
     saveMsg?: number,
-    saveImg?: boolean
+    saveImg?: boolean,
+    appKey?: string
 }
 export interface WB extends Listing {
     userAll?: string,
@@ -89,4 +90,68 @@ export interface ApiResult {
     data?: any,
     success: boolean,
     count: number
+}
+
+export interface logI {
+    name?: string,
+    time?: string,
+    avatar?: string,
+    type: 'pic' | 'text' | 'link' | 'system',
+    content?: string,
+    url?: string,
+    color?: '#409eff' | '#67c23a' | '#f56c6c'
+}
+
+export const logApi = () => {
+    const addSystem = (content: string): boolean => {
+        try {
+            var localLogStr = localStorage.getItem("localLog");
+            var localLog: Array<logI>
+            if (!localLogStr) localLog = new Array<logI>
+            else localLog = JSON.parse(localLogStr);
+            localLog.push({ type: 'system', time: new Date().toLocaleString(), content: content })
+            localStorage.setItem("localLog", JSON.stringify(localLog))
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+    const add = (model: logI): boolean => {
+        try {
+            var localLogStr = localStorage.getItem("localLog");
+            var localLog: Array<logI>
+            if (!localLogStr) localLog = new Array<logI>
+            else localLog = JSON.parse(localLogStr);
+            localLog.push(model)
+            localStorage.setItem("localLog", JSON.stringify(localLog))
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+    const addRange = (models: Array<logI>): boolean => {
+        try {
+            var localLogStr = localStorage.getItem("localLog");
+            var localLog: Array<logI>
+            if (!localLogStr) localLog = new Array<logI>
+            else localLog = JSON.parse(localLogStr);
+            models.forEach(item => localLog.push(item))
+            localStorage.setItem("localLog", JSON.stringify(localLog))
+            return true
+        } catch (e) {
+            return false
+        }
+    }
+    const getLogs = (): Array<logI> | undefined => {
+        try {
+            var localLogStr = localStorage.getItem("localLog");
+            var localLog: Array<logI>
+            if (!localLogStr) return undefined
+            else localLog = JSON.parse(localLogStr);
+            return localLog
+        } catch (error) {
+            return undefined
+        }
+    }
+    return { add, addRange, getLogs, addSystem }
 }
