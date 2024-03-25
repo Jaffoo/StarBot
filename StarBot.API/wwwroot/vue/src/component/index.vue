@@ -28,7 +28,7 @@
                                 <label>上次启动：</label><span style="color: gray;">{{ lastStart }}</span>
                             </div>
                             <div class="mt10">
-                                <label>运行时长：</label><span style="color: gray;">{{ runTime }}</span>
+                                <label>运行时长：</label><span style="color: gray;">已运行{{ runTime }}</span>
                             </div>
                         </el-col>
                     </el-row>
