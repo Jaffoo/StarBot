@@ -279,15 +279,15 @@ const initPocket = async () => {
     if (config.value && config.value.KD) {
         try {
             nim.value = new NIMSDK({
-                appkey: atob(config.value.KD.appKey ?? ""),
-                account: config.value.KD.account ?? "",
-                token: config.value.KD.token ?? "",
+                appkey: atob(config.value.KD.appKey!),
+                account: config.value.KD.account!,
+                token: config.value.KD.token!,
             });
             await nim.value.connect();
             qChat.value = new QChatSDK({
-                appkey: atob(config.value.KD.appKey ?? ""),
-                account: config.value.KD.account ?? "",
-                token: config.value.KD.token ?? "",
+                appkey: atob(config.value.KD.appKey!),
+                account: config.value.KD.account!,
+                token: config.value.KD.token!,
                 linkAddresses: await nim.value.plugin.getQChatAddress({
                     ipType: 2,
                 }),
@@ -305,25 +305,25 @@ const initPocket = async () => {
 }
 
 const initPocketLive = () => {
-    liveNim.value = new NimChatroomSocket({ liveId: config.value?.KD?.liveRoomId ?? "", onMessage: liveMsg })
-    liveNim.value.init(config.value?.KD?.appKey ?? "");
+    liveNim.value = new NimChatroomSocket({ liveId: config.value!.KD!.liveRoomId!, onMessage: liveMsg })
+    liveNim.value.init(config.value!.KD!.appKey!);
 }
 
 const handleLogined = async function () {
-    var msg = `口袋已登录。正在进入小偶像${config.value?.KD?.idolName}的口袋房间。`;
+    var msg = `口袋已登录。正在进入小偶像${config.value!.KD!.idolName}的口袋房间。`;
     logApi().addSystem(msg);
     if (qChat.value == null) throw ("进入口袋房间失败，聊天室未成功实例化");
     const result: SubscribeAllChannelResult =
         await qChat.value.qchatServer.subscribeAllChannel({
             type: 1,
-            serverIds: [config.value?.KD?.serverId ?? ""],
+            serverIds: [config.value!.KD!.serverId!],
         });
     if (result.failServerIds.length) {
-        msg = `进入小偶像${config.value?.KD?.idolName}的口袋房间失败。请检查配置后重试，如仍有问题，请联系开发者。`;
+        msg = `进入小偶像${config.value!.KD!.idolName}的口袋房间失败。请检查配置后重试，如仍有问题，请联系开发者。`;
         logApi().addSystem(msg);
         return;
     }
-    msg = `成功进入小偶像${config.value?.KD?.idolName}的口袋房间。`;
+    msg = `成功进入小偶像${config.value!.KD!.idolName}的口袋房间。`;
     logApi().addSystem(msg);
     getTenLog();
 };
@@ -336,7 +336,7 @@ const handleMessage = async function (msg: any) {
     await postMsg(JSON.stringify(msg));
     let kdMsg: logI = {
         type: 'text',
-        name: config.value?.KD?.idolName + `【${msg.channelName}】`,
+        name: config.value!.KD!.idolName! + `【${msg.channelName}】`,
         time: msg.time,
         avatar: msg.ext.avatar ?? '',
         color: '#409eff',
