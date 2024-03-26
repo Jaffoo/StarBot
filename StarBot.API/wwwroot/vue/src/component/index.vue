@@ -225,6 +225,7 @@ const startBot = async () => {
     destroy()
     let startRes = await startBotAPI();
     if (startRes.success) {
+        ElMessage.success("启动成功")
         botStart.value = true;
         startMsg.value = "正在运行";
         lastStart.value = currentTime.value;
@@ -233,7 +234,9 @@ const startBot = async () => {
             initPocketLive()
         }
     } else {
-        logApi().addSystem(startRes.msg ?? "启动失败：未知错误");
+        let emsg = startRes.msg ?? "启动失败：未知错误";
+        ElMessage.error(emsg)
+        logApi().addSystem(emsg);
         getTenLog();
         startMsg.value = "点击启动"
     }
