@@ -27,21 +27,9 @@
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button
-              type="primary"
-              v-if="!scope.row.statue"
-              @click="start(scope.row.pluginInfo.name)"
-              >启用</el-button
-            >
-            <el-button
-              type="primary"
-              v-else
-              @click="stop(scope.row.pluginInfo.name)"
-              >禁用</el-button
-            >
-            <el-button type="primary" @click="del(scope.row.pluginInfo.name)"
-              >删除</el-button
-            >
+            <el-button type="primary" v-if="!scope.row.statue" @click="start(scope.row.pluginInfo.name)">启用</el-button>
+            <el-button type="primary" v-else @click="stop(scope.row.pluginInfo.name)">禁用</el-button>
+            <el-button type="primary" @click="del(scope.row.pluginInfo.name)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

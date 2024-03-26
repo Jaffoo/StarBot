@@ -2,48 +2,21 @@
   <el-affix target=".el-scrollbar__view">
     <el-card id="enable">
       <template #header>
-        <el-button
-          type="primary"
-          native-type="button"
-          :icon="Edit"
-          @click="save()"
-          >保存</el-button
-        >
-        <el-button
-          type="primary"
-          native-type="button"
-          :icon="Setting"
-          @click="reset()"
-          >重置</el-button
-        >
+        <el-button type="primary" native-type="button" :icon="Edit" @click="save()">保存</el-button>
+        <el-button type="primary" native-type="button" :icon="Setting" @click="reset()">重置</el-button>
       </template>
       <Enable :enable="model.EnableModule" @enable-change="enableChange" />
     </el-card>
   </el-affix>
   <el-scrollbar style="height: calc(100vh - 230px)" id="pdom">
-    <Shamrock
-      ref="botRef"
-      :shamrock="model.Shamrock"
-      v-if="model.EnableModule.shamrock"
-      class="mt10"
-    />
+    <Shamrock ref="botRef" :shamrock="model.Shamrock" v-if="model.EnableModule.shamrock" class="mt10" />
     <QQ ref="qqRef" :qq="model.QQ" v-if="model.EnableModule.qq" class="mt10" />
     <WB ref="wbRef" :wb="model.WB" v-if="model.EnableModule.wb" class="mt10" />
     <KD ref="kdRef" :kd="model.KD" v-if="model.EnableModule.kd" class="mt10" />
     <BZ ref="bzRef" :bz="model.BZ" v-if="model.EnableModule.bz" class="mt10" />
-    <XHS
-      ref="xhsRef"
-      :xhs="model.XHS"
-      v-if="model.EnableModule.xhs"
-      class="mt10"
-    />
+    <XHS ref="xhsRef" :xhs="model.XHS" v-if="model.EnableModule.xhs" class="mt10" />
     <BD ref="bdRef" :bd="model.BD" v-if="model.EnableModule.bd" class="mt10" />
-    <DY
-      ref="dyRef"
-      :dy="model.DY"
-      v-if="model.EnableModule.dy"
-      class="mt10 mb50"
-    />
+    <DY ref="dyRef" :dy="model.DY" v-if="model.EnableModule.dy" class="mt10 mb50" />
   </el-scrollbar>
 </template>
 

@@ -22,11 +22,7 @@
               </el-icon>
               图片
             </el-menu-item>
-            <el-menu-item
-              index="4"
-              @click="changeMenu('plugin')"
-              v-show="enable.qq"
-            >
+            <el-menu-item index="4" @click="changeMenu('plugin')" v-show="enable.qq">
               <el-icon>
                 <House />
               </el-icon>
@@ -34,59 +30,19 @@
             </el-menu-item>
             <el-sub-menu index="99">
               <template #title>
-                <el-icon> <Cpu /> </el-icon>配置
+                <el-icon>
+                  <Cpu />
+                </el-icon>配置
               </template>
-              <el-menu-item index="99-0" @click="changeMenu('config')"
-                >启用模块</el-menu-item
-              >
-              <el-menu-item
-                index="99-1"
-                @click="scrollSet('shamrock')"
-                v-show="enable.shamrock"
-                >Shamrock</el-menu-item
-              >
-              <el-menu-item
-                index="99-2"
-                @click="scrollSet('qq')"
-                v-show="enable.qq"
-                >QQ</el-menu-item
-              >
-              <el-menu-item
-                index="99-3"
-                @click="scrollSet('wb')"
-                v-show="enable.wb"
-                >微博</el-menu-item
-              >
-              <el-menu-item
-                index="99-4"
-                @click="scrollSet('kd')"
-                v-show="enable.kd"
-                >口袋</el-menu-item
-              >
-              <el-menu-item
-                index="99-5"
-                @click="scrollSet('bz')"
-                v-show="enable.bz"
-                >B站</el-menu-item
-              >
-              <el-menu-item
-                index="99-6"
-                @click="scrollSet('xhs')"
-                v-show="enable.xhs"
-                >小红书</el-menu-item
-              >
-              <el-menu-item
-                index="99-7"
-                @click="scrollSet('bd')"
-                v-show="enable.bd"
-                >百度</el-menu-item
-              >
-              <el-menu-item
-                index="99-8"
-                @click="scrollSet('dy')"
-                v-show="enable.dy"
-                >抖音</el-menu-item
-              >
+              <el-menu-item index="99-0" @click="changeMenu('config')">启用模块</el-menu-item>
+              <el-menu-item index="99-1" @click="scrollSet('shamrock')" v-show="enable.shamrock">Shamrock</el-menu-item>
+              <el-menu-item index="99-2" @click="scrollSet('qq')" v-show="enable.qq">QQ</el-menu-item>
+              <el-menu-item index="99-3" @click="scrollSet('wb')" v-show="enable.wb">微博</el-menu-item>
+              <el-menu-item index="99-4" @click="scrollSet('kd')" v-show="enable.kd">口袋</el-menu-item>
+              <el-menu-item index="99-5" @click="scrollSet('bz')" v-show="enable.bz">B站</el-menu-item>
+              <el-menu-item index="99-6" @click="scrollSet('xhs')" v-show="enable.xhs">小红书</el-menu-item>
+              <el-menu-item index="99-7" @click="scrollSet('bd')" v-show="enable.bd">百度</el-menu-item>
+              <el-menu-item index="99-8" @click="scrollSet('dy')" v-show="enable.dy">抖音</el-menu-item>
             </el-sub-menu>
           </el-menu>
         </el-scrollbar>
@@ -94,20 +50,12 @@
     </el-card>
     <el-card style="width: 90%; margin-left: 10px">
       <el-container>
-        <el-main
-          style="padding-left: 20px; padding-right: 20px"
-          id="parentContainer"
-        >
-          <Index :enable="enable" v-show="component === 'index'"/>
+        <el-main style="padding-left: 20px; padding-right: 20px" id="parentContainer">
+          <Index :enable="enable" v-show="component === 'index'" />
           <Log v-show="component === 'log'" />
           <Pic v-show="component === 'pic'" />
           <Plugin v-if="component === 'plugin' && enable.qq" />
-          <Config
-            ref="configRef"
-            :enable="enable"
-            v-if="component === 'config'"
-            @top-enable-change="enableChange"
-          />
+          <Config ref="configRef" :enable="enable" v-if="component === 'config'" @top-enable-change="enableChange" />
         </el-main>
       </el-container>
     </el-card>

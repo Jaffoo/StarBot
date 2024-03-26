@@ -5,6 +5,8 @@ import type { Config, ApiResult } from '@/class/model';
 const _port = sessionStorage.getItem("HttpPort") || 6051;
 const _baseUrl = `http://127.0.0.1:${_port}/api/v1`;
 
+export const ApiPrefix = _baseUrl;
+
 export const startBot = async () => {
     const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/startbot`);
     return response.data as ApiResult;

@@ -14,7 +14,7 @@
                 <el-switch v-model="bd.faceVerify" :active-value="true" :inactive-value="false"></el-switch>
             </el-form-item>
             <el-form-item label="基础人脸" v-show="bd.faceVerify">
-                <el-upload :file-list="bd.imageList" action="http://127.0.0.1:6051/api/v1/upload" :on-success="onSuccess"
+                <el-upload :file-list="bd.imageList" :action="ApiPrefix + '/upload'" :on-success="onSuccess"
                     :on-remove="onRemove" list-type="picture-card" :limit="3" accept=".jpg,.png,.jpeg">
                     <el-icon>
                         <Plus />
@@ -51,6 +51,8 @@
 import { ref, type PropType } from 'vue'
 import type { BD } from '@/class/model'
 import type { FormInstance, FormRules, UploadFile, UploadProps } from 'element-plus';
+import { ApiPrefix } from '@/api/index'
+
 const props = defineProps({
     bd: {
         type: Object as PropType<BD>,
