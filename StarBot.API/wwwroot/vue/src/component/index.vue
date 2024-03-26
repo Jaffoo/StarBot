@@ -218,6 +218,11 @@ const oneSec = ref<number>()
 const carousel = ref('help')
 
 const startBot = async () => {
+    const allFalse = Object.values(props.enable).every(value => value === false);
+    if (allFalse) {
+        ElMessageBox.alert('没有启用任何功能')
+        return;
+    }
     startMsg.value = "启动中！"
     if (!oneMin.value || oneMin.value < 0)
         oneMinTimer();
@@ -439,6 +444,7 @@ onMounted(async () => {
     config.value = configTemp.data;
     oneMinFun();
     oneSecFun();
+    oneSecTimer();
     getTenLog();
 });
 </script>
