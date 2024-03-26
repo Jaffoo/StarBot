@@ -39,10 +39,13 @@ namespace StarBot.Controllers
         {
             try
             {
-                var connectConfig = new ConnectConfig(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, Config.Shamrock.Token);
-                var bot = new Bot(connectConfig);
-                await bot.Start();
-                ReciverMsg.Instance.BotStart(bot);
+                if (Config.EnableModule.Shamrock)
+                {
+                    var connectConfig = new ConnectConfig(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, Config.Shamrock.Token);
+                    var bot = new Bot(connectConfig);
+                    await bot.Start();
+                    ReciverMsg.Instance.BotStart(bot);
+                }
                 JobManager.Initialize(new FluentSchedulerFactory());
                 return Success();
             }

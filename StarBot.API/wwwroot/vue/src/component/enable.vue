@@ -1,8 +1,7 @@
 <template>
     <el-form ref="bdform" label-width="150px" label-position="left">
         <el-form-item label="启用模块：">
-            <el-checkbox v-model="model.shamrock" label="Shamrock"></el-checkbox>
-            <el-checkbox v-model="model.qq" label="QQ"></el-checkbox>
+            <el-checkbox v-model="model.shamrock" label="QQ&Shamrock" @change="botChange"></el-checkbox>
             <el-checkbox v-model="model.wb" label="微博"></el-checkbox>
             <el-checkbox v-model="model.bz" label="B站"></el-checkbox>
             <el-checkbox v-model="model.kd" label="口袋48"></el-checkbox>
@@ -36,4 +35,8 @@ const emit = defineEmits(['enable-change']);
 watch(model.value, () => {
     emit("enable-change", model.value)
 })
+
+const botChange = (val: boolean) => {
+    model.value.qq = val;
+}
 </script>

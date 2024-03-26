@@ -12,7 +12,8 @@
                                 style="width: 100px;height: 100px;cursor: pointer;" />
                             <img title="点击启动" v-else @click="startBot" src="/src/asset/rocket.png"
                                 style="width: 100px;height: 100px;cursor: pointer;" />
-                            <div :style="{ color: (botStart ? 'green' : 'red'), marginLeft: '17px' }">
+                            <div
+                                :style="{ color: (botStart ? 'green' : startMsg.includes('启动中') ? 'red' : 'blue'), marginLeft: '17px' }">
                                 <span>{{ startMsg }}</span>
                             </div>
                         </el-col>
@@ -134,10 +135,10 @@
                                         <Switch class="eb" circle @click="() => carousel = 'help'"></Switch>
                                     </el-icon>
                                 </template>
-                                <el-scrollbar height="180px" style="margin-top:-10px">
+                                <el-scrollbar height="250px" style="margin-top:-10px">
                                     <ul style="margin-top:-3px">
                                         <li v-for="item in infoLogs">
-                                            <span @click="viewLog(item.content??'','日志')" title="点击查看">
+                                            <span @click="viewLog(item.content ?? '', '日志')" title="点击查看">
                                                 {{ item.content?.substring(0, 20) }}--{{ item.time }}
                                             </span>
                                         </li>
@@ -229,16 +230,16 @@ const startBot = async () => {
         botStart.value = true;
         startMsg.value = "正在运行";
         lastStart.value = currentTime.value;
-        if (props.enable.kd) {
-            await initPocket()
-            initPocketLive()
-        }
     } else {
         let emsg = startRes.msg ?? "启动失败：未知错误";
         ElMessage.error(emsg)
         logApi().addSystem(emsg);
         getTenLog();
         startMsg.value = "点击启动"
+    }
+    if (props.enable.kd) {
+        await initPocket()
+        initPocketLive()
     }
 }
 const closeBot = () => {
