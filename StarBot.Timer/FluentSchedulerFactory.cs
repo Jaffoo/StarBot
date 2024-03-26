@@ -40,7 +40,10 @@ namespace StarBot.Timer
             {
 
             }
-            Schedule(async () => await AsyncXox()).ToRunEvery(1).Days().At(0, 0);
+            if (config.EnableModule.KD)
+            {
+                Schedule(async () => await AsyncXox()).ToRunEvery(1).Days().At(0, 0);
+            }
         }
 
         public async Task AsyncXox()

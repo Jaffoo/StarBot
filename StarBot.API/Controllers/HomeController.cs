@@ -35,19 +35,20 @@ namespace StarBot.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("startbot")]
-        public ApiResult StartBot()
+        public async Task<ApiResult> StartBot()
         {
             try
             {
                 var connectConfig = new ConnectConfig(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, Config.Shamrock.Token);
                 var bot = new Bot(connectConfig);
+                await bot.Start();
                 ReciverMsg.Instance.BotStart(bot);
                 JobManager.Initialize(new FluentSchedulerFactory());
                 return Success();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return Failed();
+                return Failed(e.Message);
             }
         }
 
@@ -369,7 +370,7 @@ namespace StarBot.Controllers
         [HttpGet("getlogs")]
         public async Task<ApiResult> GetLogs()
         {
-            var logs = await _sysLog.GetListAsync(5);
+            var logs = await _sysLog.GetListAsync(10);
             return DataResult(logs);
         }
     }

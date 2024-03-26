@@ -28,7 +28,9 @@
                                 <label>上次启动：</label><span style="color: gray;">{{ lastStart }}</span>
                             </div>
                             <div class="mt10">
-                                <label>运行时长：</label><span style="color: gray;">已运行{{ runTime }}</span>
+                                <label>运行时长：</label><span style="color: gray;">
+                                    {{ botStart ? '已运行' + runTime : '未启动' }}
+                                </span>
                             </div>
                         </el-col>
                     </el-row>
@@ -43,43 +45,63 @@
                             <el-col><span title="每分钟更新一次">错误日志</span></el-col>
                         </el-row>
                     </template>
-                    <div>
-                        <ul>
+                    <el-scrollbar height="180px" style="margin-top:-10px">
+                        <ul style="margin-top:-3px">
                             <li v-for="item in errLogs">
                                 <span @click="viewLog(item.content)" title="点击查看">
                                     {{ item.content.substring(0, 20) }}--{{ item.time }}
                                 </span>
                             </li>
                         </ul>
-                    </div>
+                    </el-scrollbar>
                 </el-card>
             </el-col>
         </el-row>
         <el-row style="margin-top: 20px;">
             <!-- 营销推荐 -->
             <el-col :span="24">
-                <el-card shadow="hover" header="快速预览" class="ch350">
+                <el-card shadow="hover" header="快速预览" class="chauto">
                     <el-row :gutter="15">
-                        <el-col :span="6">
-                            <el-card shadow="hover" class="ch250">
+                        <el-col :span="8">
+                            <el-card shadow="hover" class="ch320">
                                 <template #header><span title="每分钟更新一次">数据总览</span>
                                 </template>
                                 <div>
-                                    <label>日志信息({{ info.log.total }}条)</label>
-                                    <span>主要日志:{{ info.log.idol }};其他日志:{{ info.log.other }}</span>
+                                    <label>系统日志</label>
+                                    <div>
+                                        <span>全部信息:{{ info.log.total }}</span>
+                                        <el-divider direction="vertical" />
+                                        <span>主要信息:{{ info.log.idol }}</span>
+                                        <el-divider direction="vertical" />
+                                        <span>其他信息:{{ info.log.other }}</span>
+                                    </div>
                                 </div>
+                                <el-divider />
                                 <div>
-                                    <label>图片信息({{ info.pic.total }}张)</label>
-                                    <span>今日图片:{{ info.pic.today }};更早图片:{{ info.pic.old }}</span>
+                                    <label>图片信息</label>
+                                    <div>
+                                        <span>全部图片:{{ info.pic.total }}</span>
+                                        <el-divider direction="vertical" />
+                                        <span>今日图片:{{ info.pic.today }}</span>
+                                        <el-divider direction="vertical" />
+                                        <span>更早图片:{{ info.pic.old }}</span>
+                                    </div>
                                 </div>
+                                <el-divider />
                                 <div>
-                                    <label>插件信息({{ info.plugin.total }}个)</label>
-                                    <span>使用中:{{ info.plugin.using }};未使用:{{ info.plugin.unusing }}}</span>
+                                    <label>插件信息</label>
+                                    <div>
+                                        <span>全 部:{{ info.plugin.total }}</span>
+                                        <el-divider direction="vertical" />
+                                        <span>已启用:{{ info.plugin.using }}</span>
+                                        <el-divider direction="vertical" />
+                                        <span>未启用:{{ info.plugin.unusing }}</span>
+                                    </div>
                                 </div>
                             </el-card>
                         </el-col>
-                        <el-col :span="6" v-if="enable.kd">
-                            <el-card shadow="hover" class="ch250">
+                        <el-col :span="8" v-if="enable.kd">
+                            <el-card shadow="hover" class="ch320">
                                 <template #header><span title="实时更新">口袋消息</span>
                                 </template>
                                 <div>
@@ -96,10 +118,31 @@
                                 </div>
                             </el-card>
                         </el-col>
-                        <el-col :span="6">
-                            <el-card shadow="hover" class="ch250">
-                                <template #header>帮助和反馈
+                        <el-col :span="8" v-show="carousel == 'help'">
+                            <el-card shadow="hover" class="ch320">
+                                <template #header>帮助反馈
+                                    <el-icon :size="16">
+                                        <Switch class="eb" circle @click="() => carousel = 'log'"></Switch>
+                                    </el-icon>
                                 </template>
+                            </el-card>
+                        </el-col>
+                        <el-col :span="8" v-show="carousel == 'log'">
+                            <el-card shadow="hover" class="ch320">
+                                <template #header>本地日志
+                                    <el-icon :size="16">
+                                        <Switch class="eb" circle @click="() => carousel = 'help'"></Switch>
+                                    </el-icon>
+                                </template>
+                                <el-scrollbar height="180px" style="margin-top:-10px">
+                                    <ul style="margin-top:-3px">
+                                        <li v-for="item in infoLogs">
+                                            <span @click="viewLog(item.content??'','日志')" title="点击查看">
+                                                {{ item.content?.substring(0, 20) }}--{{ item.time }}
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </el-scrollbar>
                             </el-card>
                         </el-col>
                     </el-row>
@@ -118,6 +161,7 @@ import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
 import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
 import type { SubscribeAllChannelResult } from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK/QChatServerServiceInterface";
 import type { LiveRoomMessage } from "@/class/messageType";
+import { Switch } from '@element-plus/icons-vue'
 
 const props = defineProps({
     enable: {
@@ -144,6 +188,7 @@ const botStart = ref(false);
 const lastStart = ref("无记录");
 const runTime = ref('0小时0分钟');
 const kdLogs = ref<logI[]>()
+const infoLogs = ref<logI[]>()
 const info = ref({
     pic: {
         total: 0,
@@ -166,17 +211,27 @@ const nim = ref<NIMSDK>();
 const qChat = ref<QChatSDK>();
 const liveNim = ref<NimChatroomSocket>();
 
+const oneMin = ref<number>();
+const oneSec = ref<number>()
+
+const carousel = ref('help')
 
 const startBot = async () => {
     startMsg.value = "启动中！"
+    if (!oneMin.value || oneMin.value < 0)
+        oneMinTimer();
+    if (!oneSec.value || oneSec.value < 0)
+        oneSecTimer();
     destroy()
     let startRes = await startBotAPI();
     if (startRes.success) {
         botStart.value = true;
         startMsg.value = "正在运行";
         lastStart.value = currentTime.value;
-        await initPocket()
-        initPocketLive()
+        if (props.enable.kd) {
+            await initPocket()
+            initPocketLive()
+        }
     } else {
         logApi().addSystem(startRes.msg ?? "启动失败：未知错误");
         getTenLog();
@@ -185,7 +240,7 @@ const startBot = async () => {
 }
 const closeBot = () => {
     startMsg.value = "关闭中！"
-    ElMessageBox.alert("确定要关闭机器人吗？", "温馨提示！", { type: 'warning', confirmButtonText: '关闭', cancelButtonText: '我点错了' })
+    ElMessageBox.confirm("确定要关闭机器人吗？", "温馨提示！", { type: 'warning', confirmButtonText: '关闭', cancelButtonText: '我点错了' })
         .then(() => {
             //关闭
             botStart.value = false;
@@ -319,56 +374,67 @@ const getChannel = async function (id: number) {
 const getTenLog = () => {
     let logs = logApi().getLogs();
     if (!logs || logs.length <= 0) return
+    infoLogs.value = logs!.filter(x => x.type == 'system').splice(-10);
     if (!props.enable.kd || !config.value || !config.value.KD || !config.value.KD.idolName) return
     logs = logs.filter(x => x.name && x.name.includes(config.value!.KD!.idolName!))
     kdLogs.value = logs.slice(-10);
 }
-const viewLog = (log: string, title = '日志') => {
+const viewLog = (log: string, title = '错误') => {
     ElMessageBox.alert(log, title + "详情")
+}
+
+const oneMinTimer = () => {
+    oneMin.value = setInterval(oneMinFun, 1000 * 60)
+}
+const oneMinFun = async () => {
+    errLogs.value = (await getLogs()).data
+    let plugInfo = (await getFun()).data
+    let picInfo = await (await getCache()).data
+    info.value.plugin.total = plugInfo.length
+    info.value.plugin.unusing = plugInfo.filter((x: any) => !x.statue).length
+    info.value.plugin.using = plugInfo.filter((x: any) => x.statue).length
+
+    info.value.pic.total = picInfo.length
+    info.value.pic.today = picInfo.filter((x: any) => new Date(x.createDate).getDate() === new Date().getDate()).length
+    info.value.pic.old = info.value.pic.total - info.value.pic.today
+
+    let tempLogs = logApi().getLogs();
+    if (tempLogs) {
+        info.value.log.total = tempLogs.length ?? 0
+        if (config.value?.KD?.idolName)
+            info.value.log.idol = tempLogs.filter(x => x.name?.includes(config.value!.KD!.idolName!)).length
+        info.value.log.other = info.value.log.total - info.value.log.idol
+    }
+}
+
+const oneSecTimer = () => {
+    oneSec.value = setInterval(oneSecFun, 1000);
+}
+const oneSecFun = () => {
+    var date = new Date();
+    var hour = date.getHours();
+    currentTime.value = date.toLocaleString();
+    if (hour >= 0 && hour < 6) currentTimeType.value = "凌晨好";
+    if (hour >= 6 && hour < 11) currentTimeType.value = "早上好";
+    if (hour >= 11 && hour < 14) currentTimeType.value = "中午好";
+    if (hour >= 14 && hour < 17) currentTimeType.value = "下午好";
+    if (hour >= 17 && hour < 19) currentTimeType.value = "傍晚好";
+    if (hour >= 19 && hour < 0) currentTimeType.value = "晚上好";
+    if (lastStart.value == "无记录") runTime.value = '0小时0分钟';
+    else {
+        let tempLastTime = new Date(lastStart.value);
+        var timeDiff = date.getTime() - tempLastTime.getTime();
+        var hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60)); // 计算小时差
+        var minutesDiff = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60)); // 计算分钟差
+        runTime.value = `${hoursDiff}小时${minutesDiff}分钟`;
+    }
 }
 
 onMounted(async () => {
     let configTemp = await getConfig();
     config.value = configTemp.data;
-    setInterval(async () => {
-        errLogs.value = (await getLogs()).data
-        let plugInfo = (await getFun()).data
-        let picInfo = await (await getCache()).data
-        info.value.plugin.total = plugInfo.length
-        info.value.plugin.unusing = plugInfo.filter((x: any) => !x.statue).length
-        info.value.plugin.using = plugInfo.filter((x: any) => x.statue).length
-
-        info.value.pic.total = picInfo.length
-        info.value.pic.today = picInfo.filter((x: any) => new Date(x.createDate).getDate() === new Date().getDate()).length
-        info.value.pic.old = info.value.pic.total - info.value.pic.today
-
-        let tempLogs = logApi().getLogs();
-        if (tempLogs) {
-            info.value.log.total = tempLogs.length ?? 0
-            if (config.value?.KD?.idolName)
-                info.value.log.idol = tempLogs.filter(x => x.name?.includes(config.value!.KD!.idolName!)).length
-            info.value.log.other = info.value.log.total - info.value.log.idol
-        }
-    }, 1000 * 60)
-    setInterval(() => {
-        var date = new Date();
-        var hour = date.getHours();
-        currentTime.value = date.toLocaleString();
-        if (hour >= 0 && hour < 6) currentTimeType.value = "凌晨好";
-        if (hour >= 6 && hour < 10) currentTimeType.value = "早上好";
-        if (hour >= 10 && hour < 14) currentTimeType.value = "中午好";
-        if (hour >= 14 && hour < 17) currentTimeType.value = "下午好";
-        if (hour >= 17 && hour < 19) currentTimeType.value = "傍晚好";
-        if (hour >= 19 && hour < 0) currentTimeType.value = "晚上好";
-        if (lastStart.value == "无记录") runTime.value = '0小时0分钟';
-        else {
-            let tempLastTime = new Date(lastStart.value);
-            var timeDiff = date.getTime() - tempLastTime.getTime();
-            var hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60)); // 计算小时差
-            var minutesDiff = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60)); // 计算分钟差
-            runTime.value = `${hoursDiff}小时${minutesDiff}分钟`;
-        }
-    }, 1000);
+    oneMinFun();
+    oneSecFun();
     getTenLog();
 });
 </script>
@@ -377,12 +443,22 @@ onMounted(async () => {
     height: 250px;
 }
 
-.ch350 {
+.ch320 {
+    height: 320px;
+}
+
+.chauto {
     height: calc(100vh - 340px);
 }
 
 .mt10 {
     margin-top: 10px;
+}
+
+.eb {
+    position: absolute;
+    top: 2px;
+    cursor: pointer;
 }
 </style>
 <!-- <template>
