@@ -89,7 +89,7 @@
                                     </div>
                                 </div>
                                 <el-divider />
-                                <div>
+                                <div v-if="enable.shamrock">
                                     <label>插件信息</label>
                                     <div>
                                         <span>全 部:{{ info.plugin.total }}</span>

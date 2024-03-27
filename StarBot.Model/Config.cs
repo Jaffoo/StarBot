@@ -407,7 +407,7 @@ namespace StarBot.Model
         public int SaveMsg { get; set; }
 
         /// <summary>
-        /// 保存图片
+        /// 保存小偶像图片
         /// </summary>
         public bool SaveImg { get; set; }
     }

@@ -1,8 +1,12 @@
 <template>
   <div>
-    <el-row><el-button type="primary">上传插件</el-button> </el-row>
+    <el-row>
+      <el-upload accept=".dll" :action="ApiPrefix + '/uploaddll'" multiple :on-success="onSuccess">
+        <el-button type="primary">上传插件</el-button>
+      </el-upload>
+    </el-row>
     <el-row style="margin-top: 10px">
-      <el-table :data="tableData" stripe style="width: 100%">
+      <el-table :data="tableData" stripe style="width: 100%" height="650">
         <el-table-column type="index" width="50" />
         <el-table-column label="插件名">
           <template #default="scope">
@@ -40,6 +44,8 @@
 <script setup lang="ts" name="pic">
 import { onMounted, ref } from "vue";
 import { getFun, startPlugin, stopPlugin, delPlugin } from "@/api";
+import { ApiPrefix } from '@/api/index'
+import type { UploadProps } from "element-plus";
 
 const tableData = ref();
 
@@ -65,6 +71,10 @@ const del = async (name: string) => {
   if (res.success) ElMessage.success(res.msg);
   else ElMessage.error(res.msg);
 };
+
+const onSuccess: UploadProps['onSuccess'] = async () => {
+  await getData()
+}
 
 onMounted(async () => {
   await getData();

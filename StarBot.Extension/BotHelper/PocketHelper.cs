@@ -74,10 +74,13 @@ namespace StarBot.Extension
                 if (msgType == "image")
                 {
                     msbBody = result["attach"]!["url"]!.ToString();
-                    await Task.Run(async () =>
+                    if (Config.KD.SaveImg)
                     {
-                        await new Weibo().FatchFace(msbBody);
-                    });
+                        await Task.Run(async () =>
+                        {
+                            await new Weibo().FatchFace(msbBody);
+                        });
+                    }
                     if (!Config.KD.MsgType.Contains(msgType)) return;
                     mcb.ImageByUrl(msbBody);
                     saveMsg.Msg = msbBody;

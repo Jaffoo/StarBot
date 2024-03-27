@@ -8,7 +8,7 @@
                 <el-input v-model="wb.userAll" /><span style="color: red;">用于转发动态和图片保存，一般是填idol</span>
             </el-form-item>
             <el-form-item label="返图用户">
-                <el-input v-model="wb.userPart" /><span style="color: red;">仅用于图片保存，一般是填返图用户)</span>
+                <el-input v-model="wb.userPart" /><span style="color: red;">仅用于图片保存，一般是填返图用户</span>
             </el-form-item>
             <el-form-item label="转发至群">
                 <el-switch v-model="wb.forwardGroup" active-text="转发" inactive-text="不转发" />

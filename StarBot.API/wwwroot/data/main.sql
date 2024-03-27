@@ -90,7 +90,7 @@ INSERT INTO "SysConfig" VALUES (3, 1, 'WebsocktPort', 'Websocket端口', '7001',
 INSERT INTO "SysConfig" VALUES (4, 1, 'HttpPort', 'Http端口', '7002', NULL, 'int');
 INSERT INTO "SysConfig" VALUES (5, 1, 'Token', 'Token', '', '发送数据身份验证标识', 'string');
 INSERT INTO "SysConfig" VALUES (6, 0, 'EnableModule', '启用项', NULL, NULL, 'list&class');
-INSERT INTO "SysConfig" VALUES (7, 1, 'Shamrock', '使用shamrock', 'false', NULL, 'bool');
+INSERT INTO "SysConfig" VALUES (7, 6, 'Shamrock', '使用shamrock', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (8, 6, 'QQ', 'QQ', 'false', NULL, 'class&bool');
 INSERT INTO "SysConfig" VALUES (9, 6, 'WB', '微博', 'false', NULL, 'class&bool');
 INSERT INTO "SysConfig" VALUES (10, 6, 'BZ', 'B站', 'false', NULL, 'class&bool');

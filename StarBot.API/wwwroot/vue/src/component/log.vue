@@ -33,12 +33,22 @@ const openUrl = (url?: string) => {
     if (url) openWindow(url)
 }
 const clear = async () => {
-    logs.value = new Array<logI>;
-    logApi().clearLog();
+    if (logs.value.length <= 0) {
+        ElMessage.info("无日志")
+        return;
+    }
+    ElMessageBox.confirm("此操作将永久清空日志，是否删除", "警告", { cancelButtonText: '取消', confirmButtonText: '确定' })
+        .then(() => {
+            logs.value = new Array<logI>;
+            logApi().clearLog();
+        })
 }
 
 const exportLog = () => {
-    if (logs.value.length <= 0) return;
+    if (logs.value.length <= 0) {
+        ElMessage.info("无日志")
+        return;
+    }
     let text = [''];
     logs.value.forEach(item => {
         if (item.type == "link" || item.type == "pic")

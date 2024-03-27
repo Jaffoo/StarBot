@@ -34,7 +34,7 @@
                     <el-radio :label="2" :value="2">全部</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="保存图片">
+            <el-form-item label="保存小偶像图片">
                 <el-radio-group v-model="kd.saveImg">
                     <el-radio :label="false" :value="false">不保存</el-radio>
                     <el-radio :label="true" :value="true">保存</el-radio>

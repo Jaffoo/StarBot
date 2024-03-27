@@ -243,7 +243,7 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
-        /// 上传
+        /// 上传图片
         /// </summary>
         /// <returns></returns>
         [HttpPost("upload")]
@@ -268,6 +268,36 @@ namespace StarBot.Controllers
             {
                 name,
                 url = "/images/standard" + fileName
+            };
+            return DataResult(obj);
+        }
+
+        /// <summary>
+        /// 上传qq插件
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("uploaddll")]
+        public ApiResult Uploaddll(string path)
+        {
+
+            FileInfo fileInfo = new(path);
+            var dir = "Plugins";
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+            var name = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            var fileName = name + fileInfo.Extension;
+            var full = Path.Combine(dir, fileName);
+            if (!System.IO.File.Exists(full))
+                fileInfo.CopyTo(full);
+            else
+            {
+                System.IO.File.Delete(full);
+                fileInfo.CopyTo(full);
+            }
+            object obj = new
+            {
+                name,
+                url = "/Plugins" + fileName
             };
             return DataResult(obj);
         }
