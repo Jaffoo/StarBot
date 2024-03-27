@@ -4,7 +4,7 @@
             <el-button type="primary" @click="clear">清空</el-button>
             <el-button type="primary" @click="exportLog">导出</el-button>
         </div>
-        <el-scrollbar style="height: calc(100vh - 80px);">
+        <el-scrollbar style="height: calc(100vh - 230px);">
             <div v-for="(item, index) in logs">
                 <span>{{ index + 1 }}.</span>
                 <span v-if="item.type !== 'system'"><el-avatar :src="item.avatar" />{{ item.name }}:</span>
@@ -33,18 +33,12 @@ const openUrl = (url?: string) => {
     if (url) openWindow(url)
 }
 const clear = async () => {
-    ElMessageBox.confirm("此操作将永久删除日志记录，确定继续吗？", "警告", { cancelButtonText: '不想删了', confirmButtonText: '删除' })
-        .then(() => {
-            logs.value = new Array<logI>;
-            logApi().clearLog();
-        })
+    logs.value = new Array<logI>;
+    logApi().clearLog();
 }
 
 const exportLog = () => {
-    if (logs.value.length <= 0) {
-        ElMessage.info("无数据");
-        return
-    }
+    if (logs.value.length <= 0) return;
     let text = [''];
     logs.value.forEach(item => {
         if (item.type == "link" || item.type == "pic")
