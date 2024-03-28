@@ -72,6 +72,11 @@ export const upload = async (path: string) => {
     return response.data as ApiResult;
 }
 
+export const uploaddll = async (path: string) => {
+    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/uploaddll?path=${path}`);
+    return response.data as ApiResult;
+}
+
 export const searchIdol = async (group: string, name: string) => {
     const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/searchidol?group=${group}&name=${name}`);
     return response.data as ApiResult;

@@ -1,5 +1,8 @@
+using Flurl.Util;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PluginServer;
-using ShamrockCore.Receiver;
+using ShamrockCore;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -13,7 +16,7 @@ namespace StarBot.Extension
         public static List<PluginHelper> Plugins { get; } = [];
         public BasePlugin? PluginInfo { get; set; }
         public bool Status { get; set; }
-        private string Path { get; set; } = "";
+        public string FileName { get; set; } = "";
         private CustomAssemblyLoadContext? DLL { get; set; }
 
         /// <summary>
@@ -23,31 +26,39 @@ namespace StarBot.Extension
         {
             if (!Directory.Exists("Plugins")) Directory.CreateDirectory("Plugins");
             var files = new DirectoryInfo("Plugins").GetFiles();
+            var delConf = "Plugins/conf/del.txt";
+            List<FileInfo> delInfo = [];
+            if (File.Exists(delConf))
+            {
+                var list = File.ReadLines(delConf);
+                foreach (var filestr in list)
+                {
+                    delInfo.Add(new(filestr));
+                }
+            }
             foreach (var item in files)
             {
+                if (delInfo != null)
+                {
+                    if (delInfo.Any(x => x.Name == item.Name)) continue;
+                }
                 var dll = new CustomAssemblyLoadContext();
-                var assembly = dll.LoadFromAssemblyPath(item.FullName);
+                Assembly assembly = dll.LoadFromAssemblyPath(item.FullName);
                 // 获取 DLL 中的类型
                 Type[] types = assembly.GetTypes();
-                // 创建类型的实例
-                var type = types.FirstOrDefault();
-                if (type == null) continue;
-                if (Activator.CreateInstance(type) is not BasePlugin instance) continue;
-                if (Plugins.Exists(t => t.PluginInfo?.Name == instance.Name))
+                if (types == null) continue;
+                var type = types.FirstOrDefault(x => x.Name == item.Name.Replace(".dll", ""));
+                if (Activator.CreateInstance(types[2]) is not BasePlugin instance) continue;
+                if (!Plugins.Exists(t => t.PluginInfo?.Name == instance.Name && t.PluginInfo.Version == instance.Version))
                 {
-                    var model = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == instance.Name && t.PluginInfo.Version != instance.Version);
-                    model?.DLL?.Dispose();
-                    model?.PluginInfo?.Dispose();
-                    model?.Dispose();
-                    Plugins.Remove(model!);
+                    Plugins.Add(new()
+                    {
+                        PluginInfo = instance,
+                        DLL = dll,
+                        Status = true,
+                        FileName = item.FullName,
+                    });
                 }
-                Plugins.Add(new()
-                {
-                    PluginInfo = instance,
-                    DLL = dll,
-                    Status = true,
-                    Path = item.FullName
-                });
             }
         }
 
@@ -71,8 +82,31 @@ namespace StarBot.Extension
         {
             var plugin = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == name);
             if (plugin == null) return (false, "插件不存在！");
-            plugin.Status = false;
+            plugin.Status = true;
             return (true, "启用成功！");
+        }
+
+        public static void DelForce()
+        {
+            //删除要删除的插件
+            if (!Directory.Exists("Plugins/conf/")) Directory.CreateDirectory("Plugins/conf/");
+            var delConf = "Plugins/conf/del.txt";
+            if (!File.Exists(delConf)) File.Create(delConf);
+            var delList = File.ReadAllLines(delConf).ToList();
+            if (delList.Count > 0)
+            {
+                List<string> del = [];
+                foreach (var item in delList)
+                {
+                    File.Delete(item);
+                    del.Add(item);
+                }
+                foreach (var item in del)
+                {
+                    delList.Remove(item);
+                }
+                File.WriteAllLines(delConf, delList);
+            }
         }
 
         /// <summary>
@@ -81,14 +115,29 @@ namespace StarBot.Extension
         /// <param name="name"></param>
         public static bool DelPlugin(string name)
         {
-            var plugin = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == name);
-            if (plugin == null) return true;
-            plugin.PluginInfo?.Dispose();
-            plugin.DLL?.Unload();
-            plugin.DLL?.Dispose();
-            plugin.Dispose();
-            File.Delete(plugin.Path);
-            return true;
+            try
+            {
+                if (!Directory.Exists("Plugins/conf/")) Directory.CreateDirectory("Plugins/conf/");
+                var delConf = "Plugins/conf/del.txt";
+                if (!File.Exists(delConf)) File.Create(delConf);
+                var plugin = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == name);
+                if (plugin == null) return true;
+                plugin.Status = false;
+                plugin.PluginInfo?.Dispose();
+                plugin.DLL?.Unload();
+                plugin.DLL?.Dispose();
+                plugin.Dispose();
+                Plugins.Remove(plugin);
+                var newText = File.ReadAllLines(delConf).ToList();
+                var delInfo = plugin.FileName;
+                newText.Add(delInfo);
+                File.WriteAllLines(delConf, newText);
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -120,15 +169,15 @@ namespace StarBot.Extension
         /// <summary>
         /// 调用插件
         /// </summary>
-        /// <param name="msgBase"></param>
-        /// <param name="eventBase"></param>
-        public static async Task Excute(MessageReceiverBase? msgBase = null, EventBase? eventBase = null)
+        /// <param name="bot">机器人对象</param>
+        public static void Excute(Bot bot, bool useBot = false)
         {
+            if (!useBot) return;
             foreach (var item in Plugins)
             {
                 if (item.PluginInfo == null) continue;
                 if (item.Status == false) continue;
-                await item.PluginInfo.Excute(msgBase, eventBase);
+                item.PluginInfo.Excute(bot);
             }
         }
 

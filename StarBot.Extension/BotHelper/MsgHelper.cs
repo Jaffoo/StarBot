@@ -92,6 +92,10 @@ namespace StarBot.Extension
             GroupMessageReceiver(bot!);
             FriendMessageReceiver(bot!);
             EventMessageReceiver(bot!);
+            Task.Run(() =>
+            {
+                PluginHelper.Excute(bot!, Config.EnableModule.Shamrock);
+            });
             Task.Run(HandlMsg);
         }
 

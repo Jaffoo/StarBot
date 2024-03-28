@@ -66,6 +66,7 @@ if (File.Exists("wwwroot/data/update.sql"))
     var sqlStr = await File.ReadAllTextAsync("wwwroot/data/update.sql");
     await db.Ado.ExecuteCommandAsync(sqlStr);
 }
+PluginHelper.DelForce();
 #endregion
 
 //启动定时任务

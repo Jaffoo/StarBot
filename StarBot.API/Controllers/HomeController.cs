@@ -12,6 +12,8 @@ using System.Xml.Linq;
 using ElectronNET.API;
 using Newtonsoft.Json.Linq;
 using SqlSugar.Extensions;
+using System.IO;
+using static StarBot.Model.Enums;
 
 namespace StarBot.Controllers
 {
@@ -35,7 +37,7 @@ namespace StarBot.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("startbot")]
-        public async Task<ApiResult> StartBot()
+        public ApiResult StartBot()
         {
             try
             {
@@ -43,7 +45,6 @@ namespace StarBot.Controllers
                 {
                     var connectConfig = new ConnectConfig(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, Config.Shamrock.Token);
                     var bot = new Bot(connectConfig);
-                    await bot.Start();
                     ReciverMsg.Instance.BotStart(bot);
                 }
                 JobManager.Initialize(new FluentSchedulerFactory());
@@ -220,8 +221,15 @@ namespace StarBot.Controllers
         [HttpGet("delplugin")]
         public ApiResult DelPlugin(string name)
         {
-            var b = PluginHelper.DelPlugin(name);
-            return AjaxResult(b);
+            try
+            {
+                var b = PluginHelper.DelPlugin(name);
+                return AjaxResult(b);
+            }
+            catch (Exception e)
+            {
+                return Failed(e.Message);
+            }
         }
 
         /// <summary>
@@ -247,27 +255,27 @@ namespace StarBot.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("upload")]
-        public ApiResult Upload(string path)
+        public async Task<ApiResult> Upload(IFormFile file)
         {
-
-            FileInfo fileInfo = new(path);
+            if (file == null || file.Length == 0)
+            {
+                return Failed("文件为空");
+            }
             var dir = "wwwroot/images/standard";
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
             var name = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-            var fileName = name + fileInfo.Extension;
-            var full = Path.Combine(dir, fileName);
+
+            var full = Path.Combine(dir, name);
             if (!System.IO.File.Exists(full))
-                fileInfo.CopyTo(full);
-            else
             {
-                System.IO.File.Delete(full);
-                fileInfo.CopyTo(full);
+                using var stream = new FileStream(full, FileMode.Create);
+                await file.CopyToAsync(stream);
             }
             object obj = new
             {
                 name,
-                url = "/images/standard" + fileName
+                url = "/images/standard/" + name
             };
             return DataResult(obj);
         }
@@ -277,29 +285,22 @@ namespace StarBot.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("uploaddll")]
-        public ApiResult Uploaddll(string path)
+        public async Task<ApiResult> Uploaddll(IFormFile file)
         {
-
-            FileInfo fileInfo = new(path);
+            if (file == null || file.Length == 0)
+            {
+                return Failed("文件为空");
+            }
             var dir = "Plugins";
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
-            var name = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-            var fileName = name + fileInfo.Extension;
-            var full = Path.Combine(dir, fileName);
+            var full = Path.Combine(dir, file.FileName);
             if (!System.IO.File.Exists(full))
-                fileInfo.CopyTo(full);
-            else
             {
-                System.IO.File.Delete(full);
-                fileInfo.CopyTo(full);
+                using var stream = new FileStream(full, FileMode.Create);
+                await file.CopyToAsync(stream);
             }
-            object obj = new
-            {
-                name,
-                url = "/Plugins" + fileName
-            };
-            return DataResult(obj);
+            return Success();
         }
 
         /// <summary>

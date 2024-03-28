@@ -25,14 +25,14 @@
         </el-table-column>
         <el-table-column label="状态">
           <template #default="scope">
-            <el-tag type="success" v-if="scope.row.statue">启用</el-tag>
+            <el-tag type="success" v-if="scope.row.status">启用</el-tag>
             <el-tag type="danger" v-else>禁用</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button type="primary" v-if="!scope.row.statue" @click="start(scope.row.pluginInfo.name)">启用</el-button>
-            <el-button type="primary" v-else @click="stop(scope.row.pluginInfo.name)">禁用</el-button>
+            <el-button type="primary" v-if="!scope.row.status" @click="start(scope.row.pluginInfo.name)">启用</el-button>
+            <el-button type="danger" v-else @click="stop(scope.row.pluginInfo.name)">禁用</el-button>
             <el-button type="primary" @click="del(scope.row.pluginInfo.name)">删除</el-button>
           </template>
         </el-table-column>
@@ -58,18 +58,21 @@ const start = async (name: string) => {
   let res = await startPlugin(name);
   if (res.success) ElMessage.success(res.msg);
   else ElMessage.error(res.msg);
+  await getData();
 };
 
 const stop = async (name: string) => {
   let res = await stopPlugin(name);
   if (res.success) ElMessage.success(res.msg);
   else ElMessage.error(res.msg);
+  await getData();
 };
 
 const del = async (name: string) => {
   let res = await delPlugin(name);
   if (res.success) ElMessage.success(res.msg);
   else ElMessage.error(res.msg);
+  await getData();
 };
 
 const onSuccess: UploadProps['onSuccess'] = async () => {
