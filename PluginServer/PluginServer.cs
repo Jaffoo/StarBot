@@ -1,7 +1,6 @@
-using ShamrockCore;
+using ShamrockCore.Data.Model;
 using ShamrockCore.Receiver;
 using ShamrockCore.Receiver.Receivers;
-using System.Reactive.Linq;
 
 namespace PluginServer
 {
@@ -13,8 +12,17 @@ namespace PluginServer
     /// <param name="desc">插件描述</param>
     public abstract class BasePlugin : IDisposable
     {
-        private bool disposedValue;
+        /// <summary>
+        /// qq群超管
+        /// </summary>
+        public string Admin { get; set; } = "";
 
+        /// <summary>
+        /// qq群普通管理员
+        /// </summary>
+        public List<string> Permission { get; set; } = [];
+
+        private bool disposedValue;
         /// <summary>
         /// 插件名称(请使用英文)
         /// </summary>
@@ -39,35 +47,54 @@ namespace PluginServer
             {
                 var dir = Path.Combine(Environment.CurrentDirectory, "Plugins/conf/");
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-                return $"{dir + Name}.xml";
+                return dir;
+            }
+        }
+
+        /// <summary>
+        /// 日志
+        /// </summary>
+        public string LogPath
+        {
+            get
+            {
+                var dir = Path.Combine(Environment.CurrentDirectory, "Plugins/logs/");
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                return dir;
             }
         }
 
         /// <summary>
         /// 执行插件
         /// </summary>
-        /// <param name="bot">机器人对象</param>
         /// <returns></returns>
-        public virtual void Excute(Bot bot)
+        public virtual async Task Excute(MessageReceiverBase? mrb = null, EventBase? eb = null)
         {
-            if (bot != null)
+            try
             {
-                bot.MessageReceived.OfType<MessageReceiverBase>().Subscribe(async mrb =>
+                if (mrb != null)
                 {
-                    await BaseMessage(mrb);
-                });
-                bot.MessageReceived.OfType<GroupReceiver>().Subscribe(async gr =>
+                    switch (mrb.Type)
+                    {
+                        case PostMessageType.Friend:
+                            await FriendMessage((FriendReceiver)mrb!);
+                            break;
+                        case PostMessageType.Group:
+                            await GroupMessage((GroupReceiver)mrb!);
+                            break;
+                        default:
+                            await BaseMessage(mrb);
+                            break;
+                    }
+                }
+                if (eb != null)
                 {
-                    await GroupMessage(gr);
-                });
-                bot.MessageReceived.OfType<FriendReceiver>().Subscribe(async fr =>
-                {
-                    await FriendMessage(fr);
-                });
-                bot.EventReceived.OfType<EventBase>().Subscribe(async e =>
-                {
-                    await EventMessage(e);
-                });
+                    await EventMessage(eb);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 

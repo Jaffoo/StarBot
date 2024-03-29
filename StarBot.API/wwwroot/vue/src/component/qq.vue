@@ -49,8 +49,6 @@ const qqform = ref<FormInstance>();
 const rules = ref<FormRules>(
     {
         admin: [{ required: true, message: '请输入该值', trigger: 'blur' }],
-        permission: [{ required: true, message: '请输入该值', trigger: 'blur' }],
-        group: [{ required: true, message: '请输入该值', trigger: 'blur' }],
     }
 )
 const validForm = async () => {

@@ -59,7 +59,7 @@ namespace StarBot.Extension
                 }
             }
         }
-        private StarBot.Model.Config Config
+        private Model.Config Config
         {
             get
             {
@@ -92,9 +92,17 @@ namespace StarBot.Extension
             GroupMessageReceiver(bot!);
             FriendMessageReceiver(bot!);
             EventMessageReceiver(bot!);
+            //执行插件
             Task.Run(() =>
             {
-                PluginHelper.Excute(bot!, Config.EnableModule.Shamrock);
+                bot.MessageReceived.OfType<MessageReceiverBase>().Subscribe(mrb =>
+                {
+                    PluginHelper.Excute(mrb: mrb);
+                });
+                bot.EventReceived.OfType<EventBase>().Subscribe(eb =>
+                {
+                    PluginHelper.Excute(eb: eb);
+                });
             });
             Task.Run(HandlMsg);
         }
@@ -110,7 +118,7 @@ namespace StarBot.Extension
                     //消息链
                     var msgChain = gmr.Message;
                     var msgText = msgChain.GetPlainText().Trim();
-                    if (Config.QQ.Save)
+                    if (Config.QQ.Save && !string.IsNullOrWhiteSpace(Config.QQ.Group))
                     {
                         var msgModel = new QQMessage()
                         {

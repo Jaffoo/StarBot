@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row>
-      <el-upload accept=".dll" :action="ApiPrefix + '/uploaddll'" multiple :on-success="onSuccess">
+      <el-upload accept=".dll" :action="ApiPrefix + '/uploaddll'" multiple :show-file-list="false" :on-success="onSuccess">
         <el-button type="primary">上传插件</el-button>
       </el-upload>
     </el-row>
@@ -32,8 +32,8 @@
         <el-table-column label="操作">
           <template #default="scope">
             <el-button type="primary" v-if="!scope.row.status" @click="start(scope.row.pluginInfo.name)">启用</el-button>
-            <el-button type="danger" v-else @click="stop(scope.row.pluginInfo.name)">禁用</el-button>
-            <el-button type="primary" @click="del(scope.row.pluginInfo.name)">删除</el-button>
+            <el-button type="warning" v-else @click="stop(scope.row.pluginInfo.name)">禁用</el-button>
+            <el-button type="danger" @click="del(scope.row.pluginInfo.name)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

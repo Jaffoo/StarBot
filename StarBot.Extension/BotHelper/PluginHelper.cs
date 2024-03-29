@@ -1,10 +1,11 @@
-using Flurl.Util;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using PluginServer;
-using ShamrockCore;
+using ShamrockCore.Receiver;
+using StarBot.Entity;
+using StarBot.IService;
+using StarBot.Model;
 using System.Reflection;
-using System.Runtime.Loader;
+using TBC.CommonLib;
 
 namespace StarBot.Extension
 {
@@ -13,11 +14,34 @@ namespace StarBot.Extension
     /// </summary>
     public class PluginHelper : IDisposable
     {
+        static ISysConfig _sysConfig
+        {
+            get
+            {
+                var factory = DataService.BuildServiceProvider();
+                return factory.GetService<ISysConfig>()!;
+            }
+        }
+        static ISysLog _sysLog
+        {
+            get
+            {
+                var factory = DataService.BuildServiceProvider();
+                return factory.GetService<ISysLog>()!;
+            }
+        }
         public static List<PluginHelper> Plugins { get; } = [];
         public BasePlugin? PluginInfo { get; set; }
         public bool Status { get; set; }
         public string FileName { get; set; } = "";
-        private CustomAssemblyLoadContext? DLL { get; set; }
+
+        private static Config Config
+        {
+            get
+            {
+                return _sysConfig.GetConfig().Result;
+            }
+        }
 
         /// <summary>
         /// 加载插件
@@ -42,19 +66,20 @@ namespace StarBot.Extension
                 {
                     if (delInfo.Any(x => x.Name == item.Name)) continue;
                 }
-                var dll = new CustomAssemblyLoadContext();
-                Assembly assembly = dll.LoadFromAssemblyPath(item.FullName);
+                Assembly assembly = Assembly.LoadFrom(item.FullName);
                 // 获取 DLL 中的类型
                 Type[] types = assembly.GetTypes();
                 if (types == null) continue;
                 var type = types.FirstOrDefault(x => x.Name == item.Name.Replace(".dll", ""));
-                if (Activator.CreateInstance(types[2]) is not BasePlugin instance) continue;
+                if (type == null) continue;
+                if (Activator.CreateInstance(type) is not BasePlugin instance) continue;
+                instance.Permission = Config.QQ.Permission.ToStrList();
+                instance.Admin = Config.QQ.Admin;
                 if (!Plugins.Exists(t => t.PluginInfo?.Name == instance.Name && t.PluginInfo.Version == instance.Version))
                 {
                     Plugins.Add(new()
                     {
                         PluginInfo = instance,
-                        DLL = dll,
                         Status = true,
                         FileName = item.FullName,
                     });
@@ -124,8 +149,6 @@ namespace StarBot.Extension
                 if (plugin == null) return true;
                 plugin.Status = false;
                 plugin.PluginInfo?.Dispose();
-                plugin.DLL?.Unload();
-                plugin.DLL?.Dispose();
                 plugin.Dispose();
                 Plugins.Remove(plugin);
                 var newText = File.ReadAllLines(delConf).ToList();
@@ -149,8 +172,6 @@ namespace StarBot.Extension
             foreach (var item in Plugins)
             {
                 item.PluginInfo?.Dispose();
-                item.DLL?.Unload();
-                item.DLL?.Dispose();
                 item.Dispose();
                 item.Status = false;
             }
@@ -169,37 +190,26 @@ namespace StarBot.Extension
         /// <summary>
         /// 调用插件
         /// </summary>
-        /// <param name="bot">机器人对象</param>
-        public static void Excute(Bot bot, bool useBot = false)
+        public static async void Excute(MessageReceiverBase? mrb = null, EventBase? eb = null)
         {
-            if (!useBot) return;
             foreach (var item in Plugins)
             {
                 if (item.PluginInfo == null) continue;
-                if (item.Status == false) continue;
-                item.PluginInfo.Excute(bot);
+                if (!item.Status) continue;
+                try
+                {
+                    await item.PluginInfo.Excute(mrb, eb);
+                }
+                catch (Exception e)
+                {
+                    await _sysLog.WriteLog($"插件【{item.PluginInfo.Name + "-" + item.PluginInfo.Version}】抛出异常：" + e.Message);
+                }
             }
         }
 
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
-    }
-
-    class CustomAssemblyLoadContext : AssemblyLoadContext, IDisposable
-    {
-        public CustomAssemblyLoadContext() : base(isCollectible: true)
-        {
-        }
-        protected override Assembly? Load(AssemblyName name)
-        {
-            return null;
-        }
-
         public void Dispose()
         {
             GC.SuppressFinalize(this);

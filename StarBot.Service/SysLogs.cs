@@ -1,6 +1,9 @@
+using ShamrockCore.Receiver;
+using SqlSugar;
 using StarBot.Entity;
 using StarBot.IService;
 using StarBot.Repository;
+using TBC.CommonLib;
 
 namespace StarBot.Service
 {
@@ -9,6 +12,12 @@ namespace StarBot.Service
     /// </summary>
     public class SysLogs : Repository<SysLog>, ISysLog
     {
+        ISysConfig _sysConfig;
+
+        public SysLogs(ISysConfig sysConfig)
+        {
+            _sysConfig = sysConfig;
+        }
         /// <summary>
         /// 记录日志
         /// </summary>
@@ -21,6 +30,9 @@ namespace StarBot.Service
                 Content = content,
                 Time = DateTime.Now
             };
+            var qq = (await _sysConfig.GetConfig()).QQ;
+            if (qq.Debug)
+                await MessageManager.SendPrivateMsgAsync(qq.Admin.ToLong(), content);
             await AddAsync(log);
         }
     }
