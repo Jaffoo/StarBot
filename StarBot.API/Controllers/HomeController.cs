@@ -294,6 +294,7 @@ namespace StarBot.Controllers
             var dir = "Plugins";
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
+            var date = DateTime.Now.ToString("MMdd");
             var full = Path.Combine(dir, file.FileName);
             if (!System.IO.File.Exists(full))
             {

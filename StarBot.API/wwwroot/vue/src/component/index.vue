@@ -400,8 +400,8 @@ const oneMinFun = async () => {
     let plugInfo = (await getFun()).data
     let picInfo = await (await getCache()).data
     info.value.plugin.total = plugInfo.length
-    info.value.plugin.unusing = plugInfo.filter((x: any) => !x.statue).length
-    info.value.plugin.using = plugInfo.filter((x: any) => x.statue).length
+    info.value.plugin.unusing = plugInfo.filter((x: any) => !x.status).length
+    info.value.plugin.using = plugInfo.filter((x: any) => x.status).length
 
     info.value.pic.total = picInfo.length
     info.value.pic.today = picInfo.filter((x: any) => new Date(x.createDate).getDate() === new Date().getDate()).length
