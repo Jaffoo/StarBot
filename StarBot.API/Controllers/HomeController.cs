@@ -11,6 +11,7 @@ using TBC.CommonLib;
 using ElectronNET.API;
 using Newtonsoft.Json.Linq;
 using SqlSugar.Extensions;
+using ElectronNET.API.Entities;
 
 namespace StarBot.Controllers
 {
@@ -391,7 +392,17 @@ namespace StarBot.Controllers
         public async Task<ApiResult> OpenWindow(string url)
         {
             // 使用 Electron.NET 的 API 创建一个新窗口
-            await Electron.WindowManager.CreateWindowAsync(url);
+            await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
+            {
+                AutoHideMenuBar=true,
+                Height = 800,
+                Width = 1000,
+                WebPreferences = new WebPreferences
+                {
+                    DevTools = true,//Ctrl + Shift + I
+                    NodeIntegration = true,
+                }
+            }, url);
             return Success();
         }
 

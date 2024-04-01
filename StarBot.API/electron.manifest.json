@@ -1,15 +1,15 @@
 {
-  "executable": "StarBot",
+  "executable": "StarBot.API",
   "splashscreen": {
     "imageFile": ""
   },
-  "name": "StarBot",
+  "name": "StarBot.API",
   "author": "",
   "singleInstance": false,
   "environment": "Production",
   "build": {
-    "appId": "com.StarBot.app",
-    "productName": "StarBot",
+    "appId": "com.StarBot.API.app",
+    "productName": "StarBot.API",
     "copyright": "Copyright © 2020",
     "buildVersion": "1.0.0",
     "compression": "maximum",

@@ -122,6 +122,7 @@ export const logApi = () => {
             var localLog: Array<logI>
             if (!localLogStr) localLog = new Array<logI>
             else localLog = JSON.parse(localLogStr);
+            if (model.type == 'link') model.color = '#409eff';
             localLog.push(model)
             localStorage.setItem("localLog", JSON.stringify(localLog))
             return true
@@ -156,5 +157,5 @@ export const logApi = () => {
     const clearLog = () => {
         localStorage.removeItem("localLog")
     }
-    return { add, addRange, getLogs, addSystem,clearLog }
+    return { add, addRange, getLogs, addSystem, clearLog }
 }

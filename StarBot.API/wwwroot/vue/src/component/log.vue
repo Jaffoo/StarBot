@@ -7,15 +7,17 @@
         <el-scrollbar style="height: calc(100vh - 100px);margin-top: 10px;">
             <div v-for="(item, index) in logs">
                 <span>{{ index + 1 }}.</span>
-                <span v-if="item.type !== 'system'"><el-avatar :src="item.avatar" />{{ item.name }}:</span>
-                <span v-else>系统信息:</span>
+                <span v-if="item.type !== 'system'" style="margin-top: 10px;"><el-avatar :src="item.avatar" />{{
+                item.name }}：</span>
+                <span v-else>系统信息：</span>
                 <span v-if="item.type == 'text'" :style="{ color: item.color }">{{ item.content }}</span>
-                <span v-if="item.type == 'link'" :style="{ color: item.color, 'text-decoration': 'underline' }"
+                <span v-if="item.type == 'link'"
+                    :style="{ color: item.color, 'text-decoration': 'underline', cursor: 'pointer' }"
                     @click="openUrl(item.url)">
                     {{ item.url }}
                 </span>
                 <el-image v-if="item.type == 'pic'" :src="item.url" :initial-index="getIndex(item.url)"
-                    :preview-src-list="imgList()" />
+                    :preview-src-list="imgList()" style="width: 120px;height: auto;" />
                 <span>--{{ item.time }}</span>
             </div>
         </el-scrollbar>
@@ -61,7 +63,7 @@ const exportLog = () => {
 }
 
 const imgList = (): string[] => {
-    var res = logs.value.filter(x => x.url != undefined && x.url.length > 0).map(e => e.url)
+    var res = logs.value.filter(x => x.type=='pic').map(e => e.url)
     if (res == undefined) return [] as string[]
     return res as string[];
 }

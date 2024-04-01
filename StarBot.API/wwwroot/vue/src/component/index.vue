@@ -1,7 +1,7 @@
 <template>
     <el-scrollbar style="height: calc(100vh - 30px)">
         <el-row>
-            <el-col :span="10">
+            <el-col :span="12">
                 <el-card shadow="hover" class="ch250">
                     <template #header>
                         StatBot
@@ -9,11 +9,11 @@
                     <el-row>
                         <el-col :span="6">
                             <img title="点击关闭" v-if="botStart" @click="closeBot" src="/src/asset/rocket.gif"
-                                style="width: 100px;height: 100px;cursor: pointer;" />
+                                style="width: 100px;height: 100px;cursor: pointer;margin-left: -17px;" />
                             <img title="点击启动" v-else @click="startBot" src="/src/asset/rocket.png"
-                                style="width: 100px;height: 100px;cursor: pointer;" />
+                                style="width: 100px;height: 100px;cursor: pointer;margin-left: -17px;" />
                             <div
-                                :style="{ color: (botStart ? 'green' : startMsg.includes('启动中') ? 'red' : 'blue'), marginLeft: '17px' }">
+                                :style="{ color: (botStart ? 'green' : startMsg.includes('启动中') ? 'red' : 'blue')}">
                                 <span>{{ startMsg }}</span>
                             </div>
                         </el-col>
@@ -39,7 +39,7 @@
             </el-col>
             <el-col :span="1"></el-col>
             <!-- 消息通知 -->
-            <el-col :span="13">
+            <el-col :span="11">
                 <el-card shadow="hover" class="ch250">
                     <template #header>
                         <el-row>
@@ -74,33 +74,33 @@
                                 <div>
                                     <label>系统日志</label>
                                     <div>
-                                        <span>全部信息:{{ info.log.total }}</span>
+                                        <span>全部:{{ info.log.total }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>主要信息:{{ info.log.idol }}</span>
+                                        <span>主要:{{ info.log.idol }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>其他信息:{{ info.log.other }}</span>
+                                        <span>其他:{{ info.log.other }}</span>
                                     </div>
                                 </div>
                                 <el-divider />
                                 <div>
                                     <label>图片信息</label>
                                     <div>
-                                        <span>全部图片:{{ info.pic.total }}</span>
+                                        <span>全部:{{ info.pic.total }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>今日图片:{{ info.pic.today }}</span>
+                                        <span>今日:{{ info.pic.today }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>更早图片:{{ info.pic.old }}</span>
+                                        <span>更早:{{ info.pic.old }}</span>
                                     </div>
                                 </div>
                                 <el-divider />
                                 <div v-if="enable.shamrock">
                                     <label>插件信息</label>
                                     <div>
-                                        <span>全 部:{{ info.plugin.total }}</span>
+                                        <span>全部:{{ info.plugin.total }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>已启用:{{ info.plugin.using }}</span>
+                                        <span>启用:{{ info.plugin.using }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>未启用:{{ info.plugin.unusing }}</span>
+                                        <span>启用:{{ info.plugin.unusing }}</span>
                                     </div>
                                 </div>
                             </el-card>

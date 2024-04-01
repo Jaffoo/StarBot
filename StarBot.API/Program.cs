@@ -22,7 +22,7 @@ builder.Services.AddElectron();
 //设置基础配置
 ConfigHelper.SetConfig(builder.Configuration, builder.Environment.ContentRootPath, builder.Environment.WebRootPath);
 //注入数据
-var projectName = ConfigHelper.GetConfiguration("NameSpace")!;
+var projectName = ConfigHelper.GetConfiguration("NameSpace");
 builder.Services.AddDataService(projectName + ".Service");
 
 builder.Services.AddControllers()
