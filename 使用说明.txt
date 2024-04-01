@@ -1,8 +1,9 @@
-1：运行命令“dotnet tool install ElectronSharp.CLI -g”安装工具。
+1：运行命令“dotnet tool install ElectronNET.CLI -g”安装工具。
 2：进入ElectronCore.Web文件夹，运行cmd。
-3：运行命令“electron-sharp start”，此时会在ElectronCore.Web->obj文件夹中生成Host文件夹，以及安装nodejs包，如果运行命令中途提示报错，忽略即可，最后运行项目。（使用“electron-sharp start /watch”命令，更改文件可以实时刷新）
+3：运行命令“electronize init”初始化项目
+4：运行命令“electronize start or electronize start /watch”启动项目
 4：构建最终程序
-electron-sharp build /target win
-electron-sharp build /target osx
-electron-sharp build /target osx-arm64
-electron-sharp build /target linux
+electronize build /target win
+electronize build /target osx
+electronize build /target linux
+electronize build /target custom "win7-x86;win32" /electron-arch ia32 

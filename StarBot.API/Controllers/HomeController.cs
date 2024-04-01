@@ -8,12 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using ShamrockCore;
 using System.Diagnostics;
 using TBC.CommonLib;
-using System.Xml.Linq;
 using ElectronNET.API;
 using Newtonsoft.Json.Linq;
 using SqlSugar.Extensions;
-using System.IO;
-using static StarBot.Model.Enums;
 
 namespace StarBot.Controllers
 {
@@ -37,7 +34,7 @@ namespace StarBot.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("startbot")]
-        public ApiResult StartBot()
+        public ApiResult StartBot(bool botReady = true)
         {
             try
             {
@@ -45,9 +42,12 @@ namespace StarBot.Controllers
                 {
                     var connectConfig = new ConnectConfig(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, Config.Shamrock.Token);
                     var bot = new Bot(connectConfig);
-                    ReciverMsg.Instance.BotStart(bot);
+                    ReciverMsg.Instance.BotStart(bot, botReady);
                 }
-                JobManager.Initialize(new FluentSchedulerFactory());
+                if (botReady)
+                    JobManager.Initialize(new FluentSchedulerFactory());
+                else
+                    JobManager.RemoveAllJobs();
                 return Success();
             }
             catch (Exception e)
@@ -294,7 +294,6 @@ namespace StarBot.Controllers
             var dir = "Plugins";
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
-            var date = DateTime.Now.ToString("MMdd");
             var full = Path.Combine(dir, file.FileName);
             if (!System.IO.File.Exists(full))
             {

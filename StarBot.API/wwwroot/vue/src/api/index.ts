@@ -7,8 +7,8 @@ const _baseUrl = `http://127.0.0.1:${_port}/api/v1`;
 
 export const ApiPrefix = _baseUrl;
 
-export const startBot = async () => {
-    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/startbot`);
+export const startBot = async (botReady = true) => {
+    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/startbot?botReady=${botReady}`);
     return response.data as ApiResult;
 }
 

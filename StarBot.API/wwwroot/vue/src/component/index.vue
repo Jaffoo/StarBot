@@ -43,7 +43,11 @@
                 <el-card shadow="hover" class="ch250">
                     <template #header>
                         <el-row>
-                            <el-col><span title="每分钟更新一次">错误日志</span></el-col>
+                            <el-col><span title="每分钟更新一次">错误日志</span>
+                                <el-icon :size="18">
+                                    <Refresh class="et5" @click="async () => errLogs = (await getLogs()).data" />
+                                </el-icon>
+                            </el-col>
                         </el-row>
                     </template>
                     <el-scrollbar height="180px" style="margin-top:-10px">
@@ -123,7 +127,7 @@
                             <el-card shadow="hover" class="ch320">
                                 <template #header>帮助反馈
                                     <el-icon :size="16">
-                                        <Switch class="eb" circle @click="() => carousel = 'log'"></Switch>
+                                        <Switch class="et2" circle @click="() => carousel = 'log'"></Switch>
                                     </el-icon>
                                 </template>
                             </el-card>
@@ -132,7 +136,7 @@
                             <el-card shadow="hover" class="ch320">
                                 <template #header>本地日志
                                     <el-icon :size="16">
-                                        <Switch class="eb" circle @click="() => carousel = 'help'"></Switch>
+                                        <Switch class="et2" circle @click="() => carousel = 'help'"></Switch>
                                     </el-icon>
                                 </template>
                                 <el-scrollbar height="250px" style="margin-top:-10px">
@@ -162,7 +166,7 @@ import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
 import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
 import type { SubscribeAllChannelResult } from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK/QChatServerServiceInterface";
 import type { LiveRoomMessage } from "@/class/messageType";
-import { Switch } from '@element-plus/icons-vue'
+import { Switch, Refresh } from '@element-plus/icons-vue'
 
 const props = defineProps({
     enable: {
@@ -250,8 +254,10 @@ const startBot = async () => {
 const closeBot = () => {
     startMsg.value = "关闭中！"
     ElMessageBox.confirm("确定要关闭机器人吗？", "温馨提示！", { type: 'warning', confirmButtonText: '关闭', cancelButtonText: '我点错了' })
-        .then(() => {
+        .then(async () => {
             //关闭
+            await startBotAPI(false);
+            ElMessage.success("关闭成功")
             botStart.value = false;
             startMsg.value = "点击启动"
         })
@@ -465,9 +471,15 @@ onMounted(async () => {
     margin-top: 10px;
 }
 
-.eb {
+.et2 {
     position: absolute;
     top: 2px;
+    cursor: pointer;
+}
+
+.et5 {
+    position: absolute;
+    top: 5px;
     cursor: pointer;
 }
 </style>

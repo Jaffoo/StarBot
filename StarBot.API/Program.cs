@@ -120,8 +120,9 @@ else
     List<int> availablePorts = ports.Where(port => !activePorts.Contains(port)).ToList();
     var port = availablePorts.FirstOrDefault();
     app.Urls.Add($"http://localhost:{port}");
-    //var startUrl = $"http://localhost:{port}/bot/index.html";
     var startUrl = $"http://localhost:5173";
+    if (ConfigHelper.GetConfiguration("StaticUrl").ToBool())
+        startUrl = $"http://localhost:{port}/bot/index.html";
     await app.StartAsync();
     var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
     {

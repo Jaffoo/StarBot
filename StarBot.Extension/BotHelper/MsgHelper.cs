@@ -84,9 +84,10 @@ namespace StarBot.Extension
         public List<string> FuncAdmin => Config.QQ.FuncAdmin;
         public List<string> Group => Config.QQ.Group.ToStrList();
         public List<FriendAddEvent> Event { get; set; } = new();
+        public static bool BotReady { get; set; } = false;
         #endregion
 
-        public void BotStart(Bot bot)
+        public void BotStart(Bot bot,bool botReady)
         {
             bot.Start();
             GroupMessageReceiver(bot!);
@@ -105,6 +106,7 @@ namespace StarBot.Extension
                 });
             });
             Task.Run(HandlMsg);
+            BotReady = botReady;
         }
 
         public void GroupMessageReceiver(Bot bot)
@@ -763,6 +765,7 @@ namespace StarBot.Extension
         {
             try
             {
+                if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 var group = _bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
@@ -780,6 +783,7 @@ namespace StarBot.Extension
         {
             try
             {
+                if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 foreach (var groupId in groupIds)
@@ -800,6 +804,7 @@ namespace StarBot.Extension
         {
             try
             {
+                if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 var group = _bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
@@ -818,6 +823,7 @@ namespace StarBot.Extension
         {
             try
             {
+                if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 foreach (var groupId in groupIds)
@@ -839,6 +845,7 @@ namespace StarBot.Extension
         {
             try
             {
+                if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
@@ -857,6 +864,7 @@ namespace StarBot.Extension
         {
             try
             {
+                if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
                 if (_bot == null) return;
                 foreach (var friendId in friendIds)
@@ -878,8 +886,8 @@ namespace StarBot.Extension
         {
             try
             {
+                if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-
                 if (_bot == null) return;
                 var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
                 if (friend == null) return;
@@ -897,8 +905,8 @@ namespace StarBot.Extension
         {
             try
             {
+                if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-
                 if (_bot == null) return;
                 foreach (var friendId in friendIds)
                 {
@@ -919,8 +927,8 @@ namespace StarBot.Extension
         {
             try
             {
+                if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-
                 if (_bot == null || !Notice) return;
                 var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == Admin.ToLong());
                 if (friend == null) return;
@@ -937,8 +945,8 @@ namespace StarBot.Extension
         {
             try
             {
+                if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-
                 if (_bot == null || !Notice) return;
                 var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == Admin.ToLong());
                 if (friend == null) return;

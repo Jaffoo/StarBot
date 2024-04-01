@@ -4,7 +4,7 @@
             <el-button type="primary" @click="clear">清空</el-button>
             <el-button type="primary" @click="exportLog">导出</el-button>
         </div>
-        <el-scrollbar style="height: calc(100vh - 230px);">
+        <el-scrollbar style="height: calc(100vh - 100px);margin-top: 10px;">
             <div v-for="(item, index) in logs">
                 <span>{{ index + 1 }}.</span>
                 <span v-if="item.type !== 'system'"><el-avatar :src="item.avatar" />{{ item.name }}:</span>
