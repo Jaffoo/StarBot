@@ -2,12 +2,12 @@ using HtmlAgilityPack;
 using StarBot.IService;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
-using ShamrockCore.Receiver.MsgChain;
 using System.IO.Compression;
 using System.Text;
 using Config = StarBot.Model.Config;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 using TBC.CommonLib;
+using UnifyBot.Message.Chain;
 
 namespace StarBot.Extension
 {
@@ -129,7 +129,7 @@ namespace StarBot.Extension
                     }
                     //发送消息
                     var str = $"{note["user"]!["nickname"]!}发小红书啦！\n类型：图片\n标题：{note["title"]}\n内容：{note["desc"]}";
-                    var mcb = new MessageChainBuilder();
+                    var mcb = new MessageChainBuild();
                     mcb.Text(noteUrl).Text(str);
                     if (type == 1 && !string.IsNullOrWhiteSpace(first)) mcb.ImageByUrl(first);
                     if (Config.XHS.ForwardGroup)

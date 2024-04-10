@@ -1,12 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using PluginServer;
-using ShamrockCore.Receiver;
-using StarBot.Entity;
 using StarBot.IService;
 using StarBot.Model;
 using System.Reflection;
-using System.Security.Cryptography.Xml;
 using TBC.CommonLib;
+using UnifyBot.Receiver.EventReceiver;
+using UnifyBot.Receiver.MessageReceiver;
 
 namespace StarBot.Extension
 {
@@ -235,7 +234,7 @@ namespace StarBot.Extension
         /// <summary>
         /// 调用插件
         /// </summary>
-        public static async void Excute(MessageReceiverBase? mrb = null, EventBase? eb = null)
+        public static async void Excute(MessageReceiver? mrb = null, EventReceiver? eb = null)
         {
             foreach (var item in Plugins)
             {

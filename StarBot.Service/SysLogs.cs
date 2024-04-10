@@ -1,5 +1,3 @@
-using ShamrockCore.Receiver;
-using SqlSugar;
 using StarBot.Entity;
 using StarBot.Extension;
 using StarBot.IService;
@@ -34,7 +32,7 @@ namespace StarBot.Service
             if (!ReciverMsg.BotReady) return;
             var config = await _sysConfig.GetConfig();
             if (config.EnableModule.Shamrock && config.EnableModule.QQ && config.QQ.Debug)
-                await MessageManager.SendPrivateMsgAsync(config.QQ.Admin.ToLong(), content);
+                await ReciverMsg.Instance.SendAdminMsg(content);
             await AddAsync(log);
         }
     }

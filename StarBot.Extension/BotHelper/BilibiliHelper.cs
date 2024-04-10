@@ -1,10 +1,9 @@
 using StarBot.IService;
 using Newtonsoft.Json.Linq;
 using TBC.CommonLib;
-using ShamrockCore.Receiver.MsgChain;
-using StarBot.Extension;
 using Microsoft.Extensions.DependencyInjection;
 using Config = StarBot.Model.Config;
+using UnifyBot.Message.Chain;
 
 namespace StarBot.Extension
 {
@@ -90,7 +89,7 @@ namespace StarBot.Extension
                             //需要发送通知则发送通知
                             if (index == 0)
                             {
-                                var mcb = new MessageChainBuilder();
+                                var mcb = new MessageChainBuild();
                                 var msgModel = new MsgModel
                                 {
                                     MsgStr = $"{blog["desc"]!["user_profile"]!["info"]!["uname"]}B站更新："

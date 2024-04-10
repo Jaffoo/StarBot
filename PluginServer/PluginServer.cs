@@ -1,6 +1,7 @@
-using ShamrockCore.Data.Model;
-using ShamrockCore.Receiver;
-using ShamrockCore.Receiver.Receivers;
+using UnifyBot.Model;
+using UnifyBot.Receiver;
+using UnifyBot.Receiver.EventReceiver;
+using UnifyBot.Receiver.MessageReceiver;
 
 namespace PluginServer
 {
@@ -68,18 +69,18 @@ namespace PluginServer
         /// 执行插件
         /// </summary>
         /// <returns></returns>
-        public virtual async Task Excute(MessageReceiverBase? mrb = null, EventBase? eb = null)
+        public virtual async Task Excute(MessageReceiver? mrb = null, EventReceiver? eb = null)
         {
             try
             {
                 if (mrb != null)
                 {
-                    switch (mrb.Type)
+                    switch (mrb.MessageType)
                     {
-                        case PostMessageType.Friend:
-                            await FriendMessage((FriendReceiver)mrb!);
+                        case MessageType.Private:
+                            await FriendMessage((PrivateReceiver)mrb!);
                             break;
-                        case PostMessageType.Group:
+                        case MessageType.Group:
                             await GroupMessage((GroupReceiver)mrb!);
                             break;
                         default:
@@ -114,7 +115,7 @@ namespace PluginServer
         /// </summary>
         /// <param name="fmr"></param>
         /// <returns></returns>
-        public virtual async Task FriendMessage(FriendReceiver fmr)
+        public virtual async Task FriendMessage(PrivateReceiver fmr)
         {
             await Task.Delay(1);
             return;
@@ -136,7 +137,7 @@ namespace PluginServer
         /// </summary>
         /// <param name="e"></param>
         /// <returns></returns>
-        public virtual async Task EventMessage(EventBase e)
+        public virtual async Task EventMessage(EventReceiver e)
         {
             await Task.Delay(1);
             return;

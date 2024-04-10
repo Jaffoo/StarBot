@@ -5,7 +5,8 @@ using StarBot.Model;
 using StarBot.Timer;
 using FluentScheduler;
 using Microsoft.AspNetCore.Mvc;
-using ShamrockCore;
+using UnifyBot;
+using UnifyBot.Model;
 using System.Diagnostics;
 using TBC.CommonLib;
 using ElectronNET.API;
@@ -35,15 +36,15 @@ namespace StarBot.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("startbot")]
-        public ApiResult StartBot(bool botReady = true)
+        public async Task<ApiResult> StartBot(bool botReady = true)
         {
             try
             {
                 if (Config.EnableModule.Shamrock)
                 {
-                    var connectConfig = new ConnectConfig(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, Config.Shamrock.Token);
+                    var connectConfig = new Connect(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, token: Config.Shamrock.Token);
                     var bot = new Bot(connectConfig);
-                    ReciverMsg.Instance.BotStart(bot, botReady);
+                    await ReciverMsg.Instance.BotStart(bot,true);
                 }
                 if (botReady)
                     JobManager.Initialize(new FluentSchedulerFactory());
@@ -65,10 +66,7 @@ namespace StarBot.Controllers
         public ApiResult BotInfo()
         {
             dynamic obj = new System.Dynamic.ExpandoObject();
-            obj.Start = Bot.Instance?.StartTime;
-            obj.Info = Bot.Instance?.LoginInfo;
-            obj.Battery = Bot.Instance?.Battery;
-            obj.NewLog = Bot.Instance?.GetLog(0, true);
+
             return DataResult(obj);
         }
 
@@ -394,7 +392,7 @@ namespace StarBot.Controllers
             // 使用 Electron.NET 的 API 创建一个新窗口
             await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
             {
-                AutoHideMenuBar=true,
+                AutoHideMenuBar = true,
                 Height = 800,
                 Width = 1000,
                 WebPreferences = new WebPreferences

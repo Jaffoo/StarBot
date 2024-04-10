@@ -2,10 +2,10 @@ using Newtonsoft.Json.Linq;
 using System.Globalization;
 using Newtonsoft.Json;
 using StarBot.IService;
-using ShamrockCore.Receiver.MsgChain;
 using Config = StarBot.Model.Config;
 using Microsoft.Extensions.DependencyInjection;
 using TBC.CommonLib;
+using UnifyBot.Message.Chain;
 
 namespace StarBot.Extension
 {
@@ -93,7 +93,7 @@ namespace StarBot.Extension
                             if (Config.WB.UserAll.Contains(item))
                             {
                                 var msgModel = new MsgModel();
-                                var mcb = new MessageChainBuilder();
+                                var mcb = new MessageChainBuild();
                                 if (mblogtype == 2)
                                 {
                                     //获取第一张图片发送
@@ -203,7 +203,7 @@ namespace StarBot.Extension
                             var blogContent = blog["text_raw"]!.ToString();
                             if (!Config.WB.Keyword.ToStrList().Select(blogContent.Contains).Any(x => x) && Config.WB.Keyword.ToStrList().Count > 0)
                                 return;
-                            var mcb = new MessageChainBuilder();
+                            var mcb = new MessageChainBuild();
                             var msgModel = new MsgModel { MsgStr = $"{blog["user"]!["screen_name"]}发了一条相关微博！" + $"\n链接：https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]}\n" };
                             mcb.Text(msgModel.MsgStr);
                             if (mblogtype == 2)

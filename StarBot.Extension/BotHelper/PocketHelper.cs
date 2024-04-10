@@ -1,13 +1,12 @@
 using StarBot.Entity;
-using StarBot.Extension;
 using StarBot.IService;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
-using ShamrockCore.Receiver.MsgChain;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using TBC.CommonLib;
 using Config = StarBot.Model.Config;
+using UnifyBot.Message.Chain;
 
 namespace StarBot.Extension
 {
@@ -68,7 +67,7 @@ namespace StarBot.Extension
                     Type = msgType,
                 };
 
-                MessageChainBuilder mcb = new();
+                MessageChainBuild mcb = new();
                 mcb.Text($"【{Config.KD.IdolName}|{channelName}】\n【{time}】\n{name}:");
                 //图片
                 if (msgType == "image")
@@ -260,7 +259,7 @@ namespace StarBot.Extension
                 double timeVal = double.Parse(result["time"]?.ToString() ?? "0");
                 var time = System.Convert.ToDateTime(DateTime.Parse(DateTime.Now.ToString("1970-01-01 08:00:00")).AddMilliseconds(timeVal).ToString());//����Ϊʱ���ʽ;
                 if (roleId != 3) return;
-                MessageChainBuilder mcb = new();
+                MessageChainBuild mcb = new();
                 mcb.Text($"【{Config.KD.IdolName}|直播间】\n【{time}】\n{result["fromNick"]}:");
                 if (messageType == "text")
                     mcb.Text(result["text"]?.ToString() ?? "");
@@ -304,7 +303,7 @@ namespace StarBot.Extension
             }
         }
 
-        private static void HandleEmoji(string str, ref MessageChainBuilder mcb)
+        private static void HandleEmoji(string str, ref MessageChainBuild mcb)
         {
             string pattern = @"\[[^\]]+\]";
             MatchCollection matches = Regex.Matches(str, pattern);

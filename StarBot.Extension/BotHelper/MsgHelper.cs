@@ -2,18 +2,18 @@ using System.Reactive.Linq;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Data;
-using ShamrockCore;
-using ShamrockCore.Receiver.MsgChain;
-using ShamrockCore.Receiver.Receivers;
 using StarBot.IService;
 using Microsoft.Extensions.DependencyInjection;
-using ShamrockCore.Receiver.Events;
 using TBC.CommonLib;
 using StarBot.Entity;
-using ShamrockCore.Data.Model;
-using ShamrockCore.Utils;
-using ShamrockCore.Receiver;
 using FluentScheduler;
+using UnifyBot.Message.Chain;
+using UnifyBot;
+using UnifyBot.Receiver.EventReceiver.Request;
+using UnifyBot.Receiver.MessageReceiver;
+using UnifyBot.Receiver.EventReceiver;
+using UnifyBot.Model;
+using UnifyBot.Message;
 
 namespace StarBot.Extension
 {
@@ -69,7 +69,7 @@ namespace StarBot.Extension
         public Queue<MsgModel> MsgQueue = new();
         private DateTime _lastSendTime = DateTime.Now;
         private readonly double _interval = 3;//单位秒
-        private Bot? _bot = null;
+        public Bot? Bot;
         #region 全局变量
         public string Admin => Config.QQ.Admin;
         public bool Notice => Config.QQ.Notice;
@@ -83,63 +83,64 @@ namespace StarBot.Extension
         public List<string> Permission => Config.QQ.Permission.ToStrList();
         public List<string> FuncAdmin => Config.QQ.FuncAdmin;
         public List<string> Group => Config.QQ.Group.ToStrList();
-        public List<FriendAddEvent> Event { get; set; } = new();
+        public List<RequestFriend> RequestFriend { get; set; } = [];
+        public List<RequestGroup> RequestGroup { get; set; } = [];
         public static bool BotReady { get; set; } = false;
         #endregion
 
-        public void BotStart(Bot bot,bool botReady)
+        public async Task BotStart(Bot bot, bool botReady)
         {
-            bot.Start();
-            GroupMessageReceiver(bot!);
-            FriendMessageReceiver(bot!);
-            EventMessageReceiver(bot!);
+            Bot = bot;
+            await Bot!.StartAsync();
+            GroupMessageReceiver();
+            FriendMessageReceiver();
+            EventMessageReceiver();
             //执行插件
-            Task.Run(() =>
+            await Task.Run(() =>
             {
-                bot.MessageReceived.OfType<MessageReceiverBase>().Subscribe(mrb =>
+                Bot.MessageReceived.OfType<MessageReceiver>().Subscribe(mrb =>
                 {
                     PluginHelper.Excute(mrb: mrb);
                 });
-                bot.EventReceived.OfType<EventBase>().Subscribe(eb =>
+                Bot.EventReceived.OfType<EventReceiver>().Subscribe(eb =>
                 {
                     PluginHelper.Excute(eb: eb);
                 });
             });
-            Task.Run(HandlMsg);
+            await Task.Run(HandlMsg);
             BotReady = botReady;
         }
 
-        public void GroupMessageReceiver(Bot bot)
+        public void GroupMessageReceiver()
         {
-            _bot = bot;
-            _bot.MessageReceived.OfType<GroupReceiver>().Subscribe(async gmr =>
+            Bot!.MessageReceived.OfType<GroupReceiver>().Subscribe(async gmr =>
             {
                 try
                 {
                     if (!Group.Contains(gmr.GroupQQ.ToString())) return;
                     //消息链
-                    var msgChain = gmr.Message;
+                    var msgChain = gmr.Message!;
                     var msgText = msgChain.GetPlainText().Trim();
                     if (Config.QQ.Save && !string.IsNullOrWhiteSpace(Config.QQ.Group))
                     {
                         var msgModel = new QQMessage()
                         {
                             SenderId = gmr.Sender!.QQ.ToString(),
-                            SenderName = gmr.Sender.Name,
+                            SenderName = gmr.Sender.Nickname,
                             ReciverId = gmr.Group!.GroupQQ.ToString(),
-                            ReciverName = gmr.Group.Name,
+                            ReciverName = gmr.Group.GroupName,
                             Time = DateTime.Now,
                         };
                         foreach (var item in msgChain)
                         {
-                            if (item.Type == MessageType.Text)
-                                msgModel.Content = item.ConvertTo<TextMessage>().Data.Text;
-                            if (item.Type == MessageType.Image)
-                                msgModel.Url = item.ConvertTo<ImageMessage>().Data.Url;
-                            if (item.Type == MessageType.Record)
-                                msgModel.Url = item.ConvertTo<RecordMessage>().Data.Url;
-                            if (item.Type == MessageType.Video)
-                                msgModel.Url = item.ConvertTo<VideoMessage>().Data.File;
+                            if (item.Type == Messages.Text)
+                                msgModel.Content = (item as TextMessage)?.Data.Text ?? "";
+                            if (item.Type == Messages.Image)
+                                msgModel.Url = (item as ImageMessage)?.Data.Url;
+                            if (item.Type == Messages.Record)
+                                msgModel.Url = (item as RecordMessage)?.Data.Url;
+                            if (item.Type == Messages.Video)
+                                msgModel.Url = (item as VideoMessage)?.Data.File;
                         }
                         await _qqMessage.AddAsync(msgModel);
                     }
@@ -153,10 +154,9 @@ namespace StarBot.Extension
             });
         }
 
-        public void FriendMessageReceiver(Bot bot)
+        public void FriendMessageReceiver()
         {
-            _bot = bot;
-            _bot.MessageReceived.OfType<FriendReceiver>().Subscribe(async fmr =>
+            Bot!.MessageReceived.OfType<PrivateReceiver>().Subscribe(async fmr =>
             {
                 //消息链
                 var msgChain = fmr.Message;
@@ -173,20 +173,20 @@ namespace StarBot.Extension
                             "\n#微博用户搜索#{关键词}\n#关注微博用户#{用户id}\n#添加/删除微博关键词#{词}\n#重置微博关键词" +
                             "\n5、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n6、管理员：\n#添加/删除管理员#{qq}\n#删除全部管理员" +
                             "\n6、系统功能：\n#查询#{sql}\n#SQL#{sql}\n#清空聊天记录\n#修改#key/id#{key/id}#{value}";
-                            await fmr.SendPrivateMsgAsync(menu);
+                            await fmr.SendMessage(menu);
                             return;
                         }
                         if (msgText == "#查看全部")
                         {
                             if (Check.Count == 0)
                             {
-                                await fmr.SendPrivateMsgAsync("无待审核图片");
+                                await fmr.SendMessage("无待审核图片");
                                 return;
                             }
                             foreach (var item in Check)
                             {
-                                var newMsgChain = new MessageChainBuilder().ImageByUrl(item).Build();
-                                await fmr.SendPrivateMsgAsync(newMsgChain);
+                                var newMsgChain = new MessageChainBuild().ImageByUrl(item).Build();
+                                await fmr.SendMessage(newMsgChain);
                                 Thread.Sleep(1000);
                             }
                             return;
@@ -195,30 +195,30 @@ namespace StarBot.Extension
                         {
                             if (Check.Count == 0)
                             {
-                                await fmr.SendPrivateMsgAsync("无待审核图片");
+                                await fmr.SendMessage("无待审核图片");
                                 return;
                             }
                             var index = msgText.Replace("#查看#", "").ToInt() - 1;
                             if (index >= Check.Count || index < 0)
                             {
-                                await fmr.SendPrivateMsgAsync($"未找到图片");
+                                await fmr.SendMessage($"未找到图片");
                                 return;
                             }
-                            var newMsgChain = new MessageChainBuilder().ImageByUrl(Check[index]).Build();
-                            await fmr.SendPrivateMsgAsync(newMsgChain);
+                            var newMsgChain = new MessageChainBuild().ImageByUrl(Check[index]).Build();
+                            await fmr.SendMessage(newMsgChain);
                             return;
                         }
                         if (msgText.Contains("#保存#"))
                         {
                             if (Check.Count == 0)
                             {
-                                await fmr.SendPrivateMsgAsync("无待审核图片");
+                                await fmr.SendMessage("无待审核图片");
                                 return;
                             }
                             var index = msgText.Replace("#保存#", "").ToInt() - 1;
                             if (index > Check.Count || index < 0)
                             {
-                                await fmr.SendPrivateMsgAsync($"未找到张图片");
+                                await fmr.SendMessage($"未找到张图片");
                                 return;
                             }
                             if (await new FileHelper().Save(Check[index]))
@@ -227,7 +227,7 @@ namespace StarBot.Extension
                                 if (model != null)
                                     await _cache.DeleteAsync(model);
                             }
-                            await fmr.SendPrivateMsgAsync("本地保存成功！");
+                            await fmr.SendMessage("本地保存成功！");
                             return;
                         }
                         if (msgText == "#保存全部")
@@ -241,59 +241,86 @@ namespace StarBot.Extension
                                         await _cache.DeleteAsync(list);
                                 }
                             }
-                            await fmr.SendPrivateMsgAsync("全部本地保存成功！");
+                            await fmr.SendMessage("全部本地保存成功！");
                             return;
                         }
                         if (msgText.Contains("#删除#"))
                         {
                             if (Check.Count == 0)
                             {
-                                await fmr.SendPrivateMsgAsync("无待审核图片");
+                                await fmr.SendMessage("无待审核图片");
                                 return;
                             }
                             var index = msgText.Replace("#删除#", "").ToInt() - 1;
                             if (index > Check.Count || index < 0)
                             {
-                                await fmr.SendPrivateMsgAsync($"未找到张图片");
+                                await fmr.SendMessage($"未找到张图片");
                                 return;
                             }
                             var model = await _cache.GetModelAsync(t => t.Content == Check[index] && t.Type == 1)!;
                             if (model != null) await _cache.DeleteAsync(model);
-                            await fmr.SendPrivateMsgAsync("删除成功！");
+                            await fmr.SendMessage("删除成功！");
                             return;
                         }
                         if (msgText == "#删除全部")
                         {
                             var list = await _cache.GetListAsync(t => t.Type == 1);
                             await _cache.DeleteAsync(list);
-                            await fmr.SendPrivateMsgAsync("全部删除成功！");
+                            await fmr.SendMessage("全部删除成功！");
                             return;
                         }
 
                         if (msgText.Contains("#同意#"))
                         {
                             var flagId = msgText.Replace("#同意#", "");
-                            var friendEvent = Event.FirstOrDefault(t => t.Flag == flagId);
+                            var friendEvent = RequestFriend.FirstOrDefault(t => t.Flag == flagId);
                             if (friendEvent == null)
                             {
-                                await fmr.SendPrivateMsgAsync("未找到该好友申请！");
+                                await fmr.SendMessage("未找到该好友申请！");
                                 return;
                             }
                             await friendEvent.Agree();
-                            await fmr.SendPrivateMsgAsync("已同意好友申请！");
+                            await fmr.SendMessage("已同意好友申请！");
                             return;
                         }
                         if (msgText.Contains("#拒绝#"))
                         {
                             var flagId = msgText.Replace("#拒绝#", "");
-                            var friendEvent = Event.FirstOrDefault(t => t.Flag == flagId);
+                            var friendEvent = RequestFriend.FirstOrDefault(t => t.Flag == flagId);
                             if (friendEvent == null)
                             {
-                                await fmr.SendPrivateMsgAsync("未找到该好友申请！");
+                                await fmr.SendMessage("未找到该好友申请！");
                                 return;
                             }
                             await friendEvent.Reject();
-                            await fmr.SendPrivateMsgAsync("已拒绝好友申请！");
+                            await fmr.SendMessage("已拒绝好友申请！");
+                            return;
+                        }
+
+                        if (msgText.Contains("#同意入群#"))
+                        {
+                            var flagId = msgText.Replace("#同意入群#", "");
+                            var friendEvent = RequestFriend.FirstOrDefault(t => t.Flag == flagId);
+                            if (friendEvent == null)
+                            {
+                                await fmr.SendMessage("未找到入群申请！");
+                                return;
+                            }
+                            await friendEvent.Agree();
+                            await fmr.SendMessage("已同意入群申请！");
+                            return;
+                        }
+                        if (msgText.Contains("#拒绝入群#"))
+                        {
+                            var flagId = msgText.Replace("#拒绝入群#", "");
+                            var groupEvent = RequestGroup.FirstOrDefault(t => t.Flag == flagId);
+                            if (groupEvent == null)
+                            {
+                                await fmr.SendMessage("未找到入群申请！");
+                                return;
+                            }
+                            await groupEvent.Reject();
+                            await fmr.SendMessage("已拒绝入群申请！");
                             return;
                         }
 
@@ -318,7 +345,7 @@ namespace StarBot.Extension
                                 new TextMessage("时间：" + log?.Time.ToString("yyyy-MM-dd HH:mm:ss") ?? ""),
                                 new TextMessage("\n详细：" + log?.Content ?? "未查询到日志！")
                             };
-                            await fmr.SendPrivateMsgAsync(mc);
+                            await fmr.SendMessage(mc);
                             return;
                         }
                         if (msgText.Contains("#添加管理员#"))
@@ -326,16 +353,16 @@ namespace StarBot.Extension
                             var qqNum = msgText.Replace("#添加管理员#", "");
                             if (string.IsNullOrWhiteSpace(qqNum.Trim()))
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误!");
+                                await fmr.SendMessage("格式错误!");
                                 return;
                             }
                             if (Permission.Contains(qqNum))
-                                await fmr.SendPrivateMsgAsync("此账号已是管理员！");
+                                await fmr.SendMessage("此账号已是管理员！");
                             var model = await _sysConfig.GetModelAsync(t => t.Key == "Permission") ?? throw new Exception("key为【Permission】的值不存在！");
                             model.Value += "," + qqNum;
                             await _sysConfig.UpdateAsync(model);
                             _sysConfig.ClearConfig("QQ");
-                            await fmr.SendPrivateMsgAsync("添加成功！");
+                            await fmr.SendMessage("添加成功！");
                             return;
                         }
                         if (msgText == "#删除全部管理员")
@@ -344,7 +371,7 @@ namespace StarBot.Extension
                             model.Value = "";
                             await _sysConfig.UpdateAsync(model);
                             _sysConfig.ClearConfig("QQ");
-                            await fmr.SendPrivateMsgAsync("删除成功！");
+                            await fmr.SendMessage("删除成功！");
                             return;
                         }
                         if (msgText.Contains("#删除管理员#"))
@@ -352,12 +379,12 @@ namespace StarBot.Extension
                             var qqNum = msgText.Replace("#删除管理员#", "");
                             if (string.IsNullOrWhiteSpace(qqNum.Trim()))
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误!");
+                                await fmr.SendMessage("格式错误!");
                                 return;
                             }
                             if (!Permission.Contains(qqNum))
                             {
-                                await fmr.SendPrivateMsgAsync("此账号不是管理员！");
+                                await fmr.SendMessage("此账号不是管理员！");
                                 return;
                             }
                             Permission.Remove(qqNum);
@@ -365,7 +392,7 @@ namespace StarBot.Extension
                             model.Value = string.Join(",", Permission);
                             await _sysConfig.UpdateAsync(model);
                             _sysConfig.ClearConfig("QQ");
-                            await fmr.SendPrivateMsgAsync("删除成功！");
+                            await fmr.SendMessage("删除成功！");
                             return;
                         }
 
@@ -373,7 +400,7 @@ namespace StarBot.Extension
                         {
                             var all = await _qqMessage.GetListAsync();
                             var res = await _qqMessage.DeleteAsync(all);
-                            await fmr.SendPrivateMsgAsync("清空成功");
+                            await fmr.SendMessage("清空成功");
                             return;
                         }
                         if (msgText.Contains("#查询#key#"))
@@ -381,13 +408,13 @@ namespace StarBot.Extension
                             var words = msgText.Replace("#查询#key#", "");
                             if (string.IsNullOrWhiteSpace(words))
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误！");
+                                await fmr.SendMessage("格式错误！");
                                 return;
                             }
                             var list = words.Split('#');
                             if (list.Length != 2)
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误！");
+                                await fmr.SendMessage("格式错误！");
                                 return;
                             }
                             var key = list[0];
@@ -395,12 +422,12 @@ namespace StarBot.Extension
                             var models = await _sysConfig.GetListAsync(t => t.Key == key);
                             if (models == null)
                             {
-                                await fmr.SendPrivateMsgAsync("key不存在！");
+                                await fmr.SendMessage("key不存在！");
                                 return;
                             }
                             foreach (var item in models)
                             {
-                                await fmr.SendPrivateMsgAsync($"查询到关键词:{item.Key}的值为:{item.Value},id为:{item.Id}");
+                                await fmr.SendMessage($"查询到关键词:{item.Key}的值为:{item.Value},id为:{item.Id}");
                             }
                             return;
                         }
@@ -409,13 +436,13 @@ namespace StarBot.Extension
                             var words = msgText.Replace("#修改#key#", "");
                             if (string.IsNullOrWhiteSpace(words))
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误！");
+                                await fmr.SendMessage("格式错误！");
                                 return;
                             }
                             var list = words.Split('#');
                             if (list.Length != 2)
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误！");
+                                await fmr.SendMessage("格式错误！");
                                 return;
                             }
                             var key = list[0];
@@ -423,14 +450,14 @@ namespace StarBot.Extension
                             var model = await _sysConfig.GetModelAsync(t => t.Key == key);
                             if (model == null)
                             {
-                                await fmr.SendPrivateMsgAsync("key不存在！");
+                                await fmr.SendMessage("key不存在！");
                                 return;
                             }
                             var old = model.Value;
                             model.Value = value;
                             await _sysConfig.UpdateAsync(model);
                             _sysConfig.ClearConfig();
-                            await fmr.SendPrivateMsgAsync($"【{key}】值已修改。{old} -> {value}");
+                            await fmr.SendMessage($"【{key}】值已修改。{old} -> {value}");
                             return;
                         }
                         if (msgText.Contains("#修改#id#"))
@@ -438,13 +465,13 @@ namespace StarBot.Extension
                             var words = msgText.Replace("#修改#id#", "");
                             if (string.IsNullOrWhiteSpace(words))
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误！");
+                                await fmr.SendMessage("格式错误！");
                                 return;
                             }
                             var list = words.Split('#');
                             if (list.Length != 2)
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误！");
+                                await fmr.SendMessage("格式错误！");
                                 return;
                             }
                             var id = list[0];
@@ -452,14 +479,14 @@ namespace StarBot.Extension
                             var model = await _sysConfig.GetModelAsync(t => t.Id == id.ToInt());
                             if (model == null)
                             {
-                                await fmr.SendPrivateMsgAsync("数据不存在！");
+                                await fmr.SendMessage("数据不存在！");
                                 return;
                             }
                             var old = model.Value;
                             model.Value = value;
                             await _sysConfig.UpdateAsync(model);
                             _sysConfig.ClearConfig();
-                            await fmr.SendPrivateMsgAsync($"id:{id}【{model.Key}】值已修改。{old} -> {value}");
+                            await fmr.SendMessage($"id:{id}【{model.Key}】值已修改。{old} -> {value}");
                             return;
                         }
                     }
@@ -469,7 +496,7 @@ namespace StarBot.Extension
                         {
                             string menu = "1、功能开关：\n#开启/关闭模块{模块名称}\n#开启/关闭转发#{模块}#qq/群\n#修改转发#{模块}#qq/群#{值}\n2、发送消息：#发送#{群/好友}#文字/图片/语音/视频/图文/{qq号/群号}/{文字/图片链接/{文字}-{图片链接}}" +
                             "\n3、微博：\n#微博用户搜索#{关键词}\n#关注微博用户#{用户id}\n#添加/删除微博关键词#{词}\n#重置微博关键词";
-                            await fmr.SendPrivateMsgAsync(menu);
+                            await fmr.SendMessage(menu);
                             return;
                         }
                         if (msgText.Contains("#发送#"))
@@ -478,10 +505,10 @@ namespace StarBot.Extension
                             var list = msg.Split('#').ToList();
                             if (list.Count != 4)
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误！");
+                                await fmr.SendMessage("格式错误！");
                                 return;
                             }
-                            var msgBuild = new MessageChainBuilder();
+                            var msgBuild = new MessageChainBuild();
                             if (list[1] == "文字")
                                 msgBuild.Text(list[3]);
                             if (list[1] == "图片")
@@ -505,7 +532,7 @@ namespace StarBot.Extension
                             moudel = GetMoudel(moudel);
                             Config.EnableModule[moudel] = true;
                             _sysConfig.ClearConfig(moudel);
-                            await fmr.SendPrivateMsgAsync($"模块【{old}】已开启！");
+                            await fmr.SendMessage($"模块【{old}】已开启！");
                             var job = JobManager.AllSchedules.FirstOrDefault(t => t.Name.ToLower() == moudel.ToLower());
                             if (job != null) job.Enable();
                             var model = await _sysConfig.GetModelAsync(t => t.Pid == 6 && t.Key == moudel);
@@ -523,7 +550,7 @@ namespace StarBot.Extension
                             moudel = GetMoudel(moudel);
                             Config.EnableModule[moudel] = false;
                             _sysConfig.ClearConfig(moudel);
-                            await fmr.SendPrivateMsgAsync($"模块【{old}】已关闭！");
+                            await fmr.SendMessage($"模块【{old}】已关闭！");
                             var job = JobManager.AllSchedules.FirstOrDefault(t => t.Name.ToLower() == moudel.ToLower());
                             if (job != null) job.Disable();
                             var model = await _sysConfig.GetModelAsync(t => t.Pid == 6 && t.Key == moudel);
@@ -539,7 +566,7 @@ namespace StarBot.Extension
                             var list = msgText.Replace("#开启转发#", "").Split('#').ToList();
                             if (list.Count != 2)
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误！");
+                                await fmr.SendMessage("格式错误！");
                                 return;
                             }
                             var moudel = list[0];
@@ -554,7 +581,7 @@ namespace StarBot.Extension
                                 forward = type == "qq" ? "WBChiGuaForwardQQ" : "WBChiGuaForwardGroup";
                             }
                             Config[moudel, forward] = true;
-                            await fmr.SendPrivateMsgAsync($"模块【{list[0]}】转发至{type}功能已开启！");
+                            await fmr.SendMessage($"模块【{list[0]}】转发至{type}功能已开启！");
                             var pmodel = await _sysConfig.GetModelAsync(t => t.Key == moudel && t.Pid == 6);
                             if (pmodel == null) return;
                             var model = await _sysConfig.GetModelAsync(t => t.Key == forward && t.Pid == pmodel.Id);
@@ -569,7 +596,7 @@ namespace StarBot.Extension
                             var list = msgText.Replace("#关闭转发#", "").Split('#').ToList();
                             if (list.Count != 2)
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误！");
+                                await fmr.SendMessage("格式错误！");
                                 return;
                             }
                             var moudel = list[0];
@@ -584,7 +611,7 @@ namespace StarBot.Extension
                                 forward = type == "qq" ? "WBChiGuaForwardQQ" : "WBChiGuaForwardGroup";
                             }
                             Config[moudel, forward] = false;
-                            await fmr.SendPrivateMsgAsync($"模块【{list[0]}】转发至{type}功能已关闭！");
+                            await fmr.SendMessage($"模块【{list[0]}】转发至{type}功能已关闭！");
                             var pmodel = await _sysConfig.GetModelAsync(t => t.Key == moudel && t.Pid == 6);
                             if (pmodel == null) return;
                             var model = await _sysConfig.GetModelAsync(t => t.Key == forward && t.Pid == pmodel.Id);
@@ -599,7 +626,7 @@ namespace StarBot.Extension
                             var list = msgText.Replace("#修改转发#", "").Split('#').ToList();
                             if (list.Count != 3)
                             {
-                                await fmr.SendPrivateMsgAsync("格式错误！");
+                                await fmr.SendMessage("格式错误！");
                                 return;
                             }
                             var moudel = list[0];
@@ -615,7 +642,7 @@ namespace StarBot.Extension
                                 forward = type == "qq" ? "WBChiGuaQQ" : "WBChiGuaGroup";
                             }
                             Config[moudel, forward] = false;
-                            await fmr.SendPrivateMsgAsync($"模块【{list[0]}】转发至{type}功能的值已修改为：{value}");
+                            await fmr.SendMessage($"模块【{list[0]}】转发至{type}功能的值已修改为：{value}");
                             var pmodel = await _sysConfig.GetModelAsync(t => t.Key == moudel && t.Pid == 6);
                             if (pmodel == null) return;
                             var model = await _sysConfig.GetModelAsync(t => t.Key == forward && t.Pid == pmodel.Id);
@@ -650,16 +677,16 @@ namespace StarBot.Extension
                                 if (i == 2) break;
                             }
                             msg.Append("注：结果有多个时，仅展示前三个！");
-                            await fmr.SendPrivateMsgAsync(msg.ToString());
+                            await fmr.SendMessage(msg.ToString());
                             return;
                         }
                         if (msgText.Contains("#删除微博关键词#"))
                         {
                             var keywords = msgText.Replace("#删除微博关键词#", "");
                             if (string.IsNullOrWhiteSpace(keywords))
-                                await fmr.SendPrivateMsgAsync("输入内容为空！");
+                                await fmr.SendMessage("输入内容为空！");
                             if (!Config.WB.Keyword.ToStrList().Contains(keywords))
-                                await fmr.SendPrivateMsgAsync("不存在该关键词！");
+                                await fmr.SendMessage("不存在该关键词！");
                             var temp = Config.WB.Keyword.ToStrList();
                             temp.Remove(keywords);
                             Config.WB.Keyword = string.Join(",", temp);
@@ -668,16 +695,16 @@ namespace StarBot.Extension
                             model.Value = string.Join(",", Config.WB.Keyword);
                             await _sysConfig.UpdateAsync(model);
                             _sysConfig.ClearConfig("WB");
-                            await fmr.SendPrivateMsgAsync($"已删除关键词【{keywords}】");
+                            await fmr.SendMessage($"已删除关键词【{keywords}】");
                             return;
                         }
                         if (msgText.Contains("#添加微博关键词#"))
                         {
                             var keywords = msgText.Replace("#添加微博关键词#", "");
                             if (string.IsNullOrWhiteSpace(keywords))
-                                await fmr.SendPrivateMsgAsync("输入内容为空！");
+                                await fmr.SendMessage("输入内容为空！");
                             if (Config.WB.Keyword.ToStrList().Contains(keywords))
-                                await fmr.SendPrivateMsgAsync("已存在该关键词！");
+                                await fmr.SendMessage("已存在该关键词！");
                             var temp = Config.WB.Keyword.ToStrList();
                             temp.Add(keywords);
                             Config.WB.Keyword = string.Join(",", temp);
@@ -685,7 +712,7 @@ namespace StarBot.Extension
                             model!.Value = string.Join(",", Config.WB.Keyword);
                             await _sysConfig.UpdateAsync(model);
                             _sysConfig.ClearConfig("WB");
-                            await fmr.SendPrivateMsgAsync($"已添加关键词【{keywords}】");
+                            await fmr.SendMessage($"已添加关键词【{keywords}】");
                             return;
                         }
                         if (msgText.Contains("#重置微博关键词"))
@@ -694,7 +721,7 @@ namespace StarBot.Extension
                             model!.Value = "";
                             await _sysConfig.UpdateAsync(model);
                             _sysConfig.ClearConfig("WB");
-                            await fmr.SendPrivateMsgAsync($"已重置关键词");
+                            await fmr.SendMessage($"已重置关键词");
                             return;
                         }
                     }
@@ -707,24 +734,34 @@ namespace StarBot.Extension
             });
         }
 
-        public void EventMessageReceiver(Bot bot)
+        public void EventMessageReceiver()
         {
-            _bot = bot;
-            _bot.EventReceived.OfType<EventBase>().Subscribe(async e =>
+            Bot!.EventReceived.OfType<EventReceiver>().Subscribe(async e =>
             {
                 try
                 {
-                    switch (e.EventType)
+                    if (e.PostType == PostType.Notice)
                     {
-                        case PostEventType.Friend:
-                            {
-                                if (e is not FriendAddEvent qq) return;
-                                await SendFriendMsg(Admin, $"机器人收到添加好友请求\n事件标识：{qq.Flag}\n附加消息：{qq.Comment}\n请求人：{qq.QQ}");
-                                Event.Add(qq);
-                            };
-                            return;
-                        default:
-                            return;
+
+                    }
+                    if (e.PostType == PostType.Request)
+                    {
+                        if (e.RequestEventType == RequestType.Friend)
+                        {
+                            if (e is not RequestFriend ev) throw new Exception("好友申请事件报错");
+                            RequestFriend.Add(ev);
+                            await SendAdminMsg($"机器人收到添加好友申请，Flag:{ev.Flag}");
+                        }
+                        if (e.RequestEventType == RequestType.Group)
+                        {
+                            if (e is not RequestGroup ev) throw new Exception("入群申请事件报错");
+                            RequestGroup.Add(ev);
+                            await SendAdminMsg($"群{ev.Group.GroupName}【{ev.GroupQQ}】收到新的入群申请，Flag:{ev.Flag}");
+                        }
+                    }
+                    if (e.PostType == PostType.MetaEvent)
+                    {
+
                     }
                 }
                 catch (Exception ex)
@@ -767,10 +804,10 @@ namespace StarBot.Extension
             {
                 if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-                if (_bot == null) return;
-                var group = _bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
+                if (Bot == null) return;
+                var group = Bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
                 if (group == null) return;
-                await group.SendGroupMsgAsync(msg);
+                await group.SendMessage(msg);
                 return;
             }
             catch (Exception ex)
@@ -785,12 +822,12 @@ namespace StarBot.Extension
             {
                 if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-                if (_bot == null) return;
+                if (Bot == null) return;
                 foreach (var groupId in groupIds)
                 {
-                    var group = _bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
+                    var group = Bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
                     if (group == null) continue;
-                    await group.SendGroupMsgAsync(msg);
+                    await group.SendMessage(msg);
                 }
                 return;
             }
@@ -806,10 +843,10 @@ namespace StarBot.Extension
             {
                 if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-                if (_bot == null) return;
-                var group = _bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
+                if (Bot == null) return;
+                var group = Bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
                 if (group == null) return;
-                await group.SendGroupMsgAsync(msg);
+                await group.SendMessage(msg);
                 return;
             }
             catch (Exception ex)
@@ -825,12 +862,12 @@ namespace StarBot.Extension
             {
                 if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-                if (_bot == null) return;
+                if (Bot == null) return;
                 foreach (var groupId in groupIds)
                 {
-                    var group = _bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
+                    var group = Bot.Groups?.FirstOrDefault(t => t.GroupQQ == groupId.ToLong());
                     if (group == null) continue;
-                    await group.SendGroupMsgAsync(msg);
+                    await group.SendMessage(msg);
                 }
                 return;
             }
@@ -847,10 +884,10 @@ namespace StarBot.Extension
             {
                 if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-                if (_bot == null) return;
-                var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
+                if (Bot == null) return;
+                var friend = Bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
                 if (friend == null) return;
-                await friend.SendPrivateMsgAsync(msg);
+                await friend.SendMessage(msg);
                 return;
             }
             catch (Exception ex)
@@ -866,12 +903,12 @@ namespace StarBot.Extension
             {
                 if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-                if (_bot == null) return;
+                if (Bot == null) return;
                 foreach (var friendId in friendIds)
                 {
-                    var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
+                    var friend = Bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
                     if (friend == null) continue;
-                    await friend.SendPrivateMsgAsync(msg);
+                    await friend.SendMessage(msg);
                 }
                 return;
             }
@@ -888,10 +925,10 @@ namespace StarBot.Extension
             {
                 if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-                if (_bot == null) return;
-                var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
+                if (Bot == null) return;
+                var friend = Bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
                 if (friend == null) return;
-                await friend.SendPrivateMsgAsync(msg);
+                await friend.SendMessage(msg);
                 return;
             }
             catch (Exception ex)
@@ -907,12 +944,12 @@ namespace StarBot.Extension
             {
                 if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-                if (_bot == null) return;
+                if (Bot == null) return;
                 foreach (var friendId in friendIds)
                 {
-                    var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
+                    var friend = Bot.Friends?.FirstOrDefault(t => t.QQ == friendId.ToLong());
                     if (friend == null) continue;
-                    await friend.SendPrivateMsgAsync(msg);
+                    await friend.SendMessage(msg);
                 }
                 return;
             }
@@ -929,10 +966,10 @@ namespace StarBot.Extension
             {
                 if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-                if (_bot == null || !Notice) return;
-                var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == Admin.ToLong());
+                if (Bot == null || !Notice) return;
+                var friend = Bot.Friends?.FirstOrDefault(t => t.QQ == Admin.ToLong());
                 if (friend == null) return;
-                await friend.SendPrivateMsgAsync(msg);
+                await friend.SendMessage(msg);
                 return;
             }
             catch (Exception ex)
@@ -947,10 +984,10 @@ namespace StarBot.Extension
             {
                 if (!BotReady) return;
                 if (!Config.EnableModule.Shamrock) return;
-                if (_bot == null || !Notice) return;
-                var friend = _bot.Friends?.FirstOrDefault(t => t.QQ == Admin.ToLong());
+                if (Bot == null || !Notice) return;
+                var friend = Bot.Friends?.FirstOrDefault(t => t.QQ == Admin.ToLong());
                 if (friend == null) return;
-                await friend.SendPrivateMsgAsync(msg);
+                await friend.SendMessage(msg);
                 return;
             }
             catch (Exception ex)

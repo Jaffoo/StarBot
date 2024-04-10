@@ -11,7 +11,7 @@ using StarBot.Timer;
 using System.Net.NetworkInformation;
 using System.Net;
 using System.Diagnostics;
-using ShamrockCore.Utils;
+using TBC.CommonLib;
 
 var bot = new ConfigurationBuilder().AddJsonFile("bot.json").Build();
 
