@@ -13,6 +13,7 @@ using ElectronNET.API;
 using Newtonsoft.Json.Linq;
 using SqlSugar.Extensions;
 using ElectronNET.API.Entities;
+using System.Runtime.InteropServices;
 
 namespace StarBot.Controllers
 {
@@ -44,7 +45,7 @@ namespace StarBot.Controllers
                 {
                     var connectConfig = new Connect(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, token: Config.Shamrock.Token);
                     var bot = new Bot(connectConfig);
-                    await ReciverMsg.Instance.BotStart(bot,true);
+                    await ReciverMsg.Instance.BotStart(bot, true);
                 }
                 if (botReady)
                     JobManager.Initialize(new FluentSchedulerFactory());
@@ -240,11 +241,23 @@ namespace StarBot.Controllers
         {
             if (Config.EnableModule.BD && Config.BD.SaveAliyunDisk)
             {
-                Task.Run(() =>
+                var os = Environment.OSVersion.Platform.ToString();
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    var path = "wwwroot/script/AliDiskApi.exe";
-                    using Process p = Process.Start(path)!;
-                });
+                    Task.Run(() =>
+                    {
+                        var path = "wwwroot/script/alipan-win.exe";
+                        using Process p = Process.Start(path)!;
+                    });
+                }
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    Task.Run(() =>
+                    {
+                        var path = "wwwroot/script/alipan-linux";
+                        using Process p = Process.Start(path)!;
+                    });
+                }
             }
             return Success();
         }
