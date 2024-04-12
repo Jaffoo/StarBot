@@ -247,6 +247,12 @@ namespace StarBot.Controllers
                     Task.Run(() =>
                     {
                         var path = "wwwroot/script/alipan-win.exe";
+                        using Process chmodProcess = new();
+                        chmodProcess.StartInfo.FileName = "sudo";
+                        chmodProcess.StartInfo.Arguments = $"chmod +x {path}";
+                        chmodProcess.StartInfo.UseShellExecute = false;
+                        chmodProcess.Start();
+                        chmodProcess.WaitForExit();
                         using Process p = Process.Start(path)!;
                     });
                 }
