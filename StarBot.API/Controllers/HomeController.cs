@@ -5,7 +5,6 @@ using StarBot.Model;
 using StarBot.Timer;
 using FluentScheduler;
 using Microsoft.AspNetCore.Mvc;
-using UnifyBot;
 using UnifyBot.Model;
 using System.Diagnostics;
 using TBC.CommonLib;
@@ -47,10 +46,21 @@ namespace StarBot.Controllers
                     JobManager.RemoveAllJobs();
                 if (Config.EnableModule.Bot)
                 {
-                    var connectConfig = new Connect(Config.Bot.Host, Config.Bot.WebsocktPort, Config.Bot.HttpPort, token: Config.Bot.Token);
-                    var bot = new UnifyBot.Bot(connectConfig);
-                    ReciverMsg.Instance.BotStart(bot, true);
-                    return AjaxResult(ReciverMsg.Instance.Bot!.Conn.CanConnetBot);
+                    if (botReady)
+                    {
+                        var connectConfig = new Connect(Config.Bot.Host, Config.Bot.WebsocktPort, Config.Bot.HttpPort, token: Config.Bot.Token);
+                        var bot = new UnifyBot.Bot(connectConfig);
+                        ReciverMsg.Instance.BotStart(bot, true);
+                        return AjaxResult(ReciverMsg.Instance.Bot!.Conn.CanConnetBot);
+                    }
+                    else
+                    {
+                        if (ReciverMsg.Instance.Bot != null)
+                        {
+                            ReciverMsg.Instance.Bot.Dispose();
+                            ReciverMsg.Instance.Bot = null;
+                        }
+                    }
                 }
                 return Success();
             }

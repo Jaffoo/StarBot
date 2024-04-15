@@ -4,7 +4,7 @@
             <el-col :span="12">
                 <el-card shadow="hover" class="ch250">
                     <template #header>
-                        StatBot
+                        StarBot
                     </template>
                     <el-row>
                         <el-col :span="6">
