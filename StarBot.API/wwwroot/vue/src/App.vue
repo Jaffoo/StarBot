@@ -35,7 +35,7 @@
                 </el-icon>配置
               </template>
               <el-menu-item index="99-0" @click="changeMenu('config')">启用模块</el-menu-item>
-              <el-menu-item index="99-1" @click="scrollSet('shamrock')" v-show="enable.shamrock">Shamrock</el-menu-item>
+              <el-menu-item index="99-1" @click="scrollSet('bot')" v-show="enable.bot">机器人</el-menu-item>
               <el-menu-item index="99-2" @click="scrollSet('qq')" v-show="enable.qq">QQ</el-menu-item>
               <el-menu-item index="99-3" @click="scrollSet('wb')" v-show="enable.wb">微博</el-menu-item>
               <el-menu-item index="99-4" @click="scrollSet('kd')" v-show="enable.kd">口袋</el-menu-item>
@@ -74,7 +74,7 @@ import type { EnableModule } from "./class/model";
 import { getConfig } from "./api";
 const startEnble = ref<EnableModule>();
 const enable = ref<EnableModule>({
-  shamrock: false,
+  bot: false,
   qq: false,
   wb: false,
   bz: false,

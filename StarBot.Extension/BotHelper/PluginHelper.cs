@@ -147,9 +147,9 @@ namespace StarBot.Extension
         {
             //删除要删除的插件
             if (!Directory.Exists("Plugins/conf/")) Directory.CreateDirectory("Plugins/conf/");
-            if (!File.Exists(delConf)) File.Create(delConf);
             List<string> delList = [];
-            if (File.Exists(delConf))
+            if (!File.Exists(delConf)) File.Create(delConf);
+            else
             {
                 delList = File.ReadLines(delConf).ToList();
             }

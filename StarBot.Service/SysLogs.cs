@@ -31,7 +31,7 @@ namespace StarBot.Service
             };
             if (!ReciverMsg.BotReady) return;
             var config = await _sysConfig.GetConfig();
-            if (config.EnableModule.Shamrock && config.EnableModule.QQ && config.QQ.Debug)
+            if (config.EnableModule.Bot && config.EnableModule.QQ && config.QQ.Debug)
                 await ReciverMsg.Instance.SendAdminMsg(content);
             await AddAsync(log);
         }

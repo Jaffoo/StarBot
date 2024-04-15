@@ -84,13 +84,13 @@ CREATE TABLE "SysConfig" (
 -- ----------------------------
 -- Records of SysConfig
 -- ----------------------------
-INSERT INTO "SysConfig" VALUES (1, 0, 'Shamrock', 'OpenShamrock配置', '', '', 'class');
-INSERT INTO "SysConfig" VALUES (2, 1, 'Host', '地址', '127.0.0.1', 'OpenShamrock服务的地址，不带协议(如http)', 'string');
-INSERT INTO "SysConfig" VALUES (3, 1, 'WebsocktPort', 'Websocket端口', '7001', NULL, 'int');
-INSERT INTO "SysConfig" VALUES (4, 1, 'HttpPort', 'Http端口', '7002', NULL, 'int');
+INSERT INTO "SysConfig" VALUES (1, 0, 'Bot', '机器人配置', '', '', 'class');
+INSERT INTO "SysConfig" VALUES (2, 1, 'Host', '地址', '127.0.0.1', '机器人服务地址，不带协议(如http)', 'string');
+INSERT INTO "SysConfig" VALUES (3, 1, 'WebsocktPort', 'Websocket端口', '0', NULL, 'int');
+INSERT INTO "SysConfig" VALUES (4, 1, 'HttpPort', 'Http端口', '0', NULL, 'int');
 INSERT INTO "SysConfig" VALUES (5, 1, 'Token', 'Token', '', '发送数据身份验证标识', 'string');
 INSERT INTO "SysConfig" VALUES (6, 0, 'EnableModule', '启用项', NULL, NULL, 'list&class');
-INSERT INTO "SysConfig" VALUES (7, 6, 'Shamrock', '使用shamrock', 'false', NULL, 'bool');
+INSERT INTO "SysConfig" VALUES (7, 6, 'Bot', '使用qq机器人', 'false', NULL, 'bool');
 INSERT INTO "SysConfig" VALUES (8, 6, 'QQ', 'QQ', 'false', NULL, 'class&bool');
 INSERT INTO "SysConfig" VALUES (9, 6, 'WB', '微博', 'false', NULL, 'class&bool');
 INSERT INTO "SysConfig" VALUES (10, 6, 'BZ', 'B站', 'false', NULL, 'class&bool');

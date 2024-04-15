@@ -93,7 +93,7 @@
                                     </div>
                                 </div>
                                 <el-divider />
-                                <div v-if="enable.shamrock">
+                                <div v-if="enable.bot">
                                     <label>插件信息</label>
                                     <div>
                                         <span>全部:{{ info.plugin.total }}</span>
@@ -172,7 +172,7 @@ const props = defineProps({
     enable: {
         type: Object as PropType<EnableModule>,
         default: {
-            shamrock: false,
+            bot: false,
             qq: false,
             wb: false,
             bz: false,

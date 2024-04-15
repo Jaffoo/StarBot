@@ -9,7 +9,7 @@
     </el-card>
   </el-affix>
   <el-scrollbar style="height: calc(100vh - 230px)" id="pdom">
-    <Shamrock ref="botRef" :shamrock="model.Shamrock" v-if="model.EnableModule.shamrock" class="mt10" />
+    <Bot ref="botRef" :bot="model.Bot" v-if="model.EnableModule.bot" class="mt10" />
     <QQ ref="qqRef" :qq="model.QQ" v-if="model.EnableModule.qq" class="mt10" />
     <WB ref="wbRef" :wb="model.WB" v-if="model.EnableModule.wb" class="mt10" />
     <KD ref="kdRef" :kd="model.KD" v-if="model.EnableModule.kd" class="mt10" />
@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { Edit, Setting } from "@element-plus/icons-vue";
 import Enable from "@/component/enable.vue";
-import Shamrock from "@/component/shamrock.vue";
+import Bot from "@/component/bot.vue";
 import QQ from "@/component/qq.vue";
 import WB from "@/component/wb.vue";
 import KD from "@/component/kd.vue";
@@ -72,7 +72,7 @@ const enableChange = (enableNew: EnableModule) => {
 
 const save = async () => {
   let valid = true;
-  if (model.value.EnableModule.shamrock) valid = await botRef.value.validForm();
+  if (model.value.EnableModule.bot) valid = await botRef.value.validForm();
   if (model.value.EnableModule.wb) valid = await wbRef.value.validForm();
   if (model.value.EnableModule.qq) valid = await qqRef.value.validForm();
   if (model.value.EnableModule.bz) valid = await bzRef.value.validForm();
@@ -95,7 +95,7 @@ const reset = async () => {
   var res = await getConfig();
   if (res && res.success) {
     model.value.EnableModule = res.data.enableModule;
-    model.value.Shamrock = res.data.shamrock;
+    model.value.Bot = res.data.bot;
     model.value.QQ = res.data.qq;
     model.value.WB = res.data.wb;
     model.value.KD = res.data.kd;

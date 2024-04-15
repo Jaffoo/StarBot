@@ -10,7 +10,7 @@ interface Listing extends Base {
 export interface Config {
     BD?: BD,
     QQ?: QQ,
-    Shamrock?: Shamrock,
+    Bot?: Bot,
     DY?: DY_XHS_BZ,
     BZ?: DY_XHS_BZ,
     XHS?: DY_XHS_BZ,
@@ -67,7 +67,7 @@ export interface QQ {
     permission: string,
     debug: boolean,
 }
-export interface Shamrock {
+export interface Bot {
     use: boolean,
     host: string,
     websocktPort: number,
@@ -75,7 +75,7 @@ export interface Shamrock {
     token?: string,
 }
 export interface EnableModule {
-    shamrock: boolean,
+    bot: boolean,
     qq: boolean,
     wb: boolean,
     kd: boolean,

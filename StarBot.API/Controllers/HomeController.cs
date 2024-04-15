@@ -37,20 +37,21 @@ namespace StarBot.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("startbot")]
-        public async Task<ApiResult> StartBot(bool botReady = true)
+        public ApiResult StartBot(bool botReady = true)
         {
             try
             {
-                if (Config.EnableModule.Shamrock)
-                {
-                    var connectConfig = new Connect(Config.Shamrock.Host, Config.Shamrock.WebsocktPort, Config.Shamrock.HttpPort, token: Config.Shamrock.Token);
-                    var bot = new Bot(connectConfig);
-                    await ReciverMsg.Instance.BotStart(bot, true);
-                }
                 if (botReady)
                     JobManager.Initialize(new FluentSchedulerFactory());
                 else
                     JobManager.RemoveAllJobs();
+                if (Config.EnableModule.Bot)
+                {
+                    var connectConfig = new Connect(Config.Bot.Host, Config.Bot.WebsocktPort, Config.Bot.HttpPort, token: Config.Bot.Token);
+                    var bot = new UnifyBot.Bot(connectConfig);
+                    ReciverMsg.Instance.BotStart(bot, true);
+                    return AjaxResult(ReciverMsg.Instance.Bot!.Conn.CanConnetBot);
+                }
                 return Success();
             }
             catch (Exception e)

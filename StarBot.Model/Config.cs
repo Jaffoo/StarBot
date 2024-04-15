@@ -63,9 +63,9 @@ namespace StarBot.Model
         public EnableModule EnableModule { get; set; } = new();
 
         /// <summary>
-        /// Shamrock配置
+        /// Bot配置
         /// </summary>
-        public Shamrock Shamrock { get; set; } = new();
+        public Bot Bot { get; set; } = new();
 
         /// <summary>
         /// 百度
@@ -104,9 +104,9 @@ namespace StarBot.Model
     }
 
     /// <summary>
-    /// Shamrock
+    /// Bot
     /// </summary>
-    public class Shamrock
+    public class Bot
     {
         /// <summary>
         /// 地址
@@ -170,9 +170,9 @@ namespace StarBot.Model
         }
 
         /// <summary>
-        /// Shamrock
+        /// Bot
         /// </summary>
-        public bool Shamrock { get; set; }
+        public bool Bot { get; set; }
 
         /// <summary>
         /// qq

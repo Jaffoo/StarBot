@@ -213,7 +213,7 @@ namespace StarBot.Extension
                 {
                     await _pocketMsg.AddAsync(saveMsg);
                 }
-                if (!Config.EnableModule.Shamrock) return;
+                if (!Config.EnableModule.Bot) return;
                 if (roleId != 3) return;
                 if (Config.KD.ForwardGroup)
                 {
@@ -263,7 +263,7 @@ namespace StarBot.Extension
                 mcb.Text($"【{Config.KD.IdolName}|直播间】\n【{time}】\n{result["fromNick"]}:");
                 if (messageType == "text")
                     mcb.Text(result["text"]?.ToString() ?? "");
-                if (!Config.EnableModule.Shamrock) return;
+                if (!Config.EnableModule.Bot) return;
                 if (Config.KD.ForwardGroup)
                 {
                     var group = Config.KD.Group ?? Config.QQ.Group;

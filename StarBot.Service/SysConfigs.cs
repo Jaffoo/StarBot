@@ -63,10 +63,10 @@ namespace StarBot.Service
             enableModule ??= await SetCache<EnableModule>(6, "EnableModule");
             config.EnableModule = enableModule;
 
-            //shamrock
-            var shamrock = cache.GetCache<Shamrock>("OpenShamrock");
-            shamrock ??= await SetCache<Shamrock>(1, "OpenShamrock");
-            config.Shamrock = shamrock;
+            //Bot
+            var bot = cache.GetCache<Bot>("Bot");
+            bot ??= await SetCache<Bot>(1, "Bot");
+            config.Bot = bot;
 
             //qq
             var qq = cache.GetCache<QQ>("QQ");
@@ -113,7 +113,7 @@ namespace StarBot.Service
             foreach (var item in list)
             {
                 if (item.DataType.Contains("bool"))
-                    obj.Add(item.Key, item.Value.ToBool());
+                    obj.Add(item.Key, item.Value.ToBool(false));
                 else if (item.DataType.Contains("list"))
                 {
                     if (string.IsNullOrWhiteSpace(item.Value))
@@ -122,7 +122,7 @@ namespace StarBot.Service
                         obj.Add(item.Key, JArray.Parse(item.Value));
                 }
                 else if (item.DataType.Contains("int"))
-                    obj.Add(item.Key, item.Value.ToInt());
+                    obj.Add(item.Key, item.Value.ToInt(0));
                 else obj.Add(item.Key, item.Value);
             }
             var val = obj.ToObject<T>()!;
@@ -132,20 +132,15 @@ namespace StarBot.Service
 
         public void ClearConfig(string key = "")
         {
-            if (!string.IsNullOrWhiteSpace(key))
-                cache.RemoveCache(key == "Shamrock" ? "OpenShamrock" : key);
-            else
-            {
-                cache.RemoveCache("EnableModule");
-                cache.RemoveCache("Shamrock");
-                cache.RemoveCache("QQ");
-                cache.RemoveCache("WB");
-                cache.RemoveCache("XHS");
-                cache.RemoveCache("BD");
-                cache.RemoveCache("BZ");
-                cache.RemoveCache("DY");
-                cache.RemoveCache("KD");
-            }
+            cache.RemoveCache("EnableModule");
+            cache.RemoveCache("Bot");
+            cache.RemoveCache("QQ");
+            cache.RemoveCache("WB");
+            cache.RemoveCache("XHS");
+            cache.RemoveCache("BD");
+            cache.RemoveCache("BZ");
+            cache.RemoveCache("DY");
+            cache.RemoveCache("KD");
         }
     }
 }
