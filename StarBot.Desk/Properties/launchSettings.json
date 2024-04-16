@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "StarBot.Desk": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "workingDirectory": "$(OutputPath)"
+    }
+  }
+}

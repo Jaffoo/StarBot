@@ -6,11 +6,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="wwwroot\bot\index.css" />
+    <Content Remove="wwwroot\bot\star.jpg" />
     <Content Remove="wwwroot\vue\tsconfig.json" />
     <Content Remove="wwwroot\vue\tsconfig.node.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ElectronNET.API" Version="23.6.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.2" />
   </ItemGroup>
   <ItemGroup>
@@ -43,10 +43,5 @@
     <ProjectReference Include="..\StarBot.Extension\StarBot.Extension.csproj" />
     <ProjectReference Include="..\StarBot.Service\StarBot.Service.csproj" />
     <ProjectReference Include="..\StarBot.Timer\StarBot.Timer.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="electron.manifest.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 </Project>

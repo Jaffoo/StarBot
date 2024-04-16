@@ -8,10 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using UnifyBot.Model;
 using System.Diagnostics;
 using TBC.CommonLib;
-using ElectronNET.API;
 using Newtonsoft.Json.Linq;
 using SqlSugar.Extensions;
-using ElectronNET.API.Entities;
 using System.Runtime.InteropServices;
 
 namespace StarBot.Controllers
@@ -29,6 +27,16 @@ namespace StarBot.Controllers
             {
                 return _sysConfig.GetConfig().Result;
             }
+        }
+
+        /// <summary>
+        /// 判断api服务是否启动
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("/")]
+        public ApiResult Index()
+        {
+            return Success();
         }
 
         /// <summary>
@@ -410,30 +418,6 @@ namespace StarBot.Controllers
             var res = await Pocket.UserInfo(token);
             return DataResult(res.ToJObject());
         }
-
-        /// <summary>
-        /// 打开新窗口
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        [HttpGet("openwindow")]
-        public async Task<ApiResult> OpenWindow(string url)
-        {
-            // 使用 Electron.NET 的 API 创建一个新窗口
-            await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
-            {
-                AutoHideMenuBar = true,
-                Height = 800,
-                Width = 1000,
-                WebPreferences = new WebPreferences
-                {
-                    DevTools = true,//Ctrl + Shift + I
-                    NodeIntegration = true,
-                }
-            }, url);
-            return Success();
-        }
-
 
         /// <summary>
         /// 获取错误日志最新10条
