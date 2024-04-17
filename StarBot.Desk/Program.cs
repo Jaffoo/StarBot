@@ -44,11 +44,6 @@ namespace StarBot.Desk
                     };
                     Process process = Process.Start(startInfo);
                 }
-                var res = Tools.GetAsync<ApiResult>(url).Result;
-                if (!res.Success)
-                {
-                    Application.MessageBox.ShowError(nint.Zero, "服务启动失败！请重新启动尝试。");
-                }
             }
             catch (Exception ex)
             {
