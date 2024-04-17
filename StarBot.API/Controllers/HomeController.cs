@@ -267,22 +267,33 @@ namespace StarBot.Controllers
                 {
                     Task.Run(() =>
                     {
-                        var path = "wwwroot/script/alipan-win.exe";
-                        using Process chmodProcess = new();
-                        chmodProcess.StartInfo.FileName = "sudo";
-                        chmodProcess.StartInfo.Arguments = $"chmod +x {path}";
-                        chmodProcess.StartInfo.UseShellExecute = false;
-                        chmodProcess.Start();
-                        chmodProcess.WaitForExit();
-                        using Process p = Process.Start(path)!;
+                        if (Process.GetProcessesByName("wwwroot/script/alipan-linux").Length == 0)
+                        {
+                            var path = "wwwroot/script/alipan-linux";
+                            using Process chmodProcess = new();
+                            chmodProcess.StartInfo.FileName = "sudo";
+                            chmodProcess.StartInfo.Arguments = $"chmod +x {path}";
+                            chmodProcess.StartInfo.UseShellExecute = false;
+                            chmodProcess.Start();
+                            chmodProcess.WaitForExit();
+                            using Process p = Process.Start(path)!;
+                        }
                     });
                 }
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     Task.Run(() =>
                     {
-                        var path = "wwwroot/script/alipan-linux";
-                        using Process p = Process.Start(path)!;
+                        if (Process.GetProcessesByName("wwwroot/script/alipan-win").Length == 0)
+                        {
+                            ProcessStartInfo startInfo = new()
+                            {
+                                FileName = "wwwroot/script/alipan-win.exe",
+                                CreateNoWindow = true,
+                                UseShellExecute = false,
+                            };
+                            using Process p = Process.Start(startInfo)!;
+                        }
                     });
                 }
             }

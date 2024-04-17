@@ -12,8 +12,7 @@
                                 style="width: 100px;height: 100px;cursor: pointer;margin-left: -17px;" />
                             <img title="点击启动" v-else @click="startBot" src="/src/asset/rocket.png"
                                 style="width: 100px;height: 100px;cursor: pointer;margin-left: -17px;" />
-                            <div
-                                :style="{ color: (botStart ? 'green' : startMsg.includes('启动中') ? 'red' : 'blue')}">
+                            <div :style="{ color: (botStart ? 'green' : startMsg.includes('启动中') ? 'red' : 'blue') }">
                                 <span>{{ startMsg }}</span>
                             </div>
                         </el-col>
@@ -159,13 +158,14 @@
 import { type EnableModule, type Config, logApi, type logI } from "@/class/model";
 import { ref, type PropType, onMounted } from "vue";
 import { ElMessageBox, dayjs } from 'element-plus'
-import { getLogs, getConfig, startBot as startBotAPI, postMsg, getFun, getCache } from "@/api";
+import { getLogs, getConfig, startBot as startBotAPI, postMsg, getFun, getCache, startAliYunPan } from "@/api";
 import NimChatroomSocket from "@/class/live";
 import QChatSDK from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK";
 import NIMSDK from "nim-web-sdk-ng/dist/NIM_BROWSER_SDK";
 import type { SubscribeAllChannelResult } from "nim-web-sdk-ng/dist/QCHAT_BROWSER_SDK/QChatServerServiceInterface";
 import type { LiveRoomMessage } from "@/class/messageType";
 import { Switch, Refresh } from '@element-plus/icons-vue'
+import Enable from "./enable.vue";
 
 const props = defineProps({
     enable: {
@@ -238,6 +238,7 @@ const startBot = async () => {
         botStart.value = true;
         startMsg.value = "正在运行";
         lastStart.value = currentTime.value;
+        if (props.enable.bd && config.value?.BD?.saveAliyunDisk) await startAliYunPan();
     } else {
         let emsg = startRes.msg ?? "启动失败：未知错误";
         ElMessage.error(emsg)
