@@ -393,7 +393,10 @@ namespace StarBot.Controllers
         public async Task<ApiResult> SendSmsCode(string mobile, string area = "86")
         {
             var res = await Pocket.SmsCode(mobile, area);
-            return DataResult(res.ToJObject());
+            if (res.Fetch<bool>("success"))
+                return DataResult(res.Fetch("content"));
+            else
+                return Failed(res.Fetch("message"));
         }
 
         /// <summary>
@@ -406,7 +409,10 @@ namespace StarBot.Controllers
         public async Task<ApiResult> PocketLogin(string mobile, string code)
         {
             var res = await Pocket.Login(mobile, code);
-            return DataResult(res.ToJObject());
+            if (res.Fetch<bool>("success"))
+                return DataResult(res.Fetch("content"));
+            else
+                return Failed(res.Fetch("message"));
         }
 
         /// <summary>
@@ -420,7 +426,10 @@ namespace StarBot.Controllers
             string requestBody = await reader.ReadToEndAsync();
             var token = requestBody.Fetch("token");
             var res = await Pocket.UserInfo(token);
-            return DataResult(res.ToJObject());
+            if (res.Fetch<bool>("success"))
+                return DataResult(res.Fetch("content"));
+            else
+                return Failed(res.Fetch("message"));
         }
 
         /// <summary>

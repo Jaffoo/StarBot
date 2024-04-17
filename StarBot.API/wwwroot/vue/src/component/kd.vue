@@ -219,6 +219,7 @@ const close = () => {
     loginKD.value = false;
     loginfo.value.hasSend = false;
     loginfo.value.sec = 60;
+    loginfo.value.code = "";
 }
 const send = async () => {
     if (!loginfo.value.phone) {
@@ -237,6 +238,7 @@ const send = async () => {
         ElMessage({ message: "发送成功，请注意查收！", type: 'success' });
     } else {
         ElMessage({ message: res.msg ?? "发送失败！", type: 'error' });
+        close();
     }
 }
 const login = async () => {
@@ -255,10 +257,11 @@ const login = async () => {
     }
     var res = await pocketLogin(loginfo.value.phone, loginfo.value.code);
     if (res.success) {
-        var tokenRes = await kdUserInfo({ token: res.data.content.token });
+        var tokenRes = await kdUserInfo({ token: JSON.parse(res.data).token });
         if (tokenRes.success) {
-            props.kd.token = tokenRes.data.content.pwd;
-            props.kd.account = tokenRes.data.content.accid;
+            let kdData = JSON.parse(tokenRes.data)
+            props.kd.token = kdData.pwd;
+            props.kd.account = kdData.accid;
             setTimeout(() => {
                 close();
             }, 1000);
