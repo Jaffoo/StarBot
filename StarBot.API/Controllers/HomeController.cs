@@ -11,6 +11,8 @@ using TBC.CommonLib;
 using Newtonsoft.Json.Linq;
 using SqlSugar.Extensions;
 using System.Runtime.InteropServices;
+using System.Web;
+using System.Text;
 
 namespace StarBot.Controllers
 {
@@ -410,11 +412,13 @@ namespace StarBot.Controllers
         /// <summary>
         /// 口袋个人信息
         /// </summary>
-        /// <param name="token"></param>
         /// <returns></returns>
-        [HttpGet("kduserinfo")]
-        public async Task<ApiResult> KDUserInfo(string token)
+        [HttpPost("kduserinfo")]
+        public async Task<ApiResult> KDUserInfo()
         {
+            StreamReader reader = new(Request.Body, Encoding.UTF8);
+            string requestBody = await reader.ReadToEndAsync();
+            var token = requestBody.Fetch("token");
             var res = await Pocket.UserInfo(token);
             return DataResult(res.ToJObject());
         }

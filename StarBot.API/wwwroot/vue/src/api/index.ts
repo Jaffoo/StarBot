@@ -97,8 +97,8 @@ export const pocketLogin = async (mobile: string, code: string) => {
     return response.data as ApiResult;
 }
 
-export const kdUserInfo = async (token: string) => {
-    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/kduserinfo?token=${token}`);
+export const kdUserInfo = async (data: object) => {
+    const response: AxiosResponse<any> = await axios.post(`${_baseUrl}/kduserinfo`, data);
     return response.data as ApiResult;
 }
 

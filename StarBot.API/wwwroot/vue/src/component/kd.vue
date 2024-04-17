@@ -43,8 +43,8 @@
             <el-form-item label="监听消息类型">
                 <el-checkbox-group v-model="kd.msgType">
                     <el-checkbox v-for="(item, index) in kd.msgTypeAll" :label="item.value" :key="index">{{
-            item.name
-        }}</el-checkbox>
+                        item.name
+                        }}</el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
             <el-form-item label="转发至群">
@@ -255,7 +255,7 @@ const login = async () => {
     }
     var res = await pocketLogin(loginfo.value.phone, loginfo.value.code);
     if (res.success) {
-        var tokenRes = await kdUserInfo(res.data.content.token);
+        var tokenRes = await kdUserInfo({ token: res.data.content.token });
         if (tokenRes.success) {
             props.kd.token = tokenRes.data.content.pwd;
             props.kd.account = tokenRes.data.content.accid;

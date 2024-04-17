@@ -24,7 +24,9 @@
 	  <ProjectReference Include="..\StarBot.DeskServer\StarBot.DeskServer.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Include="wwwroot\system\star.png" />
+	  <None Include="wwwroot\system\star.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>
