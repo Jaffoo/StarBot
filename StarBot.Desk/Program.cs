@@ -2,6 +2,7 @@
 using StarBot.DeskServer.Models;
 using StarBot.Model;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using TBC.CommonLib;
 
 namespace StarBot.Desk
@@ -17,12 +18,27 @@ namespace StarBot.Desk
             #region 启动API服务
             try
             {
-                string serviceName = "StarBot.API";
-                if (Process.GetProcessesByName(serviceName).Length == 0)
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
+                    string directoryPath = Environment.CurrentDirectory; // 要进入的目录路径
+
                     ProcessStartInfo startInfo = new()
                     {
-                        FileName = serviceName + ".exe",
+                        FileName = "cmd.exe",
+                        Arguments = $"/c cd {directoryPath} && dotnet StarBot.Api.dll",
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                    };
+                    Process process = Process.Start(startInfo);
+                }
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    string directoryPath = Environment.CurrentDirectory; // 要进入的目录路径
+
+                    ProcessStartInfo startInfo = new()
+                    {
+                        FileName = "/bin/bash",
+                        Arguments = $"-c 'cd {directoryPath} && dotnet StarBot.Api.dll'",
                         CreateNoWindow = true,
                         UseShellExecute = false,
                     };

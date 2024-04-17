@@ -129,13 +129,20 @@ namespace StarBot.DeskServer.NativeHost.WindowHost
                     }
                 case Win32Api.WM.CLOSE:
                     {
-                        string serviceName = "StarBot.API";
+                        string serviceName = "dotnet";
                         var processes = Process.GetProcessesByName(serviceName);
                         if (processes.Length > 0)
                         {
                             foreach (var item in processes)
                             {
-                                item.Kill();
+                                try
+                                {
+                                    item.Kill();
+                                }
+                                catch (Exception)
+                                {
+                                    continue;
+                                }
                             }
                         }
                         Handle = IntPtr.Zero;
