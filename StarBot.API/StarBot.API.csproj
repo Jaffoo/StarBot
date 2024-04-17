@@ -6,8 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="wwwroot\bot\index.css" />
-    <Content Remove="wwwroot\bot\star.jpg" />
-    <Content Remove="wwwroot\bot\star.png" />
     <Content Remove="wwwroot\vue\tsconfig.json" />
     <Content Remove="wwwroot\vue\tsconfig.node.json" />
   </ItemGroup>

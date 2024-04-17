@@ -39,7 +39,7 @@ namespace StarBot.Desk
                 Application.MessageBox.ShowError(nint.Zero, ex.Message);
             }
             #endregion
-    
+
             #region 启动桌面
             try
             {
@@ -50,7 +50,7 @@ namespace StarBot.Desk
 
                 var builder = Application.Initialize();
                 Application.AppName = "StarBot";
-                Application.Icon = "wwwroot/bot/star.jpg";
+                Application.Icon =  "wwwroot/system/star.png";
                 builder.RegisterResource(typeof(Program));
 
                 var windowConfig = new WindowConfig()
