@@ -57,7 +57,7 @@ namespace StarBot.Desk
                 {
                     Chromeless = false,
                     Size = new System.Drawing.Size(1200, 800),
-                    IsDebug = false,
+                    IsDebug = true,
                     WebAppType = WebAppType.Http,
                     Url = url + "/bot/index.html"
                 };

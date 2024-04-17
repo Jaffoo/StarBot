@@ -10,7 +10,7 @@
                 <span v-if="item.type !== 'system'" style="margin-top: 10px;"><el-avatar :src="item.avatar" />{{
                 item.name }}：</span>
                 <span v-else>系统信息：</span>
-                <span v-if="item.type == 'text'" :style="{ color: item.color }">{{ item.content }}</span>
+                <span v-if="item.type == 'text'||'system'" :style="{ color: item.color }">{{ item.content }}</span>
                 <span v-if="item.type == 'link'"
                     :style="{ color: item.color, 'text-decoration': 'underline', cursor: 'pointer' }"
                     @click="openUrl(item.url)">

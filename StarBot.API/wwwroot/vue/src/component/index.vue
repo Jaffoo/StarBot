@@ -52,7 +52,7 @@
                     </template>
                     <el-scrollbar height="180px" style="margin-top:-10px">
                         <ul style="margin-top:-3px">
-                            <li v-for="item in errLogs">
+                            <li v-for="item in errLogs" style="cursor: pointer;">
                                 <span @click="viewLog(item.content)" title="点击查看">
                                     {{ item.content.substring(0, 20) }}--{{ item.time }}
                                 </span>
@@ -63,7 +63,6 @@
             </el-col>
         </el-row>
         <el-row style="margin-top: 20px;">
-            <!-- 营销推荐 -->
             <el-col :span="24">
                 <el-card shadow="hover" header="快速预览" class="chauto">
                     <el-row :gutter="15">
@@ -141,7 +140,7 @@
                                 </template>
                                 <el-scrollbar height="250px" style="margin-top:-10px">
                                     <ul style="margin-top:-3px">
-                                        <li v-for="item in infoLogs">
+                                        <li v-for="item in infoLogs" style="cursor: pointer;">
                                             <span @click="viewLog(item.content ?? '', '日志')" title="点击查看">
                                                 {{ item.content?.substring(0, 20) }}--{{ item.time }}
                                             </span>

@@ -12,26 +12,26 @@
             </el-menu-item>
             <el-menu-item index="2" @click="changeMenu('log')">
               <el-icon>
-                <House />
+                <Tickets />
               </el-icon>
               日志
             </el-menu-item>
             <el-menu-item index="3" @click="changeMenu('pic')">
               <el-icon>
-                <House />
+                <Picture />
               </el-icon>
               图片
             </el-menu-item>
             <el-menu-item index="4" @click="changeMenu('plugin')" v-show="enable.qq">
               <el-icon>
-                <House />
+                <Cpu />
               </el-icon>
               插件
             </el-menu-item>
             <el-sub-menu index="99">
               <template #title>
                 <el-icon>
-                  <Cpu />
+                  <SetUp />
                 </el-icon>配置
               </template>
               <el-menu-item index="99-0" @click="changeMenu('config')">启用模块</el-menu-item>
@@ -68,7 +68,7 @@ import Config from "@/component/config.vue";
 import Log from "@/component/log.vue";
 import Pic from "@/component/pic.vue";
 import Plugin from "@/component/plugin.vue";
-import { House, Cpu } from "@element-plus/icons-vue";
+import { House, Cpu, Picture, Tickets, SetUp } from "@element-plus/icons-vue";
 import { onMounted, ref } from "vue";
 import type { EnableModule } from "./class/model";
 import { getConfig } from "./api";
