@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginServer", "PluginServe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarBot.Timer", "StarBot.Timer\StarBot.Timer.csproj", "{827BAA05-E7EE-4F06-9E5E-6DA0F941D26C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarBot.Desk", "StarBot.Desk\StarBot.Desk.csproj", "{1EDEBEA0-605D-400E-9444-55FADBC77E8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarBot", "StarBot.Desk\StarBot.csproj", "{1EDEBEA0-605D-400E-9444-55FADBC77E8D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarBot.DeskServer", "StarBot.DeskServer\StarBot.DeskServer.csproj", "{054EBEB4-61C4-45DB-ABDB-DB8640159780}"
 EndProject

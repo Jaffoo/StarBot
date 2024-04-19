@@ -7,26 +7,25 @@
 		<Nullable>disable</Nullable>
 		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
 		<SatelliteResourceLanguages>zh-cn</SatelliteResourceLanguages>
-		<ApplicationIcon>wwwroot\System\star.ico</ApplicationIcon>
+		<ApplicationIcon>wwwroot\system\star.ico</ApplicationIcon>
 	</PropertyGroup>
-	<ItemGroup>
-	  <None Remove="star.ico" />
-	</ItemGroup>
-	<ItemGroup>
-	  <EmbeddedResource Include="wwwroot\system\star.ico" />
-	</ItemGroup>
+	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.19" />
-
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\StarBot.API\StarBot.API.csproj" />
 	  <ProjectReference Include="..\StarBot.DeskServer\StarBot.DeskServer.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-	  <None Include="wwwroot\system\star.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	</ItemGroup>
 
+	<ItemGroup>
+		<Content Remove="wwwroot\**" />
+		<None Include="wwwroot\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="wwwroot\system\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
 </Project>

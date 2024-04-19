@@ -1,46 +1,58 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-  <ItemGroup>
-    <Content Remove="wwwroot\bot\index.css" />
-    <Content Remove="wwwroot\vue\tsconfig.json" />
-    <Content Remove="wwwroot\vue\tsconfig.node.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.2" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Properties\launchSettings.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="wwwroot\vue\**" />
-    <None Include="wwwroot\vue\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="wwwroot\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="wwwroot\vue\tsconfig.json" />
-    <None Remove="wwwroot\vue\tsconfig.json" />
-    <None Remove="wwwroot\vue\tsconfig.node.json" />
-    <None Remove="wwwroot\vue\tsconfig.node.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\data\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\StarBot.Entity\StarBot.Entity.csproj" />
-    <ProjectReference Include="..\StarBot.Extension\StarBot.Extension.csproj" />
-    <ProjectReference Include="..\StarBot.Service\StarBot.Service.csproj" />
-    <ProjectReference Include="..\StarBot.Timer\StarBot.Timer.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.2" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="Properties\launchSettings.json">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\StarBot.Entity\StarBot.Entity.csproj" />
+		<ProjectReference Include="..\StarBot.Extension\StarBot.Extension.csproj" />
+		<ProjectReference Include="..\StarBot.Service\StarBot.Service.csproj" />
+		<ProjectReference Include="..\StarBot.Timer\StarBot.Timer.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Remove="wwwroot\**" />
+		<None Include="wwwroot\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- 使用 <None> 元素将目录排除在生成和发布之外 -->
+		<None Update="wwwroot\vue\**\*">
+			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="wwwroot\bot\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="wwwroot\data\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="wwwroot\script\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
 </Project>
