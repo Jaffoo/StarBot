@@ -46,7 +46,7 @@ namespace PluginServer
         {
             get
             {
-                var dir = Path.Combine(Environment.CurrentDirectory, "Plugins/conf/");
+                var dir = Path.Combine(Environment.CurrentDirectory, "plugins/conf/");
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
                 return dir;
             }
@@ -59,7 +59,7 @@ namespace PluginServer
         {
             get
             {
-                var dir = Path.Combine(Environment.CurrentDirectory, "Plugins/logs/");
+                var dir = Path.Combine(Environment.CurrentDirectory, "plugins/logs/");
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
                 return dir;
             }

@@ -14,9 +14,9 @@ namespace StarBot.Extension
     /// </summary>
     public class PluginHelper : IDisposable
     {
-        private static readonly string delConf = "Plugins/del.txt";
+        private static readonly string delConf = "plugins/del.txt";
 
-        private static readonly string startConf = "Plugins/start.txt";
+        private static readonly string startConf = "plugins/start.txt";
 
         static ISysConfig _sysConfig
         {
@@ -52,8 +52,8 @@ namespace StarBot.Extension
         /// </summary>
         public static void LoadPlugins()
         {
-            if (!Directory.Exists("Plugins")) Directory.CreateDirectory("Plugins");
-            var files = new DirectoryInfo("Plugins").GetFiles();
+            if (!Directory.Exists("plugins")) Directory.CreateDirectory("plugins");
+            var files = new DirectoryInfo("plugins").GetFiles();
             List<FileInfo> delInfo = [];
             if (File.Exists(delConf))
             {
@@ -146,7 +146,7 @@ namespace StarBot.Extension
         public static void DelForce()
         {
             //删除要删除的插件
-            if (!Directory.Exists("Plugins/conf/")) Directory.CreateDirectory("Plugins/conf/");
+            if (!Directory.Exists("plugins/conf/")) Directory.CreateDirectory("plugins/conf/");
             List<string> delList = [];
             if (!File.Exists(delConf)) File.Create(delConf);
             else
@@ -177,7 +177,7 @@ namespace StarBot.Extension
         {
             try
             {
-                if (!Directory.Exists("Plugins/conf/")) Directory.CreateDirectory("Plugins/conf/");
+                if (!Directory.Exists("plugins/conf/")) Directory.CreateDirectory("plugins/conf/");
                 if (!File.Exists(delConf)) File.Create(delConf);
                 var plugin = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == name);
                 if (plugin == null) return true;
