@@ -8,15 +8,15 @@ interface Listing extends Base {
     timeSpan: number,
 }
 export interface Config {
-    BD?: BD,
-    QQ?: QQ,
-    Bot?: Bot,
-    DY?: DY_XHS_BZ,
-    BZ?: DY_XHS_BZ,
-    XHS?: DY_XHS_BZ,
-    KD?: KD,
-    WB?: WB,
-    EnableModule: EnableModule
+    bd?: BD,
+    qq?: QQ,
+    bot?: Bot,
+    dy?: DY_XHS_BZ,
+    bz?: DY_XHS_BZ,
+    xhs?: DY_XHS_BZ,
+    kd?: KD,
+    wb?: WB,
+    enableModule: EnableModule
 }
 
 export interface BD {
@@ -99,7 +99,9 @@ export interface logI {
     type: 'pic' | 'text' | 'link' | 'system',
     content?: string,
     url?: string,
-    color?: '#409eff' | '#67c23a' | '#f56c6c'
+    color?: '#409eff' | '#67c23a' | '#f56c6c',
+    channel?: string,
+    idol?: string
 }
 
 export const logApi = () => {

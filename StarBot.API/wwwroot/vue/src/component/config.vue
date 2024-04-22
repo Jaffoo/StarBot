@@ -5,18 +5,18 @@
         <el-button type="primary" native-type="button" :icon="Edit" @click="save()">保存</el-button>
         <el-button type="primary" native-type="button" :icon="Setting" @click="reset()">重置</el-button>
       </template>
-      <Enable :enable="model.EnableModule" @enable-change="enableChange" />
+      <Enable :enable="model.enableModule" @enable-change="enableChange" />
     </el-card>
   </el-affix>
   <el-scrollbar style="height: calc(100vh - 230px)" id="pdom">
-    <Bot ref="botRef" :bot="model.Bot" v-if="model.EnableModule.bot" class="mt10" />
-    <QQ ref="qqRef" :qq="model.QQ" v-if="model.EnableModule.qq" class="mt10" />
-    <WB ref="wbRef" :wb="model.WB" v-if="model.EnableModule.wb" class="mt10" />
-    <KD ref="kdRef" :kd="model.KD" v-if="model.EnableModule.kd" class="mt10" />
-    <BZ ref="bzRef" :bz="model.BZ" v-if="model.EnableModule.bz" class="mt10" />
-    <XHS ref="xhsRef" :xhs="model.XHS" v-if="model.EnableModule.xhs" class="mt10" />
-    <BD ref="bdRef" :bd="model.BD" v-if="model.EnableModule.bd" class="mt10" />
-    <DY ref="dyRef" :dy="model.DY" v-if="model.EnableModule.dy" class="mt10 mb50" />
+    <Bot ref="botRef" :bot="model.bot" v-if="model.enableModule.bot" class="mt10" />
+    <QQ ref="qqRef" :qq="model.qq" v-if="model.enableModule.qq" class="mt10" />
+    <WB ref="wbRef" :wb="model.wb" v-if="model.enableModule.wb" class="mt10" />
+    <KD ref="kdRef" :kd="model.kd" v-if="model.enableModule.kd" class="mt10" />
+    <BZ ref="bzRef" :bz="model.bz" v-if="model.enableModule.bz" class="mt10" />
+    <XHS ref="xhsRef" :xhs="model.xhs" v-if="model.enableModule.xhs" class="mt10" />
+    <BD ref="bdRef" :bd="model.bd" v-if="model.enableModule.bd" class="mt10" />
+    <DY ref="dyRef" :dy="model.dy" v-if="model.enableModule.dy" class="mt10 mb50" />
   </el-scrollbar>
 </template>
 
@@ -59,27 +59,27 @@ const xhsRef = ref();
 const dyRef = ref();
 
 const model = ref<Config>({
-  EnableModule: props.enable,
+  enableModule: props.enable,
 });
 const startModel = ref<Config>();
 // 定义子组件向父组件传值/事件
 const emit = defineEmits(["top-enable-change"]);
 
 const enableChange = (enableNew: EnableModule) => {
-  model.value.EnableModule = enableNew;
+  model.value.enableModule = enableNew;
   emit("top-enable-change", enableNew);
 };
 
 const save = async () => {
   let valid = true;
-  if (model.value.EnableModule.bot) valid = await botRef.value.validForm();
-  if (model.value.EnableModule.wb) valid = await wbRef.value.validForm();
-  if (model.value.EnableModule.qq) valid = await qqRef.value.validForm();
-  if (model.value.EnableModule.bz) valid = await bzRef.value.validForm();
-  if (model.value.EnableModule.bd) valid = await bdRef.value.validForm();
-  if (model.value.EnableModule.kd) valid = await kdRef.value.validForm();
-  if (model.value.EnableModule.xhs) valid = await xhsRef.value.validForm();
-  if (model.value.EnableModule.dy) valid = await dyRef.value.validForm();
+  if (model.value.enableModule.bot) valid = await botRef.value.validForm();
+  if (model.value.enableModule.wb) valid = await wbRef.value.validForm();
+  if (model.value.enableModule.qq) valid = await qqRef.value.validForm();
+  if (model.value.enableModule.bz) valid = await bzRef.value.validForm();
+  if (model.value.enableModule.bd) valid = await bdRef.value.validForm();
+  if (model.value.enableModule.kd) valid = await kdRef.value.validForm();
+  if (model.value.enableModule.xhs) valid = await xhsRef.value.validForm();
+  if (model.value.enableModule.dy) valid = await dyRef.value.validForm();
   if (!valid) {
     ElMessage.error("请填入配置中的必填项！");
     return;
@@ -94,15 +94,15 @@ const save = async () => {
 const reset = async () => {
   var res = await getConfig();
   if (res && res.success) {
-    model.value.EnableModule = res.data.enableModule;
-    model.value.Bot = res.data.bot;
-    model.value.QQ = res.data.qq;
-    model.value.WB = res.data.wb;
-    model.value.KD = res.data.kd;
-    model.value.BZ = res.data.bz;
-    model.value.BD = res.data.bd;
-    model.value.XHS = res.data.xhs;
-    model.value.DY = res.data.dy;
+    model.value.enableModule = res.data.enableModule;
+    model.value.bot = res.data.bot;
+    model.value.qq = res.data.qq;
+    model.value.wb = res.data.wb;
+    model.value.kd = res.data.kd;
+    model.value.bz = res.data.bz;
+    model.value.bd = res.data.bd;
+    model.value.xhs = res.data.xhs;
+    model.value.dy = res.data.dy;
   }
   let deepStr = JSON.stringify(model.value);
   let deepObj = JSON.parse(deepStr);

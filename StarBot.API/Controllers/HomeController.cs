@@ -155,12 +155,12 @@ namespace StarBot.Controllers
         /// <param name="type"></param>
         /// <returns></returns>
         [HttpPost("postmsg")]
-        public async Task<ApiResult> PostMsg([FromBody] string msgBody, int type = 0)
+        public async Task<ApiResult> PostMsg([FromBody] Message msgBody, int type = 0)
         {
             if (type == 0)
-                await Pocket.Instance.PocketMessageReceiver(msgBody);
+                await Pocket.Instance.PocketMessageReceiver(msgBody.Content);
             if (type == 1)
-                await Pocket.Instance.LiveMsgReceiver(msgBody);
+                await Pocket.Instance.LiveMsgReceiver(msgBody.Content);
             return Success();
         }
 

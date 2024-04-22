@@ -22,7 +22,7 @@ export const saveConfig = async (config: Config) => {
     return response.data as ApiResult;
 }
 
-export const postMsg = async (msg: string, type: 0 | 1 = 0) => {
+export const postMsg = async (msg: object, type: 0 | 1 = 0) => {
     const response: AxiosResponse<any> = await axios.post(`${_baseUrl}/postmsg?type=` + type, msg);
     return response.data as ApiResult;
 }

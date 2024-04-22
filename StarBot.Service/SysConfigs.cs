@@ -80,7 +80,7 @@ namespace StarBot.Service
 
             //BZ
             var bz = cache.GetCache<BZ>("BZ");
-            bz ??= await SetCache<BZ>(12, "BZ");
+            bz ??= await SetCache<BZ>(10, "BZ");
             config.BZ = bz;
 
             //KD
@@ -132,6 +132,11 @@ namespace StarBot.Service
 
         public void ClearConfig(string key = "")
         {
+            if (!string.IsNullOrWhiteSpace(key))
+            {
+                cache.RemoveCache(key);
+                return;
+            }
             cache.RemoveCache("EnableModule");
             cache.RemoveCache("Bot");
             cache.RemoveCache("QQ");

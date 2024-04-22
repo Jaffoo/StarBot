@@ -8,9 +8,9 @@
             <div v-for="(item, index) in logs">
                 <span>{{ index + 1 }}.</span>
                 <span v-if="item.type !== 'system'" style="margin-top: 10px;"><el-avatar :src="item.avatar" />{{
-                item.name }}：</span>
+                    item.name }}：</span>
                 <span v-else>系统信息：</span>
-                <span v-if="item.type == 'text'||'system'" :style="{ color: item.color }">{{ item.content }}</span>
+                <span v-if="item.type == 'text' || 'system'" :style="{ color: item.color }">{{ item.content }}</span>
                 <span v-if="item.type == 'link'"
                     :style="{ color: item.color, 'text-decoration': 'underline', cursor: 'pointer' }"
                     @click="openUrl(item.url)">
@@ -18,7 +18,7 @@
                 </span>
                 <el-image v-if="item.type == 'pic'" :src="item.url" :initial-index="getIndex(item.url)"
                     :preview-src-list="imgList()" style="width: 120px;height: auto;" />
-                <span>--{{ item.time }}</span>
+                <span>--from {{ (item.idol || "") + (item.channel ? "【" + item.channel + "】" : '') + item.time }}</span>
             </div>
         </el-scrollbar>
     </div>
@@ -63,7 +63,7 @@ const exportLog = () => {
 }
 
 const imgList = (): string[] => {
-    var res = logs.value.filter(x => x.type=='pic').map(e => e.url)
+    var res = logs.value.filter(x => x.type == 'pic').map(e => e.url)
     if (res == undefined) return [] as string[]
     return res as string[];
 }
@@ -72,8 +72,16 @@ const getIndex = (url?: string): number => {
     var index = imgList().findIndex(x => x == url)
     return index;
 }
+
+const getLogTimer = () => {
+    setInterval(() => {
+        let tempLogs = logApi().getLogs();
+        if (tempLogs) logs.value = tempLogs
+    }, 3000);
+}
 onMounted(() => {
     let tempLogs = logApi().getLogs();
     if (tempLogs) logs.value = tempLogs
+    getLogTimer();
 })
 </script>

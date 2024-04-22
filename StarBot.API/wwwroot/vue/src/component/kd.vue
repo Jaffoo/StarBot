@@ -237,7 +237,7 @@ const send = async () => {
     if (res.success) {
         ElMessage({ message: "发送成功，请注意查收！", type: 'success' });
     } else {
-        ElMessage({ message: res.msg ?? "发送失败！", type: 'error' });
+        ElMessage({ message: res.msg || "发送失败！", type: 'error' });
         close();
     }
 }
@@ -265,12 +265,12 @@ const login = async () => {
             setTimeout(() => {
                 close();
             }, 1000);
-            ElMessage({ message: tokenRes.msg ?? '登录成功', type: 'success' });
+            ElMessage({ message: tokenRes.msg || '登录成功', type: 'success' });
         } else {
-            ElMessage({ message: tokenRes.msg ?? '登录失败！', type: 'error' });
+            ElMessage({ message: tokenRes.msg || '登录失败！', type: 'error' });
         }
     } else {
-        ElMessage({ message: res.msg ?? '登录失败！', type: 'error' });
+        ElMessage({ message: res.msg || '登录失败！', type: 'error' });
     }
 }
 const subtraction = () => {
