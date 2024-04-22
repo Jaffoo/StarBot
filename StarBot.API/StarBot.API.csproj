@@ -4,6 +4,12 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <DebugType>embedded</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DebugType>embedded</DebugType>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.2" />
@@ -28,7 +34,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- 使用 <None> 元素将目录排除在生成和发布之外 -->
 		<None Update="wwwroot\vue\**\*">
 			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
