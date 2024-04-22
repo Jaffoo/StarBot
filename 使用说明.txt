@@ -1,9 +1,0 @@
-1：运行命令“dotnet tool install ElectronNET.CLI -g”安装工具。
-2：进入ElectronCore.Web文件夹，运行cmd。
-3：运行命令“electronize init”初始化项目
-4：运行命令“electronize start or electronize start /watch”启动项目
-4：构建最终程序
-electronize build /target win
-electronize build /target osx
-electronize build /target linux
-electronize build /target custom "win7-x86;win32" /electron-arch ia32 

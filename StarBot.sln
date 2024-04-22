@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarBot", "StarBot.Desk\Sta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarBot.DeskServer", "StarBot.DeskServer\StarBot.DeskServer.csproj", "{054EBEB4-61C4-45DB-ABDB-DB8640159780}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugins", "Plugins\Plugins.csproj", "{227B5150-C3D2-4BF5-988A-83272654E097}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,10 @@ Global
 		{054EBEB4-61C4-45DB-ABDB-DB8640159780}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{054EBEB4-61C4-45DB-ABDB-DB8640159780}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{054EBEB4-61C4-45DB-ABDB-DB8640159780}.Release|Any CPU.Build.0 = Release|Any CPU
+		{227B5150-C3D2-4BF5-988A-83272654E097}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{227B5150-C3D2-4BF5-988A-83272654E097}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{227B5150-C3D2-4BF5-988A-83272654E097}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{227B5150-C3D2-4BF5-988A-83272654E097}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
