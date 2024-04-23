@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="UnifyBot" Version="1.1.4.1" />
+    <PackageReference Include="UnifyBot" Version="1.1.5.1" />
   </ItemGroup>
 
   <ItemGroup>
