@@ -330,7 +330,6 @@ const handleLogined = async function () {
     }
     msg = `成功进入小偶像${config.value!.kd!.idolName}的口袋房间。`;
     logApi().addSystem(msg);
-    getTenLog();
 };
 
 const handleMessage = async function (msg: any) {
@@ -339,15 +338,15 @@ const handleMessage = async function (msg: any) {
     msg.channelName = await getChannel(msg.channelId);
     msg.time = dayjs(msg.time).format("YYYY-MM-DD HH:mm:ss");
     await postMsg({ content: JSON.stringify(msg) });
-    console.log('头像', msg)
     let kdMsg: logI = {
         type: 'text',
         name: msg.ext.user.nickName,
         time: msg.time,
         avatar: "https://source3.48.cn" + msg.ext.user.avatar ?? '',
         color: '#409eff',
-        channel:msg.channelName,
-        idol:config.value?.kd?.idolName
+        channel: msg.channelName,
+        idol: config.value?.kd?.idolName,
+        roleId: msg.ext.user.roleId
     }
     if (msg.type == "text") {
         kdMsg.content = msg.body;
@@ -364,12 +363,11 @@ const handleMessage = async function (msg: any) {
         kdMsg.content = '发送了一条特殊消息！'
     }
     logApi().add(kdMsg);
-    getTenLog();
+    if (kdMsg.roleId == 3) getTenLog();
 };
 
 const handleRoomSocketDisconnect = function (...context: any): void {
     logApi().addSystem("口袋登录连接状态已断开。");
-    getTenLog();
 };
 
 const liveMsg = function (t: any, event: Array<LiveRoomMessage>) {
@@ -393,7 +391,7 @@ const getTenLog = () => {
     if (!logs || logs.length <= 0) return
     infoLogs.value = logs!.filter(x => x.type == 'system').splice(-10);
     if (!props.enable.kd || !config.value || !config.value.kd || !config.value.kd.idolName) return
-    logs = logs.filter(x => x.name && x.name.includes(config.value!.kd!.idolName!))
+    logs = logs.filter(x => x.name && x.name.includes(config.value!.kd!.idolName!) && x.roleId == 3)
     kdLogs.value = logs.slice(-10);
 }
 const viewLog = (log: string, title = '错误') => {
@@ -419,7 +417,7 @@ const oneMinFun = async () => {
     if (tempLogs) {
         info.value.log.total = tempLogs.length ?? 0
         if (config.value?.kd?.idolName)
-            info.value.log.idol = tempLogs.filter(x => x.name?.includes(config.value!.kd!.idolName!)).length
+            info.value.log.idol = tempLogs.filter(x => x.name?.includes(config.value!.kd!.idolName!) && x.roleId == 3).length
         info.value.log.other = info.value.log.total - info.value.log.idol
     }
 }

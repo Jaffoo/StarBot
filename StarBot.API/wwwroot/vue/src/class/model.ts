@@ -101,7 +101,8 @@ export interface logI {
     url?: string,
     color?: '#409eff' | '#67c23a' | '#f56c6c',
     channel?: string,
-    idol?: string
+    idol?: string,
+    roleId?: number
 }
 
 export const logApi = () => {
