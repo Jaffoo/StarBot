@@ -389,10 +389,10 @@ const getChannel = async function (id: number) {
 const getTenLog = () => {
     let logs = logApi().getLogs();
     if (!logs || logs.length <= 0) return
-    infoLogs.value = logs!.filter(x => x.type == 'system').splice(-10);
+    infoLogs.value = logs!.filter(x => x.type == 'system').splice(-10).reverse();
     if (!props.enable.kd || !config.value || !config.value.kd || !config.value.kd.idolName) return
     logs = logs.filter(x => x.name && x.name.includes(config.value!.kd!.idolName!) && x.roleId == 3)
-    kdLogs.value = logs.slice(-10);
+    kdLogs.value = logs.slice(-10).reverse();
 }
 const viewLog = (log: string, title = '错误') => {
     ElMessageBox.alert(log, title + "详情")

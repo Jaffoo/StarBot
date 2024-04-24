@@ -76,12 +76,12 @@ const getIndex = (url?: string): number => {
 const getLogTimer = () => {
     setInterval(() => {
         let tempLogs = logApi().getLogs();
-        if (tempLogs) logs.value = tempLogs
+        if (tempLogs) logs.value = tempLogs.reverse();
     }, 3000);
 }
 onMounted(() => {
     let tempLogs = logApi().getLogs();
-    if (tempLogs) logs.value = tempLogs
+    if (tempLogs) logs.value = tempLogs.reverse();
     getLogTimer();
 })
 </script>
