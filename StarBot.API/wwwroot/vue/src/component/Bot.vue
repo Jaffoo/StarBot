@@ -38,7 +38,7 @@ defineProps({
 const botform = ref<FormInstance>();
 const rules = ref<FormRules>(
     {
-        common: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        host: [{ required: true, message: '请输入该值', trigger: 'blur' }],
         websocktPort: [{ required: true, message: '请输入该值', trigger: 'blur' }],
         httpPort: [{ required: true, message: '请输入该值', trigger: 'blur' }]
     },

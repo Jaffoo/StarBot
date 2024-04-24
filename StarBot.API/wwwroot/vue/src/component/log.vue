@@ -47,12 +47,13 @@ const clear = async () => {
 }
 
 const exportLog = () => {
-    if (logs.value.length <= 0) {
+    const tempLogs = logApi().getLogs();
+    if (!tempLogs || tempLogs.length <= 0) {
         ElMessage.info("无日志")
         return;
     }
     let text = [''];
-    logs.value.forEach(item => {
+    tempLogs.reverse().forEach(item => {
         if (item.type == "link" || item.type == "pic")
             text.push(item.name + ":" + item.url);
         else
@@ -76,7 +77,7 @@ const getIndex = (url?: string): number => {
 const getLogTimer = () => {
     setInterval(() => {
         let tempLogs = logApi().getLogs();
-        if (tempLogs) logs.value = tempLogs.reverse();
+        if (tempLogs) logs.value = tempLogs.reverse().slice(0, 100);
     }, 3000);
 }
 onMounted(() => {

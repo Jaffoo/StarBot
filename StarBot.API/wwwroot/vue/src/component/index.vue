@@ -49,7 +49,7 @@
                             </el-col>
                         </el-row>
                     </template>
-                    <el-scrollbar height="180px" style="margin-top:-10px">
+                    <el-scrollbar height="180px" style="margin-top:-10px;margin-left: -20px;">
                         <ul style="margin-top:-3px">
                             <li v-for="item in errLogs" style="cursor: pointer;">
                                 <span @click="viewLog(item.content)" title="点击查看">
@@ -107,8 +107,8 @@
                             <el-card shadow="hover" class="ch320">
                                 <template #header><span title="实时更新">口袋消息</span>
                                 </template>
-                                <div>
-                                    <ul>
+                                <el-scrollbar height="250px" style="margin-top:-10px">
+                                    <ul style="margin-top:-3px;margin-left: -20px;">
                                         <li v-for="item in kdLogs">
                                             <span v-if="item.type == 'text'"
                                                 @click="viewLog(item.name + ':' + item.content + '--' + item.time, '口袋消息')"
@@ -118,7 +118,7 @@
                                             <span v-if="item.type == 'pic' || item.type == 'link'">{{ item.url }}</span>
                                         </li>
                                     </ul>
-                                </div>
+                                </el-scrollbar>
                             </el-card>
                         </el-col>
                         <el-col :span="8" v-show="carousel == 'help'">
@@ -128,6 +128,26 @@
                                         <Switch class="et2" circle @click="() => carousel = 'log'"></Switch>
                                     </el-icon>
                                 </template>
+                                <div>
+                                    <span>1、QQ机器人部署：</span>
+                                <div class="mt5">
+                                    <a href="https://llonebot.github.io/zh-CN/" target="_blank">LLOneBot</a>
+                                    <span style="font-size: 14px;color: gray;">：配置简单，可视化配置，占用电脑资源较高(>=300m内存)</span>
+                                </div>
+                                <div class="mt5">
+                                    <a href="https://napneko.github.io/zh-CN/" target="_blank">NapCatBot</a>
+                                    <span style="font-size: 14px;color: gray;">：非可视化配置，配置过程相对LLOneBot复杂，占用资源低，(<=100m内存)</span>
+                                </div>
+                                </div>
+                                <div class="mt10">
+                                    <span>2、配置项说明：</span>
+                                    <a href="https://gitee.com/jaffoo/ParkerBot#配置教程" target="_blank">参照此文档</a>
+                                    <span style="font-size: 14px;color: gray;"></span>
+                                </div>
+                                <div class="mt10">
+                                    <span>3、联系作者QQ：</span>
+                                    <span style="color: blue;">1615842006</span>
+                                </div>
                             </el-card>
                         </el-col>
                         <el-col :span="8" v-show="carousel == 'log'">
@@ -138,7 +158,7 @@
                                     </el-icon>
                                 </template>
                                 <el-scrollbar height="250px" style="margin-top:-10px">
-                                    <ul style="margin-top:-3px">
+                                    <ul style="margin-top:-3px;margin-left: -20px;">
                                         <li v-for="item in infoLogs" style="cursor: pointer;">
                                             <span @click="viewLog(item.content ?? '', '日志')" title="点击查看">
                                                 {{ item.content?.substring(0, 20) }}--{{ item.time }}
@@ -389,10 +409,10 @@ const getChannel = async function (id: number) {
 const getTenLog = () => {
     let logs = logApi().getLogs();
     if (!logs || logs.length <= 0) return
-    infoLogs.value = logs!.filter(x => x.type == 'system').splice(-10).reverse();
-    if (!props.enable.kd || !config.value || !config.value.kd || !config.value.kd.idolName) return
-    logs = logs.filter(x => x.name && x.name.includes(config.value!.kd!.idolName!) && x.roleId == 3)
-    kdLogs.value = logs.slice(-10).reverse();
+    infoLogs.value = logs!.filter(x => x.type == 'system').splice(0, 10).reverse();
+    if (!props.enable.kd || !config.value || !config.value.kd || !config.value.kd.idolName) return;
+    logs = logs.filter(x => x.type == 'text' && x.roleId == 3)
+    kdLogs.value = logs.slice(0, 10).reverse();
 }
 const viewLog = (log: string, title = '错误') => {
     ElMessageBox.alert(log, title + "详情")
@@ -434,7 +454,7 @@ const oneSecFun = () => {
     if (hour >= 11 && hour < 14) currentTimeType.value = "中午好";
     if (hour >= 14 && hour < 17) currentTimeType.value = "下午好";
     if (hour >= 17 && hour < 19) currentTimeType.value = "傍晚好";
-    if (hour >= 19 && hour < 0) currentTimeType.value = "晚上好";
+    if (hour >= 19 && hour <= 23) currentTimeType.value = "晚上好";
     if (lastStart.value == "无记录") runTime.value = '0小时0分钟';
     else {
         let tempLastTime = new Date(lastStart.value);
@@ -469,6 +489,10 @@ onMounted(async () => {
 
 .mt10 {
     margin-top: 10px;
+}
+
+.mt5 {
+    margin-top: 5px;
 }
 
 .et2 {

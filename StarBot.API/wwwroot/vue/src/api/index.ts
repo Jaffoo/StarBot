@@ -2,8 +2,8 @@ import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import type { Config, ApiResult } from '@/class/model';
 
-const _port = sessionStorage.getItem("HttpPort") || 52066;
-const _baseUrl = `http://127.0.0.1:${_port}/api/v1`;
+const _port = sessionStorage.getItem("HttpPort") || 5266;
+const _baseUrl = `http://154.201.76.32:${_port}/api/v1`;
 
 export const ApiPrefix = _baseUrl;
 
