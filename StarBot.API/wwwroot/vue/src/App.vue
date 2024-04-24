@@ -53,7 +53,7 @@
         <el-main style="padding-left: 20px; padding-right: 20px" id="parentContainer">
           <Index :enable="enable" v-show="component === 'index'" />
           <Log v-show="component === 'log'" />
-          <Pic v-show="component === 'pic'" />
+          <Pic v-if="component === 'pic'" />
           <Plugin v-if="component === 'plugin' && enable.qq" />
           <Config ref="configRef" :enable="enable" v-if="component === 'config'" @top-enable-change="enableChange" />
         </el-main>
