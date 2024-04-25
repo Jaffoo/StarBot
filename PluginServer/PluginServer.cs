@@ -1,6 +1,7 @@
 using UnifyBot.Model;
 using UnifyBot.Receiver;
 using UnifyBot.Receiver.EventReceiver;
+using UnifyBot.Receiver.EventReceiver.Notice;
 using UnifyBot.Receiver.MessageReceiver;
 
 namespace PluginServer
@@ -42,7 +43,7 @@ namespace PluginServer
         /// <summary>
         /// 配置文件路径（xml格式）
         /// </summary>
-        public string ConfPath
+        public static string ConfPath
         {
             get
             {
@@ -55,7 +56,7 @@ namespace PluginServer
         /// <summary>
         /// 日志
         /// </summary>
-        public string LogPath
+        public static string LogPath
         {
             get
             {
@@ -69,24 +70,16 @@ namespace PluginServer
         /// 执行插件
         /// </summary>
         /// <returns></returns>
-        public virtual async Task Excute(MessageReceiver? mrb = null, EventReceiver? eb = null)
+        public virtual async Task Excute(MessageReceiver? mr = null, EventReceiver? eb = null)
         {
             try
             {
-                if (mrb != null)
+                if (mr != null)
                 {
-                    switch (mrb.MessageType)
-                    {
-                        case MessageType.Private:
-                            await FriendMessage((PrivateReceiver)mrb!);
-                            break;
-                        case MessageType.Group:
-                            await GroupMessage((GroupReceiver)mrb!);
-                            break;
-                        default:
-                            await BaseMessage(mrb);
-                            break;
-                    }
+                    if(mr.MessageType==MessageType.Private)
+                        await FriendMessage((PrivateReceiver)mr!);
+                    if (mr.MessageType == MessageType.Group)
+                        await GroupMessage((GroupReceiver)mr!);
                 }
                 if (eb != null)
                 {
@@ -116,17 +109,6 @@ namespace PluginServer
         /// <param name="fmr"></param>
         /// <returns></returns>
         public virtual async Task FriendMessage(PrivateReceiver fmr)
-        {
-            await Task.Delay(1);
-            return;
-        }
-
-        /// <summary>
-        /// 所有消息
-        /// </summary>
-        /// <param name="fmr"></param>
-        /// <returns></returns>
-        public virtual async Task BaseMessage(MessageReceiverBase mrb)
         {
             await Task.Delay(1);
             return;
