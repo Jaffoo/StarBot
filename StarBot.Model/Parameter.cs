@@ -11,13 +11,13 @@ namespace StarBot.Model
         /// 页码
         /// </summary>
         [Required]
-        public int PageIndex { get; set; }
+        public int PageIndex { get; set; } = 1;
 
         /// <summary>
         /// 页大小
         /// </summary>
         [Required]
-        public int PageSize { get; set; }
+        public int PageSize { get; set; } = 10;
 
         /// <summary>
         /// 关键词

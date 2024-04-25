@@ -8,6 +8,7 @@
   ],
   "compilerOptions": {
     "lib": ["es2017", "dom"],
+    "forceConsistentCasingInFileNames": false,
     "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "paths": {

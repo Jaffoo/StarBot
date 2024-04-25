@@ -27,8 +27,8 @@ export const postMsg = async (msg: object, type: 0 | 1 = 0) => {
     return response.data as ApiResult;
 }
 
-export const getCache = async () => {
-    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/getCache`);
+export const getCache = async (page: any) => {
+    const response: AxiosResponse<any> = await axios.get(`${_baseUrl}/getCache?pageIndex=${page.pageIndex}&pageSize=${page.pageSize}`);
     return response.data as ApiResult;
 }
 

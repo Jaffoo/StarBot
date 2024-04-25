@@ -3,7 +3,7 @@ using PluginServer;
 using TBC.CommonLib;
 using UnifyBot.Receiver.MessageReceiver;
 
-namespace SpeakWell
+namespace Plugins
 {
     public class SpeakWell : BasePlugin
     {

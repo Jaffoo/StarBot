@@ -7,7 +7,7 @@ using System.Text;
 using System.Xml;
 using UnifyBot.Receiver.MessageReceiver;
 
-namespace ChatGPT
+namespace Plugins
 {
     public class ChatGPT : BasePlugin
     {

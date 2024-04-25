@@ -130,14 +130,14 @@
                                 </template>
                                 <div>
                                     <span>1、QQ机器人部署：</span>
-                                <div class="mt5">
-                                    <a href="https://llonebot.github.io/zh-CN/" target="_blank">LLOneBot</a>
-                                    <span style="font-size: 14px;color: gray;">：配置简单，可视化配置，占用电脑资源较高(>=300m内存)</span>
-                                </div>
-                                <div class="mt5">
-                                    <a href="https://napneko.github.io/zh-CN/" target="_blank">NapCatBot</a>
-                                    <span style="font-size: 14px;color: gray;">：非可视化配置，配置过程相对LLOneBot复杂，占用资源低，(<=100m内存)</span>
-                                </div>
+                                    <div class="mt5">
+                                        <a href="https://llonebot.github.io/zh-CN/" target="_blank">LLOneBot</a>
+                                        <span style="font-size: 14px;color: gray;">：配置简单，可视化配置，占用电脑资源较高(>=300m内存)</span>
+                                    </div>
+                                    <div class="mt5">
+                                        <a href="https://napneko.github.io/zh-CN/" target="_blank">NapCatBot</a>
+                                        <span style="font-size: 14px;color: gray;">：非可视化配置，配置过程相对LLOneBot复杂，占用资源低(<=100m内存)</span>
+                                    </div>
                                 </div>
                                 <div class="mt10">
                                     <span>2、配置项说明：</span>
@@ -424,13 +424,13 @@ const oneMinTimer = () => {
 const oneMinFun = async () => {
     errLogs.value = (await getLogs()).data.reverse();
     let plugInfo = (await getFun()).data
-    let picInfo = await (await getCache()).data
+    let picInfo = await getCache({ pageIndex: 1, pageSize: 9999 })
     info.value.plugin.total = plugInfo.length
     info.value.plugin.unusing = plugInfo.filter((x: any) => !x.status).length
     info.value.plugin.using = plugInfo.filter((x: any) => x.status).length
 
-    info.value.pic.total = picInfo.length
-    info.value.pic.today = picInfo.filter((x: any) => new Date(x.createDate).getDate() === new Date().getDate()).length
+    info.value.pic.total = picInfo.count
+    info.value.pic.today = picInfo.data.filter((x: any) => new Date(x.createDate).getDate() === new Date().getDate()).length
     info.value.pic.old = info.value.pic.total - info.value.pic.today
 
     let tempLogs = logApi().getLogs();

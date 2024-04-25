@@ -170,10 +170,10 @@ namespace StarBot.Controllers
         /// <param name="page"></param>
         /// <returns></returns>
         [HttpGet("getcache")]
-        public async Task<ApiResult> GetCache()
+        public async Task<ApiResult> GetCache([FromQuery]PageModel page)
         {
-            var res = await _sysCache.GetListAsync();
-            return DataResult(res);
+            var res = await _sysCache.GetPageListAsync(page);
+            return ListResult(res.List, res.Count);
         }
 
         /// <summary>
