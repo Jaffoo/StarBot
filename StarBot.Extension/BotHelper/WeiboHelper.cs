@@ -294,7 +294,8 @@ namespace StarBot.Extension
                     await _sysCache.AddAsync(new()
                     {
                         Content = url,
-                        Type = 1
+                        Type = 1,
+                        CreateDate = DateTime.Now,
                     });
                     await ReciverMsg.Instance.SendAdminMsg($"未启用百度人脸识别，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
                     return;
@@ -310,7 +311,8 @@ namespace StarBot.Extension
                         await _sysCache.AddAsync(new()
                         {
                             Content = url,
-                            Type = 1
+                            Type = 1,
+                            CreateDate = DateTime.Now,
                         });
                         await ReciverMsg.Instance.SendAdminMsg($"相似度低于{Config.BD.Similarity}，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
                         return;
@@ -322,7 +324,8 @@ namespace StarBot.Extension
                             await _sysCache.AddAsync(new()
                             {
                                 Content = url,
-                                Type = 1
+                                Type = 1,
+                                CreateDate = DateTime.Now,
                             });
                             await ReciverMsg.Instance.SendAdminMsg($"保存失败，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
                         }
@@ -339,7 +342,8 @@ namespace StarBot.Extension
                         await _sysCache.AddAsync(new()
                         {
                             Content = url,
-                            Type = 1
+                            Type = 1,
+                            CreateDate = DateTime.Now,
                         });
                         await ReciverMsg.Instance.SendAdminMsg($"加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
                         return;
@@ -350,7 +354,8 @@ namespace StarBot.Extension
                     await _sysCache.AddAsync(new()
                     {
                         Content = url,
-                        Type = 1
+                        Type = 1,
+                        CreateDate = DateTime.Now,
                     });
                     await ReciverMsg.Instance.SendAdminMsg($"识别到多个人脸，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
                     return;
@@ -360,7 +365,8 @@ namespace StarBot.Extension
                     await _sysCache.AddAsync(new()
                     {
                         Content = url,
-                        Type = 1
+                        Type = 1,
+                        CreateDate = DateTime.Now,
                     });
                     await ReciverMsg.Instance.SendAdminMsg($"未识别到人脸，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
                 }
