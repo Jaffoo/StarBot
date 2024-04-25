@@ -2,6 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using PluginServer;
 using StarBot.IService;
 using StarBot.Model;
+using System;
+using System.Data;
 using System.Reflection;
 using TBC.CommonLib;
 using UnifyBot.Receiver.EventReceiver;
@@ -14,10 +16,6 @@ namespace StarBot.Extension
     /// </summary>
     public class PluginHelper : IDisposable
     {
-        private static readonly string delConf = "plugins/del.txt";
-
-        private static readonly string startConf = "plugins/start.txt";
-
         static ISysConfig _sysConfig
         {
             get
@@ -38,6 +36,24 @@ namespace StarBot.Extension
         public BasePlugin? PluginInfo { get; set; }
         public bool Status { get; set; }
         public string FileName { get; set; } = "";
+        private static List<string> DefalultStart
+        {
+            get
+            {
+                if (!Directory.Exists("plugins")) Directory.CreateDirectory("plugins");
+                var path = "plugins/start.txt";
+                if (!File.Exists(path))
+                {
+                    File.Create(path);
+                    return [];
+                }
+                else
+                {
+                    var list = File.ReadAllLines(path).ToList();
+                    return list;
+                }
+            }
+        }
 
         private static Config Config
         {
@@ -54,41 +70,23 @@ namespace StarBot.Extension
         {
             if (!Directory.Exists("plugins")) Directory.CreateDirectory("plugins");
             var files = new DirectoryInfo("plugins").GetFiles();
-            List<FileInfo> delInfo = [];
-            if (File.Exists(delConf))
-            {
-                var list = File.ReadLines(delConf);
-                foreach (var filestr in list)
-                {
-                    delInfo.Add(new(filestr));
-                }
-            }
             foreach (var item in files)
             {
-                if (delInfo != null)
-                {
-                    if (delInfo.Any(x => x.Name == item.Name)) continue;
-                }
                 if (item.Extension != ".dll") continue;
-                Assembly assembly = Assembly.LoadFrom(item.FullName);
+                byte[] buffurs = File.ReadAllBytes(item.FullName);
+                Assembly assembly = Assembly.Load(buffurs);
                 // 获取 DLL 中的类型
                 Type[] types = assembly.GetTypes();
                 if (types == null) continue;
-                var type = types.FirstOrDefault(x => x.Name == item.Name.Replace(".dll", ""));
+                var type = types.FirstOrDefault(x => !x.Name.Contains("<"));
                 if (type == null) continue;
                 if (Activator.CreateInstance(type) is not BasePlugin instance) continue;
                 instance.Permission = Config.QQ.Permission.ToStrList();
                 instance.Admin = Config.QQ.Admin;
-                List<string> startList = [];
-                if (File.Exists(startConf))
-                {
-                    startList = File.ReadLines(startConf).ToList();
-                }
                 if (!Plugins.Exists(t => t.PluginInfo?.Name == instance.Name && t.PluginInfo.Version == instance.Version))
                 {
                     var status = false;
-                    if (startList.Any(t => t == item.FullName))
-                        status = true;
+                    status = DefalultStart.Any(x => x == instance.Name + ":" + instance.Version);
                     Plugins.Add(new()
                     {
                         PluginInfo = instance,
@@ -105,18 +103,17 @@ namespace StarBot.Extension
         /// <param name="name"></param>
         public static (bool b, string msg) StopPlugin(string name)
         {
-            var plugin = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == name);
-            if (plugin == null) return (false, "插件不存在！");
-            plugin.Status = false;
-            List<string> startList = [];
-            if (File.Exists(startConf))
+            var plugins = Plugins.Where(t => t.PluginInfo?.Name == name).ToList();
+            if (plugins == null) return (false, "插件不存在！");
+            plugins.ForEach(x => x.Status = false);
+            if (DefalultStart.Any(x => x.Contains(name)))
             {
-                startList = File.ReadLines(startConf).ToList();
-            }
-            if (startList.Any(t => t == plugin.FileName))
-            {
-                startList.Remove(plugin.FileName);
-                File.WriteAllLines(startConf, startList);
+                var startList = new List<string>();
+                startList.AddRange(DefalultStart);
+                var list = startList.Where(x => x.Contains(name)).ToList();
+                foreach (var item in list)
+                    startList.Remove(item);
+                UpdateStart(startList);
             }
             return (true, "禁用成功！");
         }
@@ -125,48 +122,32 @@ namespace StarBot.Extension
         /// 启用插件
         /// </summary>
         /// <param name="name"></param>
-        public static (bool b, string msg) StartPlugin(string name)
+        public static (bool b, string msg) StartPlugin(string name, string version)
         {
-            var plugin = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == name);
+            var plugin = Plugins.FirstOrDefault(t => t.PluginInfo!.Name == name && t.PluginInfo.Version == version);
             if (plugin == null) return (false, "插件不存在！");
             plugin.Status = true;
-            List<string> startList = [];
-            if (File.Exists(startConf))
+            var others = Plugins.Where(x => x.PluginInfo!.Name == name && x.PluginInfo.Version != version);
+            if (others != null && others.Any())
+                foreach (var item in others)
+                    item.Status = false;
+
+            var startList = new List<string>();
+            startList.AddRange(DefalultStart);
+            if (DefalultStart.Any(x => x.Contains(name)))
             {
-                startList = File.ReadLines(startConf).ToList();
+                var list = startList.Where(x => x.Contains(name)).ToList();
+                foreach (var item in list)
+                    startList.Remove(item);
             }
-            if (!startList.Any(t => t == plugin.FileName))
-            {
-                startList.Add(plugin.FileName);
-                File.WriteAllLines(startConf, startList);
-            }
+            startList.Add(name + ":" + version);
+            UpdateStart(startList);
             return (true, "启用成功！");
         }
 
-        public static void DelForce()
+        private static void UpdateStart(List<string> startList)
         {
-            //删除要删除的插件
-            if (!Directory.Exists("plugins/conf/")) Directory.CreateDirectory("plugins/conf/");
-            List<string> delList = [];
-            if (!File.Exists(delConf)) File.Create(delConf);
-            else
-            {
-                delList = File.ReadLines(delConf).ToList();
-            }
-            if (delList.Count > 0)
-            {
-                List<string> del = [];
-                foreach (var item in delList)
-                {
-                    File.Delete(item);
-                    del.Add(item);
-                }
-                foreach (var item in del)
-                {
-                    delList.Remove(item);
-                }
-                File.WriteAllLines(delConf, delList);
-            }
+            File.WriteAllLines("plugins/start.txt", startList);
         }
 
         /// <summary>
@@ -177,27 +158,22 @@ namespace StarBot.Extension
         {
             try
             {
-                if (!Directory.Exists("plugins/conf/")) Directory.CreateDirectory("plugins/conf/");
-                if (!File.Exists(delConf)) File.Create(delConf);
                 var plugin = Plugins.FirstOrDefault(t => t.PluginInfo?.Name == name);
                 if (plugin == null) return true;
                 plugin.Status = false;
                 plugin.PluginInfo?.Dispose();
                 plugin.Dispose();
                 Plugins.Remove(plugin);
-                var newText = File.ReadAllLines(delConf).ToList();
-                var delInfo = plugin.FileName;
-                newText.Add(delInfo);
-                File.WriteAllLines(delConf, newText);
-                List<string> startList = [];
-                if (File.Exists(startConf))
+                File.Delete(plugin.FileName);
+
+                var startList = new List<string>();
+                startList.AddRange(DefalultStart);
+                if (DefalultStart.Any(x => x.Contains(name)))
                 {
-                    startList = File.ReadLines(startConf).ToList();
-                }
-                if (startList.Any(t => t == plugin.FileName))
-                {
-                    startList.Remove(plugin.FileName);
-                    File.WriteAllLines(startConf, startList);
+                    var list = startList.Where(x => x.Contains(name)).ToList();
+                    foreach (var item in list)
+                        startList.Remove(item);
+                    UpdateStart(startList);
                 }
                 return true;
             }

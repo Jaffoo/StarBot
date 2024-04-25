@@ -218,9 +218,9 @@ namespace StarBot.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("startplugin")]
-        public ApiResult StartPlugin(string name)
+        public ApiResult StartPlugin(string name,string version)
         {
-            var (b, msg) = PluginHelper.StartPlugin(name);
+            var (b, msg) = PluginHelper.StartPlugin(name,version);
             return AjaxResult(b, msg);
         }
 

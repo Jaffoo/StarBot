@@ -35,7 +35,7 @@
         </el-table-column>
         <el-table-column label="操作" width="180">
           <template #default="scope">
-            <el-button type="primary" v-if="!scope.row.status" @click="start(scope.row.pluginInfo.name)">启用</el-button>
+            <el-button type="primary" v-if="!scope.row.status" @click="start(scope.row.pluginInfo)">启用</el-button>
             <el-button type="warning" v-else @click="stop(scope.row.pluginInfo.name)">禁用</el-button>
             <el-button type="danger" @click="del(scope.row.pluginInfo.name)">删除</el-button>
           </template>
@@ -59,8 +59,8 @@ const getData = async () => {
   tableData.value = res.data;
 };
 
-const start = async (name: string) => {
-  let res = await startPlugin(name);
+const start = async (info: any) => {
+  let res = await startPlugin(info.name,info.version);
   if (res.success) ElMessage.success(res.msg);
   else ElMessage.error(res.msg);
   await getData();
