@@ -1,8 +1,7 @@
 using UnifyBot.Model;
-using UnifyBot.Receiver;
 using UnifyBot.Receiver.EventReceiver;
-using UnifyBot.Receiver.EventReceiver.Notice;
 using UnifyBot.Receiver.MessageReceiver;
+using FluentScheduler;
 
 namespace PluginServer
 {
@@ -67,6 +66,16 @@ namespace PluginServer
         }
 
         /// <summary>
+        /// 定时任务
+        /// 示例：SetTimer(() => Method(), x => x.ToRunNow().AndEvery(1).Minutes());
+        /// </summary>
+        /// <returns></returns>
+        public static void SetTimer(Action job, Action<Schedule> schedule)
+        {
+            JobManager.AddJob(job, schedule);
+        }
+
+        /// <summary>
         /// 执行插件
         /// </summary>
         /// <returns></returns>
@@ -76,7 +85,7 @@ namespace PluginServer
             {
                 if (mr != null)
                 {
-                    if(mr.MessageType==MessageType.Private)
+                    if (mr.MessageType == MessageType.Private)
                         await FriendMessage((PrivateReceiver)mr!);
                     if (mr.MessageType == MessageType.Group)
                         await GroupMessage((GroupReceiver)mr!);
