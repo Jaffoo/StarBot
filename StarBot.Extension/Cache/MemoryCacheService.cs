@@ -26,12 +26,12 @@ namespace StarBot.Extension
         }
 
         /// <summary>
-        /// 取得缓存数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public T GetCache<T>(string key)
+        /// 取得缓存数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public T GetCache<T>(string key)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -49,12 +49,12 @@ namespace StarBot.Extension
             }
         }
 
-        /// <summary>
-        /// 设置缓存
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        public void SetCache(string key, object value)
+        /// <summary>
+        /// 设置缓存
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void SetCache(string key, object value)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -64,14 +64,14 @@ namespace StarBot.Extension
             _cache.Set(key, value);
         }
 
-        /// <summary>
-        /// 设置缓存,绝对过期
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <param name="expirationMinute">间隔分钟</param>
-        /// MemoryCacheService.Default.SetCache("test", "RedisCache works!", 30);
-        public void SetCache(string key, object value, double expirationMinute)
+        /// <summary>
+        /// 设置缓存,绝对过期
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="expirationMinute">间隔分钟</param>
+        /// MemoryCacheService.Default.SetCache("test", "RedisCache works!", 30);
+        public void SetCache(string key, object value, double expirationMinute)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -83,14 +83,14 @@ namespace StarBot.Extension
             _cache.Set(key, value, ts);
         }
 
-        /// <summary>
-        /// 设置缓存,绝对过期
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <param name="expirationTime">DateTimeOffset 结束时间</param>
-        /// MemoryCacheService.Default.SetCache("test", "RedisCache works!", DateTimeOffset.Now.AddSeconds(30));
-        public void SetCache(string key, object value, DateTimeOffset expirationTime)
+        /// <summary>
+        /// 设置缓存,绝对过期
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="expirationTime">DateTimeOffset 结束时间</param>
+        /// MemoryCacheService.Default.SetCache("test", "RedisCache works!", DateTimeOffset.Now.AddSeconds(30));
+        public void SetCache(string key, object value, DateTimeOffset expirationTime)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -101,14 +101,14 @@ namespace StarBot.Extension
             _cache.Set(key, value, expirationTime);
         }
 
-        /// <summary>
-        /// 设置缓存,相对过期时间
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <param name="t"></param>
-        /// MemoryCacheService.Default.SetCache("test", "MemoryCache works!",TimeSpan.FromSeconds(30));
-        public void SetSlidingCache(string key, object value, TimeSpan t)
+        /// <summary>
+        /// 设置缓存,相对过期时间
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="t"></param>
+        /// MemoryCacheService.Default.SetCache("test", "MemoryCache works!",TimeSpan.FromSeconds(30));
+        public void SetSlidingCache(string key, object value, TimeSpan t)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -122,21 +122,21 @@ namespace StarBot.Extension
             });
         }
 
-        /// <summary>
-        /// 移除缓存
-        /// </summary>
-        /// <param name="key"></param>
-        public void RemoveCache(string key)
+        /// <summary>
+        /// 移除缓存
+        /// </summary>
+        /// <param name="key"></param>
+        public void RemoveCache(string key)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
             _cache.Remove(key);
         }
 
-        /// <summary>
-        /// 释放
-        /// </summary>
-        public void Dispose()
+        /// <summary>
+        /// 释放
+        /// </summary>
+        public void Dispose()
         {
             _cache?.Dispose();
             GC.SuppressFinalize(this);
