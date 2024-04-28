@@ -1,8 +1,5 @@
 ﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
 using StarBot.DeskServer.WebViewHost.GtkWebkitHost;
-using StarBot.DeskServer;
-using StarBot.DeskServer.Models;
 
 namespace StarBot.DeskServer.NativeHost.LinuxHost
 {

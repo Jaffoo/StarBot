@@ -1,9 +1,4 @@
-﻿using StarBot.DeskServer.NativeHost.LinuxHost;
-using StarBot.DeskServer.Extensions;
-using StarBot.DeskServer.Models;
-using System.Runtime.InteropServices;
-
-namespace StarBot.DeskServer.NativeHost.LinuxHost
+﻿namespace StarBot.DeskServer.NativeHost.LinuxHost
 {
     internal class NativeSplashWindow : NativeWindowBase, ISplashWindow
     {

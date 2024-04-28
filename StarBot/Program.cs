@@ -1,8 +1,6 @@
 ﻿using StarBot.DeskServer;
 using StarBot.DeskServer.Models;
-using StarBot.Model;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using TBC.CommonLib;
 
 namespace StarBot.Desk
@@ -18,32 +16,27 @@ namespace StarBot.Desk
             #region 启动API服务
             try
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                ProcessStartInfo startInfo = new()
                 {
-                    string directoryPath = Environment.CurrentDirectory; // 要进入的目录路径
-
-                    ProcessStartInfo startInfo = new()
-                    {
-                        FileName = "cmd.exe",
-                        Arguments = $"/c cd {directoryPath} && dotnet StarBot.Api.dll",
-                        CreateNoWindow = true,
-                        UseShellExecute = false,
-                    };
-                    Process process = Process.Start(startInfo);
-                }
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    FileName = "dotnet", // 使用 dotnet 命令来运行 .NET Core 控制台应用程序
+                    Arguments = "StarBot.API.dll", // 指定子进程的可执行文件路径
+                    UseShellExecute = false, // 必须设置为 false，以便在控制台中启动另一个控制台应用程序
+                    CreateNoWindow = true,
+                };
+                // 创建一个 Process 对象，并将 ProcessStartInfo 对象赋给它
+                Process process = new()
                 {
-                    string directoryPath = Environment.CurrentDirectory; // 要进入的目录路径
+                    StartInfo = startInfo
+                };
+                process.Start();
 
-                    ProcessStartInfo startInfo = new()
+                AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
+                {
+                    if (!process.HasExited)
                     {
-                        FileName = "/bin/bash",
-                        Arguments = $"-c 'cd {directoryPath} && dotnet StarBot.Api.dll'",
-                        CreateNoWindow = true,
-                        UseShellExecute = false,
-                    };
-                    Process process = Process.Start(startInfo);
-                }
+                        process.Kill();
+                    }
+                };
             }
             catch (Exception ex)
             {
@@ -61,7 +54,7 @@ namespace StarBot.Desk
 
                 var builder = Application.Initialize();
                 Application.AppName = "StarBot";
-                Application.Icon =  "wwwroot/system/star.png";
+                Application.Icon = "wwwroot/system/star.png";
                 builder.RegisterResource(typeof(Program));
 
                 var windowConfig = new WindowConfig()
