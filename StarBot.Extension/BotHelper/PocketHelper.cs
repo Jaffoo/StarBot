@@ -209,7 +209,7 @@ namespace StarBot.Extension
                 {
                     await _pocketMsg.AddAsync(saveMsg);
                 }
-                if (Config.KD.SaveMsg == 1 && roleId == 3)
+                else if (Config.KD.SaveMsg == 1 && roleId == 3)
                 {
                     await _pocketMsg.AddAsync(saveMsg);
                 }
@@ -217,7 +217,7 @@ namespace StarBot.Extension
                 if (roleId != 3) return;
                 if (Config.KD.ForwardGroup)
                 {
-                    var group = Config.KD.Group ?? Config.QQ.Group;
+                    var group = string.IsNullOrWhiteSpace(Config.KD.Group) ? Config.QQ.Group : Config.KD.Group;
                     if (!string.IsNullOrWhiteSpace(group))
                     {
                         MsgModel msgModel = new()

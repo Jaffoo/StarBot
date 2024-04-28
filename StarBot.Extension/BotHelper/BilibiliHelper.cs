@@ -127,7 +127,7 @@ namespace StarBot.Extension
 
                                 if (Config.BZ.ForwardGroup)
                                 {
-                                    var goups = Config.BZ.Group ?? Config.QQ.Group;
+                                    var goups = string.IsNullOrWhiteSpace(Config.BZ.Group) ? Config.QQ.Group : Config.BZ.Group;
                                     if (goups == null) continue;
                                     await ReciverMsg.Instance.SendGroupMsg(goups.ToStrList(), mcb.Build());
                                 }

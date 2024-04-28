@@ -134,7 +134,7 @@ namespace StarBot.Extension
                     if (type == 1 && !string.IsNullOrWhiteSpace(first)) mcb.ImageByUrl(first);
                     if (Config.XHS.ForwardGroup)
                     {
-                        var goups = Config.XHS.Group ?? Config.QQ.Group;
+                        var goups = string.IsNullOrWhiteSpace(Config.XHS.Group) ? Config.QQ.Group : Config.XHS.Group;
                         if (goups == null) continue;
                         await ReciverMsg.Instance.SendGroupMsg(goups.ToStrList(), mcb.Build());
                     }

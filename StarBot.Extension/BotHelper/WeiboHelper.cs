@@ -129,7 +129,7 @@ namespace StarBot.Extension
                                 mcb.Text($"\n链接：https://m.weibo.cn/status/{blog["mid"]}");
                                 if (Config.WB.ForwardGroup)
                                 {
-                                    var goups = Config.WB.Group ?? Config.QQ.Group;
+                                    var goups = string.IsNullOrWhiteSpace(Config.WB.Group) ? Config.QQ.Group : Config.WB.Group;
                                     if (goups == null) continue;
                                     await ReciverMsg.Instance.SendGroupMsg(goups.ToStrList(), mcb.Build());
                                 }
