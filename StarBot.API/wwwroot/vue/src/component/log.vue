@@ -6,7 +6,7 @@
         </div>
         <el-scrollbar style="height: calc(100vh - 100px);margin-top: 10px;">
             <div v-for="(item, index) in logs">
-                <span>{{ index + 1 }}.</span>
+                <span>{{ logs.length - index }}.</span>
                 <span v-if="item.type !== 'system'" style="margin-top: 10px;"><el-avatar :src="item.avatar" />{{
                     item.name }}：</span>
                 <span v-else>系统信息：</span>

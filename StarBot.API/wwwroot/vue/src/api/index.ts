@@ -3,7 +3,8 @@ import type { AxiosResponse } from 'axios';
 import type { Config, ApiResult } from '@/class/model';
 
 const _port = sessionStorage.getItem("HttpPort") || 5266;
-const _baseUrl = `http://localhost:${_port}/api/v1`;
+//const _baseUrl = `http://localhost:${_port}/api/v1`;
+const _baseUrl = `http://154.201.76.32:${_port}/api/v1`;
 
 export const ApiPrefix = _baseUrl;
 

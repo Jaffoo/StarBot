@@ -22,6 +22,12 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+  server: {
+    host: '0.0.0.0',
+    open: true,
+    hmr: true,
+    proxy: {},
+  },
   build: {
     outDir: '../bot/',
     chunkSizeWarningLimit: 2048 * 2,

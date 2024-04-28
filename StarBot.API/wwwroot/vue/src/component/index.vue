@@ -115,7 +115,10 @@
                                                 title="点击查看">
                                                 {{ item.name + ':' + item.content?.substring(0, 20) }}--{{ item.time }}
                                             </span>
-                                            <span v-if="item.type == 'pic' || item.type == 'link'">{{ item.url }}</span>
+                                            <el-image v-if="item.type == 'pic'" :src="item.url"
+                                                :preview-src-list="[item.url]" style="width: 120px;height: auto;" />
+                                            <span v-if="item.type == 'link'"><a target="_blank"
+                                                    :href="item.url">发送了带有链接的消息！</a></span>
                                         </li>
                                     </ul>
                                 </el-scrollbar>
@@ -129,14 +132,15 @@
                                     </el-icon>
                                 </template>
                                 <div>
-                                    <span>1、QQ机器人部署：</span>
+                                    <span>1、QQ机器人部署(2选1)：</span>
                                     <div class="mt5">
                                         <a href="https://llonebot.github.io/zh-CN/" target="_blank">LLOneBot</a>
                                         <span style="font-size: 14px;color: gray;">：配置简单，可视化配置，占用电脑资源较高(>=300m内存)</span>
                                     </div>
                                     <div class="mt5">
                                         <a href="https://napneko.github.io/zh-CN/" target="_blank">NapCatBot</a>
-                                        <span style="font-size: 14px;color: gray;">：非可视化配置，配置过程相对LLOneBot复杂，占用资源低(<=100m内存)</span>
+                                        <span style="font-size: 14px;color: gray;">：非可视化配置，配置过程相对LLOneBot复杂，占用资源低(
+                                            <=100m内存) </span>
                                     </div>
                                 </div>
                                 <div class="mt10">
@@ -380,7 +384,7 @@ const handleMessage = async function (msg: any) {
         kdMsg.url = msg?.attach?.url;
     }
     else {
-        kdMsg.content = '发送了一条特殊消息！'
+        kdMsg.content = '暂不支持此类型消息，请前往口袋查看。'
     }
     logApi().add(kdMsg);
     if (kdMsg.roleId == 3) getTenLog();
@@ -411,7 +415,7 @@ const getTenLog = () => {
     if (!logs || logs.length <= 0) return
     infoLogs.value = logs!.filter(x => x.type == 'system').splice(0, 10).reverse();
     if (!props.enable.kd || !config.value || !config.value.kd || !config.value.kd.idolName) return;
-    logs = logs.filter(x => x.type == 'text' && x.roleId == 3)
+    logs = logs.filter(x => x.roleId == 3)
     kdLogs.value = logs.slice(0, 10).reverse();
 }
 const viewLog = (log: string, title = '错误') => {
