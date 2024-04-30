@@ -1,25 +1,57 @@
 <template>
     <div>
         <div>
-            <el-button type="primary" @click="clear">清空</el-button>
-            <el-button type="primary" @click="exportLog">导出</el-button>
+            <el-space wrap>
+                <label>日志显示数量：</label>
+                <el-input-number v-model="num" :min="1" :max="1000" @change="getLogs" />
+                <label>日志类型：</label>
+                <el-select v-model="logType" style="width: 120px;" @change="getLogs">
+                    <el-option :key="0" label="全部" value="all" />
+                    <el-option :key="1" label="系统" value="system" />
+                    <el-option :key="2" label="图片" value="pic" />
+                    <el-option :key="3" label="文本" value="text" />
+                    <el-option :key="4" label="链接" value="link" />
+                </el-select>
+                <el-button type="primary" @click="clear">清空</el-button>
+                <el-button type="primary" @click="exportLog">导出</el-button>
+            </el-space>
         </div>
         <el-scrollbar style="height: calc(100vh - 100px);margin-top: 10px;">
-            <div v-for="(item, index) in logs">
-                <span>{{ logs.length - index }}.</span>
-                <span v-if="item.type !== 'system'" style="margin-top: 10px;"><el-avatar :src="item.avatar" />{{
-                    item.name }}：</span>
-                <span v-else>系统信息：</span>
-                <span v-if="item.type == 'text' || 'system'" :style="{ color: item.color }">{{ item.content }}</span>
-                <span v-if="item.type == 'link'"
-                    :style="{ color: item.color, 'text-decoration': 'underline', cursor: 'pointer' }"
-                    @click="openUrl(item.url)">
-                    {{ item.url }}
-                </span>
-                <el-image v-if="item.type == 'pic'" :src="item.url" :initial-index="getIndex(item.url)"
-                    :preview-src-list="imgList()" style="width: 120px;height: auto;" />
-                <span>--from {{ (item.idol || "") + (item.channel ? "【" + item.channel + "】" : '') + item.time }}</span>
-            </div>
+            <el-card v-for="item in logs" style="background-color:rgba(220,220,220,0.1);margin-bottom: 10px;"
+                :shadow="'never'">
+                <el-row>
+                    <el-col :span="1">
+                        <el-avatar v-if="item.type !== 'system'" :src="item.avatar" />
+                    </el-col>
+                    <el-col :span="20">
+                        <el-row>
+                            <span v-if="item.type !== 'system'">{{ item.name }}
+                                <span style="font-size: 12px;color: gray">{{
+                                    (item.idol ||
+                                        "") + (item.channel ?
+                                            "【" + item.channel + "】" : '') +
+                                    item.time
+                                }}</span>
+                            </span>
+                            <span v-else>系统信息：</span>
+                        </el-row>
+                        <el-row>
+                            <el-card body-class="card-body-diy">
+                                <span v-if="item.type == 'text' || 'system'" :style="{ color: item.color }">{{
+                                    item.content
+                                    }}</span>
+                                <span v-if="item.type == 'link'"
+                                    :style="{ color: item.color, 'text-decoration': 'underline', cursor: 'pointer' }"
+                                    @click="openUrl(item.url)">
+                                    {{ item.url }}
+                                </span>
+                                <el-image v-if="item.type == 'pic'" :src="item.url" :initial-index="getIndex(item.url)"
+                                    :preview-src-list="imgList()" style="width: 120px;height: auto;" />
+                            </el-card>
+                        </el-row>
+                    </el-col>
+                </el-row>
+            </el-card>
         </el-scrollbar>
     </div>
 </template>
@@ -30,6 +62,8 @@ import { openWindow } from '@/api'
 import { saveAs } from "file-saver";
 import { type logI, logApi } from '@/class/model';
 
+const logType = ref<'system' | 'pic' | 'text' | 'link' | 'all'>('all')
+const num = ref(30)
 const logs = ref<Array<logI>>(new Array<logI>)
 const openUrl = (url?: string) => {
     if (url) openWindow(url)
@@ -47,13 +81,12 @@ const clear = async () => {
 }
 
 const exportLog = () => {
-    const tempLogs = logApi().getLogs();
-    if (!tempLogs || tempLogs.length <= 0) {
+    if (!logs.value || logs.value.length <= 0) {
         ElMessage.info("无日志")
         return;
     }
     let text = [''];
-    tempLogs.reverse().forEach(item => {
+    logs.value.forEach(item => {
         if (item.type == "link" || item.type == "pic")
             text.push(item.name + ":" + item.url);
         else
@@ -76,13 +109,27 @@ const getIndex = (url?: string): number => {
 
 const getLogTimer = () => {
     setInterval(() => {
-        let tempLogs = logApi().getLogs();
-        if (tempLogs) logs.value = tempLogs.reverse().slice(0, 100);
+        getLogs()
     }, 3000);
 }
-onMounted(() => {
+
+const getLogs = () => {
     let tempLogs = logApi().getLogs();
-    if (tempLogs) logs.value = tempLogs.reverse();
+    if (!tempLogs) return;
+    tempLogs = tempLogs.reverse();
+    if (logType.value && logType.value != 'all') tempLogs = tempLogs.filter(x => x.type == logType.value);
+    if (num) tempLogs = tempLogs.slice(0, num.value);
+    logs.value = tempLogs;
+}
+
+
+onMounted(() => {
+    getLogs();
     getLogTimer();
 })
 </script>
+<style>
+.card-body-diy {
+    padding: 6px 16px 6px 16px;
+}
+</style>

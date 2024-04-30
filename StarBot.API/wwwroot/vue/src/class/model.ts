@@ -27,7 +27,11 @@ export interface BD {
     audit?: number,
     albumName?: string,
     faceVerify: boolean,
-    imageList?: Array<string>
+    imageList?: Array<BDImg>
+}
+export interface BDImg {
+    name: string,
+    url: string
 }
 export interface MsgType {
     name: string,

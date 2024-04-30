@@ -289,7 +289,7 @@ namespace StarBot.Extension
         {
             try
             {
-                if (!Config.EnableModule.BD && !Config.BD.FaceVerify)
+                if (!Config.EnableModule.BD || !Config.BD.FaceVerify)
                 {
                     await _sysCache.AddAsync(new()
                     {

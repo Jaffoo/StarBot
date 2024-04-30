@@ -112,11 +112,12 @@ const reset = async () => {
 const checkData = (): Promise<boolean> => {
   let temp1 = JSON.stringify(startModel.value);
   let temp2 = JSON.stringify(model.value);
-  if (temp1 != temp2) {
+  if (temp1 !== temp2) {
     return ElMessageBox.confirm("配置已被修改，但未保存，是否保存", "警告", {
       confirmButtonText: "保存",
       cancelButtonText: "取消",
       type: "warning",
+      closeOnClickModal: false
     })
       .then(async () => {
         await save();

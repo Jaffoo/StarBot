@@ -288,9 +288,13 @@ namespace StarBot.Model
         /// <summary>
         /// 用于对比的基础图片
         /// </summary>
-        public List<string> ImageList { get; set; } = [];
+        public List<BDImg> ImageList { get; set; } = [];
     }
-
+    public class BDImg
+    {
+        public string Name { get; set; } = "";
+        public string Url { get; set; } = "";
+    }
     /// <summary>
     /// 口袋
     /// </summary>

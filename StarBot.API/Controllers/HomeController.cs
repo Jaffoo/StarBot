@@ -88,7 +88,6 @@ namespace StarBot.Controllers
         public ApiResult BotInfo()
         {
             dynamic obj = new System.Dynamic.ExpandoObject();
-
             return DataResult(obj);
         }
 
@@ -170,7 +169,7 @@ namespace StarBot.Controllers
         /// <param name="page"></param>
         /// <returns></returns>
         [HttpGet("getcache")]
-        public async Task<ApiResult> GetCache([FromQuery]PageModel page)
+        public async Task<ApiResult> GetCache([FromQuery] PageModel page)
         {
             var res = await _sysCache.GetPageListAsync(page);
             return ListResult(res.List, res.Count);
@@ -218,9 +217,9 @@ namespace StarBot.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("startplugin")]
-        public ApiResult StartPlugin(string name,string version)
+        public ApiResult StartPlugin(string name, string version)
         {
-            var (b, msg) = PluginHelper.StartPlugin(name,version);
+            var (b, msg) = PluginHelper.StartPlugin(name, version);
             return AjaxResult(b, msg);
         }
 
@@ -314,18 +313,19 @@ namespace StarBot.Controllers
             var dir = "wwwroot/images/standard";
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
-            var name = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-
+            string fileExtension = Path.GetExtension(file.FileName);
+            var name = DateTime.Now.ToString("yyyyMMddHHmmssfff") + fileExtension;
             var full = Path.Combine(dir, name);
             if (!System.IO.File.Exists(full))
             {
                 using var stream = new FileStream(full, FileMode.Create);
                 await file.CopyToAsync(stream);
             }
+            var domain = Helper.ConfigHelper.GetConfiguration("urls").Replace("*", "localhost");
             object obj = new
             {
                 name,
-                url = "/images/standard/" + name
+                url = domain + "/images/standard/" + name
             };
             return DataResult(obj);
         }

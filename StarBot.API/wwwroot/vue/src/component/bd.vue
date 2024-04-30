@@ -14,8 +14,9 @@
                 <el-switch v-model="bd.faceVerify" :active-value="true" :inactive-value="false"></el-switch>
             </el-form-item>
             <el-form-item label="基础人脸" v-show="bd.faceVerify">
-                <el-upload :file-list="bd.imageList" :action="ApiPrefix + '/upload'" :on-success="onSuccess"
-                    :on-remove="onRemove" list-type="picture-card" :limit="3" accept=".jpg,.png,.jpeg">
+                <el-upload :file-list="tempImgList" :action="ApiPrefix + '/upload'" :on-success="onSuccess"
+                    :on-preview="handlePictureCardPreview" :on-remove="onRemove" list-type="picture-card" :limit="3"
+                    accept=".jpg,.png,.jpeg">
                     <el-icon>
                         <Plus />
                     </el-icon>
@@ -45,13 +46,17 @@
             </el-form-item>
         </el-form>
     </el-card>
+    <el-dialog v-model="dialogVisible">
+        <img w-full style="height: auto;width: 100%;" :src="dialogImageUrl" alt="Preview Image" />
+    </el-dialog>
 </template>
 
 <script setup lang="ts" name="bd">
-import { ref, type PropType } from 'vue'
-import type { BD } from '@/class/model'
+import { ref, watchEffect, type PropType } from 'vue'
+import type { ApiResult, BD, BDImg } from '@/class/model'
 import type { FormInstance, FormRules, UploadFile, UploadProps } from 'element-plus';
 import { ApiPrefix } from '@/api/index'
+import { Plus } from "@element-plus/icons-vue";
 
 const props = defineProps({
     bd: {
@@ -64,30 +69,35 @@ const props = defineProps({
             audit: 0,
             albumName: "",
             faceVerify: false,
-            imageList: []
+            imageList: new Array<BDImg>
         }
     }
 })
-
+const tempImgList = ref<BDImg[]>([])
 const bdform = ref<FormInstance>();
-const onSuccess: UploadProps['onSuccess'] = (response: any, uploadFile: UploadFile) => {
-    if (props.bd.imageList) props.bd.imageList.push(uploadFile.name)
-    else props.bd.imageList = []
+const onSuccess: UploadProps['onSuccess'] = (response: ApiResult) => {
+    tempImgList.value.push({ name: response.data.name, url: response.data.url })
+    if (props.bd.imageList)
+        props.bd.imageList.push({ name: response.data.name, url: response.data.url })
+}
+watchEffect(() => {
+    if (props.bd.imageList) {
+        tempImgList.value = JSON.parse(JSON.stringify(props.bd.imageList));
+    }
+})
+const onRemove: UploadProps['onRemove'] = (file: UploadFile) => {
+    if (!props.bd.imageList) return;
+    props.bd.imageList = props.bd.imageList.filter(item => item.name !== file.name);
 }
 
-const onRemove: UploadProps['onRemove'] = (file: UploadFile) => {
-    if (!props.bd.imageList) return
-    var i = -1;
-    props.bd.imageList.forEach((item, index) => {
-        if (item === file.name) {
-            i = index;
-            return;
-        }
-    })
-    if (i >= 0) {
-        props.bd.imageList.splice(i, 1);
-    }
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+
+const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
+    dialogImageUrl.value = uploadFile.url!
+    dialogVisible.value = true
 }
+
 const rules = ref<FormRules>(
     {
         appKey: [{ required: true, message: '请输入该值', trigger: 'blur' }],
