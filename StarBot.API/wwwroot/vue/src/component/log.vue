@@ -20,10 +20,11 @@
             <el-card v-for="item in logs" style="background-color:rgba(220,220,220,0.1);margin-bottom: 10px;"
                 :shadow="'never'">
                 <el-row>
-                    <el-col :span="1">
+                    <el-col :span="1.5">
                         <el-avatar v-if="item.type !== 'system'" :src="item.avatar" />
                     </el-col>
-                    <el-col :span="20">
+                    <el-col :span="0.5"><span>&nbsp;</span></el-col>
+                    <el-col :span="22">
                         <el-row>
                             <span v-if="item.type !== 'system'">{{ item.name }}
                                 <span style="font-size: 12px;color: gray">{{
