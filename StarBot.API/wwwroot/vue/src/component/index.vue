@@ -72,33 +72,33 @@
                                 <div>
                                     <label>系统日志</label>
                                     <div>
-                                        <span>全部:{{ info.log.total }}</span>
+                                        <span class="fs14">全部:{{ info.log.total }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>主要:{{ info.log.idol }}</span>
+                                        <span class="fs14">主要:{{ info.log.idol }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>其他:{{ info.log.other }}</span>
+                                        <span class="fs14">其他:{{ info.log.other }}</span>
                                     </div>
                                 </div>
                                 <el-divider />
                                 <div>
                                     <label>图片信息</label>
                                     <div>
-                                        <span>全部:{{ info.pic.total }}</span>
+                                        <span class="fs14">全部:{{ info.pic.total }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>今日:{{ info.pic.today }}</span>
+                                        <span class="fs14">今日:{{ info.pic.today }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>更早:{{ info.pic.old }}</span>
+                                        <span class="fs14">更早:{{ info.pic.old }}</span>
                                     </div>
                                 </div>
                                 <el-divider />
                                 <div v-if="enable.bot">
                                     <label>插件信息</label>
                                     <div>
-                                        <span>全部:{{ info.plugin.total }}</span>
+                                        <span class="fs14">全部:{{ info.plugin.total }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>启用:{{ info.plugin.using }}</span>
+                                        <span class="fs14">启用:{{ info.plugin.using }}</span>
                                         <el-divider direction="vertical" />
-                                        <span>启用:{{ info.plugin.unusing }}</span>
+                                        <span class="fs14">启用:{{ info.plugin.unusing }}</span>
                                     </div>
                                 </div>
                             </el-card>
@@ -484,11 +484,11 @@ onMounted(async () => {
 }
 
 .ch320 {
-    height: 320px;
+    height: 43vh;
 }
 
 .chauto {
-    height: calc(100vh - 340px);
+    height: calc(100vh - 320px);
 }
 
 .mt10 {
@@ -509,6 +509,10 @@ onMounted(async () => {
     position: absolute;
     top: 5px;
     cursor: pointer;
+}
+
+.fs14 {
+    font-size: 14px;
 }
 </style>
 <!-- <template>
