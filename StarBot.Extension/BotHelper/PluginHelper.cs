@@ -81,7 +81,7 @@ namespace StarBot.Extension
                 var type = types.FirstOrDefault(x => !x.Name.Contains("<"));
                 if (type == null) continue;
                 if (Activator.CreateInstance(type) is not BasePlugin instance) continue;
-                instance.Permission = Config.QQ.Permission.ToStrList();
+                instance.Permission = Config.QQ.Permission.ToListStr();
                 instance.Admin = Config.QQ.Admin;
                 if (!Plugins.Exists(t => t.PluginInfo?.Name == instance.Name && t.PluginInfo.Version == instance.Version))
                 {

@@ -1,5 +1,5 @@
 <template>
-    <el-card class="card-bd">
+    <el-card class="card-bd" style="margin-top: 10px;">
         <template #header>
             <span id="bd">百度</span>
         </template>
@@ -13,8 +13,8 @@
             <el-form-item label="开启人脸验证">
                 <el-switch v-model="bd.faceVerify" :active-value="true" :inactive-value="false"></el-switch>
             </el-form-item>
-            <el-form-item label="基础人脸" v-show="bd.faceVerify">
-                <el-upload :file-list="tempImgList" :action="ApiPrefix + '/upload'" :on-success="onSuccess"
+            <el-form-item label="基础人脸" v-show="bd.faceVerify" prop="imageList">
+                <el-upload v-model:file-list="tempImgList" :action="ApiPrefix + '/upload'" :on-success="onSuccess"
                     :on-preview="handlePictureCardPreview" :on-remove="onRemove" list-type="picture-card" :limit="3"
                     accept=".jpg,.png,.jpeg">
                     <el-icon>
@@ -22,6 +22,7 @@
                     </el-icon>
                 </el-upload>
                 <span style="color:red">*上传人脸轮廓清晰的图片</span>
+                <el-input v-show="false" v-model="bd.imageList"></el-input>
             </el-form-item>
             <el-form-item label="人脸相似度" v-show="bd.faceVerify">
                 <el-col :span="8">
@@ -102,7 +103,8 @@ const rules = ref<FormRules>(
     {
         appKey: [{ required: true, message: '请输入该值', trigger: 'blur' }],
         appSeret: [{ required: true, message: '请输入该值', trigger: 'blur' }],
-        albumName: [{ required: true, message: '请输入该值', trigger: 'blur' }]
+        albumName: [{ required: true, message: '请输入该值', trigger: 'blur' }],
+        imageList: [{ required: true, message: '请上传人脸', trigger: 'change' }]
     },
 )
 const validForm = async () => {

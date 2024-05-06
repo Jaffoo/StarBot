@@ -15,7 +15,7 @@
     <KD ref="kdRef" :kd="model.kd" v-if="model.enableModule.kd" class="mt10" />
     <BZ ref="bzRef" :bz="model.bz" v-if="model.enableModule.bz" class="mt10" />
     <XHS ref="xhsRef" :xhs="model.xhs" v-if="model.enableModule.xhs" class="mt10" />
-    <BD ref="bdRef" :bd="model.bd" v-if="model.enableModule.bd" class="mt10" />
+    <BD ref="bdRef" :bd="model.bd" v-if="model.enableModule.bd" />
     <DY ref="dyRef" :dy="model.dy" v-if="model.enableModule.dy" class="mt10 mb50" />
   </el-scrollbar>
 </template>
@@ -63,7 +63,7 @@ const model = ref<Config>({
 });
 const startModel = ref<Config>();
 // 定义子组件向父组件传值/事件
-const emit = defineEmits(["top-enable-change"]);
+const emit = defineEmits(["top-enable-change", 'change-menu']);
 
 const enableChange = (enableNew: EnableModule) => {
   model.value.enableModule = enableNew;
@@ -73,17 +73,54 @@ const enableChange = (enableNew: EnableModule) => {
 const save = async () => {
   let valid = true;
   if (model.value.enableModule.bot) valid = await botRef.value.validForm();
-  if (model.value.enableModule.wb) valid = await wbRef.value.validForm();
-  if (model.value.enableModule.qq) valid = await qqRef.value.validForm();
-  if (model.value.enableModule.bz) valid = await bzRef.value.validForm();
-  if (model.value.enableModule.bd) valid = await bdRef.value.validForm();
-  if (model.value.enableModule.kd) valid = await kdRef.value.validForm();
-  if (model.value.enableModule.xhs) valid = await xhsRef.value.validForm();
-  if (model.value.enableModule.dy) valid = await dyRef.value.validForm();
   if (!valid) {
-    ElMessage.error("请填入配置中的必填项！");
+    emit('change-menu','bot')
+    ElMessage.error("请填入机器人配置中的必填项！");
     return;
   }
+  if (model.value.enableModule.wb) valid = await wbRef.value.validForm();
+  if (!valid) {
+    emit('change-menu','wb')
+    ElMessage.error("请填入微博配置中的必填项！");
+    return;
+  }
+  if (model.value.enableModule.qq) valid = await qqRef.value.validForm();
+  if (!valid) {
+    emit('change-menu','qq')
+    ElMessage.error("请填入QQ配置中的必填项！");
+    return;
+  }
+  if (model.value.enableModule.bz) valid = await bzRef.value.validForm();
+  if (!valid) {
+    emit('change-menu','bz')
+    ElMessage.error("请填入B站配置中的必填项！");
+    return;
+  }
+  if (model.value.enableModule.bd) valid = await bdRef.value.validForm();
+  if (!valid) {
+    emit('change-menu','bd')
+    ElMessage.error("请填入百度配置中的必填项！");
+    return;
+  }
+  if (model.value.enableModule.kd) valid = await kdRef.value.validForm();
+  if (!valid) {
+    emit('change-menu','kd')
+    ElMessage.error("请填入口袋配置中的必填项！");
+    return;
+  }
+  if (model.value.enableModule.xhs) valid = await xhsRef.value.validForm();
+  if (!valid) {
+    emit('change-menu','xhs')
+    ElMessage.error("请填入小红书配置中的必填项！");
+    return;
+  }
+  if (model.value.enableModule.dy) valid = await dyRef.value.validForm();
+  if (!valid) {
+    emit('change-menu','dy')
+    ElMessage.error("请填入抖音配置中的必填项！");
+    return;
+  }
+
   var res = await saveConfig(model.value);
   if (res && res.success) {
     startModel.value = model.value;
@@ -145,7 +182,9 @@ defineExpose({
 .mt10 {
   margin-top: 10px;
 }
-
+.mt50 {
+  margin-top: 50px;
+}
 .mb50 {
   margin-bottom: 50px;
 }

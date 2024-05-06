@@ -55,7 +55,7 @@ namespace StarBot.Extension
             {
                 var config = (await _sysConfig.GetConfig());
                 var index = -1;
-                var users = config.BZ.User.ToStrList();
+                var users = config.BZ.User.ToListStr();
                 foreach (var item in users)
                 {
                     index++;
@@ -129,12 +129,12 @@ namespace StarBot.Extension
                                 {
                                     var goups = string.IsNullOrWhiteSpace(Config.BZ.Group) ? Config.QQ.Group : Config.BZ.Group;
                                     if (goups == null) continue;
-                                    await ReciverMsg.Instance.SendGroupMsg(goups.ToStrList(), mcb.Build());
+                                    await ReciverMsg.Instance.SendGroupMsg(goups.ToListStr(), mcb.Build());
                                 }
                                 if (Config.BZ.ForwardQQ)
                                 {
                                     if (string.IsNullOrWhiteSpace(Config.BZ.QQ)) continue;
-                                    await ReciverMsg.Instance.SendFriendMsg(Config.BZ.QQ.ToStrList(), mcb.Build());
+                                    await ReciverMsg.Instance.SendFriendMsg(Config.BZ.QQ.ToListStr(), mcb.Build());
                                 }
                             }
                             //保存图片

@@ -80,9 +80,9 @@ namespace StarBot.Extension
                 return _cache.GetListAsync(t => t.Type == 1).Result.Select(t => t.Content).ToList();
             }
         }
-        public List<string> Permission => Config.QQ.Permission.ToStrList();
+        public List<string> Permission => Config.QQ.Permission.ToListStr();
         public List<string> FuncAdmin => Config.QQ.FuncAdmin;
-        public List<string> Group => Config.QQ.Group.ToStrList();
+        public List<string> Group => Config.QQ.Group.ToListStr();
         public List<RequestFriend> RequestFriend { get; set; } = [];
         public List<RequestGroup> RequestGroup { get; set; } = [];
         public static bool BotReady { get; set; } = false;
@@ -685,9 +685,9 @@ namespace StarBot.Extension
                             var keywords = msgText.Replace("#删除微博关键词#", "");
                             if (string.IsNullOrWhiteSpace(keywords))
                                 await fmr.SendMessage("输入内容为空！");
-                            if (!Config.WB.Keyword.ToStrList().Contains(keywords))
+                            if (!Config.WB.Keyword.ToListStr().Contains(keywords))
                                 await fmr.SendMessage("不存在该关键词！");
-                            var temp = Config.WB.Keyword.ToStrList();
+                            var temp = Config.WB.Keyword.ToListStr();
                             temp.Remove(keywords);
                             Config.WB.Keyword = string.Join(",", temp);
                             var model = await _sysConfig.GetModelAsync(t => t.Key == "Keyword" && t.DataType == "list");
@@ -703,9 +703,9 @@ namespace StarBot.Extension
                             var keywords = msgText.Replace("#添加微博关键词#", "");
                             if (string.IsNullOrWhiteSpace(keywords))
                                 await fmr.SendMessage("输入内容为空！");
-                            if (Config.WB.Keyword.ToStrList().Contains(keywords))
+                            if (Config.WB.Keyword.ToListStr().Contains(keywords))
                                 await fmr.SendMessage("已存在该关键词！");
-                            var temp = Config.WB.Keyword.ToStrList();
+                            var temp = Config.WB.Keyword.ToListStr();
                             temp.Add(keywords);
                             Config.WB.Keyword = string.Join(",", temp);
                             var model = await _sysConfig.GetModelAsync(t => t.Key == "Keyword" && t.DataType == "list");

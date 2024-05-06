@@ -223,7 +223,7 @@ namespace StarBot.Extension
                         MsgModel msgModel = new()
                         {
                             MsgChain = mcb.Build(),
-                            Ids = group.ToStrList(),
+                            Ids = group.ToListStr(),
                         };
                         ReciverMsg.AddMsg(msgModel);
                     }
@@ -235,7 +235,7 @@ namespace StarBot.Extension
                     msgModel.MsgChain = mcb.Build();
                     if (!string.IsNullOrWhiteSpace(Config.KD.QQ))
                     {
-                        var qqs = Config.KD.QQ.ToStrList();
+                        var qqs = Config.KD.QQ.ToListStr();
                         msgModel.Ids = qqs;
                         ReciverMsg.AddMsg(msgModel);
                     }
@@ -272,7 +272,7 @@ namespace StarBot.Extension
                         MsgModel msgModel = new()
                         {
                             MsgChain = mcb.Build(),
-                            Ids = group.ToStrList(),
+                            Ids = group.ToListStr(),
                         };
                         ReciverMsg.AddMsg(msgModel);
                     }
@@ -284,7 +284,7 @@ namespace StarBot.Extension
                     msgModel.MsgChain = mcb.Build();
                     if (!string.IsNullOrWhiteSpace(Config.KD.QQ))
                     {
-                        var qqs = Config.KD.QQ.ToStrList();
+                        var qqs = Config.KD.QQ.ToListStr();
                         msgModel.Ids = qqs;
                         ReciverMsg.AddMsg(msgModel);
                     }

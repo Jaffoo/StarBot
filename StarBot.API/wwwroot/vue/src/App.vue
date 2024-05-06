@@ -55,7 +55,7 @@
           <Log v-show="component === 'log'" />
           <Pic v-if="component === 'pic'" />
           <Plugin v-if="component === 'plugin' && enable.qq" />
-          <Config ref="configRef" :enable="enable" v-if="component === 'config'" @top-enable-change="enableChange" />
+          <Config ref="configRef" :enable="enable" v-if="component === 'config'" @top-enable-change="enableChange" @change-menu="scrollSet"/>
         </el-main>
       </el-container>
     </el-card>

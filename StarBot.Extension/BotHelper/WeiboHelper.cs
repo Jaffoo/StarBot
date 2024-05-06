@@ -57,7 +57,7 @@ namespace StarBot.Extension
             string url = "";
             try
             {
-                var allList = Config.WB.UserAll.ToStrList().Concat(Config.WB.UserPart.ToStrList());
+                var allList = Config.WB.UserAll.ToListStr().Concat(Config.WB.UserPart.ToListStr());
                 foreach (var item in allList)
                 {
                     url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
@@ -131,12 +131,12 @@ namespace StarBot.Extension
                                 {
                                     var goups = string.IsNullOrWhiteSpace(Config.WB.Group) ? Config.QQ.Group : Config.WB.Group;
                                     if (goups == null) continue;
-                                    await ReciverMsg.Instance.SendGroupMsg(goups.ToStrList(), mcb.Build());
+                                    await ReciverMsg.Instance.SendGroupMsg(goups.ToListStr(), mcb.Build());
                                 }
                                 if (Config.WB.ForwardQQ)
                                 {
                                     if (string.IsNullOrWhiteSpace(Config.WB.QQ)) continue;
-                                    await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ.ToStrList(), mcb.Build());
+                                    await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ.ToListStr(), mcb.Build());
                                 }
                             }
                             //保存图片
@@ -171,7 +171,7 @@ namespace StarBot.Extension
         {
             try
             {
-                foreach (var item in Config.WB.ChiGuaUser.ToStrList())
+                foreach (var item in Config.WB.ChiGuaUser.ToListStr())
                 {
                     var url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
                     HttpClient httpClient = new();
@@ -201,7 +201,7 @@ namespace StarBot.Extension
                             if (blog.ContainsKey("page_info")) mblogtype = 0;
                             if (blog.ContainsKey("pic_infos")) mblogtype = 2;
                             var blogContent = blog["text_raw"]!.ToString();
-                            if (!Config.WB.Keyword.ToStrList().Select(blogContent.Contains).Any(x => x) && Config.WB.Keyword.ToStrList().Count > 0)
+                            if (!Config.WB.Keyword.ToListStr().Select(blogContent.Contains).Any(x => x) && Config.WB.Keyword.ToListStr().Count > 0)
                                 return;
                             var mcb = new MessageChainBuild();
                             var msgModel = new MsgModel { MsgStr = $"{blog["user"]!["screen_name"]}发了一条相关微博！" + $"\n链接：https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]}\n" };
@@ -233,12 +233,12 @@ namespace StarBot.Extension
                             {
                                 var goups = Config.WB.Group ?? Config.QQ.Group;
                                 if (goups == null) continue;
-                                await ReciverMsg.Instance.SendGroupMsg(goups.ToStrList(), mcb.Build());
+                                await ReciverMsg.Instance.SendGroupMsg(goups.ToListStr(), mcb.Build());
                             }
                             if (Config.WB.ForwardQQ)
                             {
                                 if (string.IsNullOrWhiteSpace(Config.WB.QQ)) continue;
-                                await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ.ToStrList(), mcb.Build());
+                                await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ.ToListStr(), mcb.Build());
                             }
                         }
                     }

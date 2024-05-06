@@ -13,6 +13,7 @@ using SqlSugar.Extensions;
 using System.Runtime.InteropServices;
 using System.Web;
 using System.Text;
+using System.Net;
 
 namespace StarBot.Controllers
 {
@@ -38,9 +39,9 @@ namespace StarBot.Controllers
         [HttpGet("/")]
         public ApiResult Index()
         {
-            return Success();
+            return Success("服务启动成功！");
         }
-
+       
         /// <summary>
         /// 启动qq机器人
         /// </summary>
@@ -321,13 +322,30 @@ namespace StarBot.Controllers
                 using var stream = new FileStream(full, FileMode.Create);
                 await file.CopyToAsync(stream);
             }
-            var domain = Helper.ConfigHelper.GetConfiguration("urls").Replace("*", "localhost");
+            var ip = GetLocalIpAddress();
+            var domain = Helper.ConfigHelper.GetConfiguration("urls").Replace("*", ip);
             object obj = new
             {
                 name,
                 url = domain + "/images/standard/" + name
             };
             return DataResult(obj);
+        }
+        static string GetLocalIpAddress()
+        {
+            string ipAddress = string.Empty;
+            IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
+
+            foreach (IPAddress ip in hostEntry.AddressList)
+            {
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    ipAddress = ip.ToString();
+                    break;
+                }
+            }
+
+            return ipAddress;
         }
 
         /// <summary>

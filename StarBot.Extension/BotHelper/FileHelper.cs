@@ -20,7 +20,7 @@ namespace StarBot.Extension
         {
             try
             {
-                var config = (await _sysConfig.GetConfig()).BD;
+                var config = await _sysConfig.GetConfig();
                 var path = url;
                 if (path.Contains("https://") || path.Contains("http://"))
                 {
@@ -31,7 +31,7 @@ namespace StarBot.Extension
                     path = root + "66-" + DateTime.Now.ToString("yyMMddHHmmssfff") + ".jpeg";
                     File.WriteAllBytes(path, bytes);
                 }
-                if (config.SaveAliyunDisk)
+                if (config.EnableModule.BD && config.BD.SaveAliyunDisk)
                 {
                     ThreadStart ts = new(async () =>
                     {

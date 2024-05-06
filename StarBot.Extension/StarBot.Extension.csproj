@@ -11,9 +11,9 @@
     <PackageReference Include="FluentScheduler" Version="5.5.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.59" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.4" />
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
-    <PackageReference Include="TBC.CommonLib" Version="1.0.7" />
+    <PackageReference Include="TBC.CommonLib" Version="1.0.9" />
   </ItemGroup>
 
   <ItemGroup>
