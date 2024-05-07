@@ -459,12 +459,12 @@ const oneSecFun = () => {
     var date = new Date();
     var hour = date.getHours();
     currentTime.value = date.toLocaleString();
-    if (hour >= 0 && hour < 6) currentTimeType.value = "凌晨好";
-    if (hour >= 6 && hour < 11) currentTimeType.value = "早上好";
-    if (hour >= 11 && hour < 14) currentTimeType.value = "中午好";
-    if (hour >= 14 && hour < 17) currentTimeType.value = "下午好";
-    if (hour >= 17 && hour < 19) currentTimeType.value = "傍晚好";
-    if (hour >= 19 && hour <= 23) currentTimeType.value = "晚上好";
+    if (hour >= 0 && hour <= 6) currentTimeType.value = "凌晨好";
+    if (hour >= 7 && hour <= 10) currentTimeType.value = "上午好";
+    if (hour >= 11 && hour <= 13) currentTimeType.value = "中午好";
+    if (hour >= 14 && hour <= 17) currentTimeType.value = "下午好";
+    if (hour >= 18 && hour <= 19) currentTimeType.value = "傍晚好";
+    if (hour >= 20 && hour <= 23) currentTimeType.value = "晚上好";
     let lastStartTime = localStorage.getItem("lastStart")
     if (lastStartTime) lastStart.value = lastStartTime
     else if (lastStart.value == "无记录") runTime.value = '0小时0分钟';
