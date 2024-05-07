@@ -11,6 +11,7 @@
                     <el-option :key="2" label="图片" value="pic" />
                     <el-option :key="3" label="文本" value="text" />
                     <el-option :key="4" label="链接" value="link" />
+                    <el-option :key="5" label="小偶像" value="idol" v-if="enable.kd" />
                 </el-select>
                 <el-button type="primary" @click="clear">清空</el-button>
                 <el-button type="primary" @click="exportLog">导出</el-button>
@@ -58,12 +59,27 @@
 </template>
 
 <script setup lang="ts" name="log">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, type PropType } from 'vue';
 import { openWindow } from '@/api'
 import { saveAs } from "file-saver";
-import { type logI, logApi } from '@/class/model';
+import { type logI, logApi, type EnableModule } from '@/class/model';
 
-const logType = ref<'system' | 'pic' | 'text' | 'link' | 'all'>('all')
+const props = defineProps({
+    enable: {
+        type: Object as PropType<EnableModule>,
+        default: {
+            bot: false,
+            qq: false,
+            wb: false,
+            bz: false,
+            kd: false,
+            xhs: false,
+            dy: false,
+            bd: false,
+        },
+    },
+});
+const logType = ref<'system' | 'pic' | 'text' | 'link' | 'all' | 'idol'>('all')
 const num = ref(30)
 const logs = ref<Array<logI>>(new Array<logI>)
 const openUrl = (url?: string) => {
@@ -118,7 +134,8 @@ const getLogs = () => {
     let tempLogs = logApi().getLogs();
     if (!tempLogs) return;
     tempLogs = tempLogs.reverse();
-    if (logType.value && logType.value != 'all') tempLogs = tempLogs.filter(x => x.type == logType.value);
+    if (logType.value == 'idol') tempLogs = tempLogs.filter(x => x.idol && x.roleId == 3);
+    else if (logType.value && logType.value != 'all') tempLogs = tempLogs.filter(x => x.type == logType.value);
     if (num) tempLogs = tempLogs.slice(0, num.value);
     logs.value = tempLogs;
 }

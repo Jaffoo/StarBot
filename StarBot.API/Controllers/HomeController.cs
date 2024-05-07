@@ -11,7 +11,6 @@ using TBC.CommonLib;
 using Newtonsoft.Json.Linq;
 using SqlSugar.Extensions;
 using System.Runtime.InteropServices;
-using System.Web;
 using System.Text;
 using System.Net;
 
@@ -23,7 +22,7 @@ namespace StarBot.Controllers
         ISysCache _sysCache = sysCache;
         ISysIdol _sysIdol = sysIdol;
         ISysLog _sysLog = sysLog;
-
+        public static Process? AliProcess = null;
         public Config Config
         {
             get
@@ -41,7 +40,7 @@ namespace StarBot.Controllers
         {
             return Success("服务启动成功！");
         }
-       
+
         /// <summary>
         /// 启动qq机器人
         /// </summary>
@@ -262,6 +261,11 @@ namespace StarBot.Controllers
         {
             if (Config.EnableModule.BD && Config.BD.SaveAliyunDisk)
             {
+                if (AliProcess != null)
+                {
+                    AliProcess.Kill();
+                    AliProcess = null;
+                }
                 var os = Environment.OSVersion.Platform.ToString();
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
@@ -276,7 +280,7 @@ namespace StarBot.Controllers
                             chmodProcess.StartInfo.UseShellExecute = false;
                             chmodProcess.Start();
                             chmodProcess.WaitForExit();
-                            using Process p = Process.Start(path)!;
+                            AliProcess = Process.Start(path)!;
                         }
                     });
                 }
@@ -292,7 +296,7 @@ namespace StarBot.Controllers
                                 CreateNoWindow = true,
                                 UseShellExecute = false,
                             };
-                            using Process p = Process.Start(startInfo)!;
+                            AliProcess = Process.Start(startInfo)!;
                         }
                     });
                 }

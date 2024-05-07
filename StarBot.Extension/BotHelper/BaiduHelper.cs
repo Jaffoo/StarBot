@@ -73,9 +73,9 @@ namespace StarBot.Extension
                 List<float> scores = [];
                 foreach (var item in imageList)
                 {
-                    string img64 = Base64Helper.PathToBase64(Directory.GetCurrentDirectory() + "/wwwroot" + item.Url);
+                    string img64 = await Base64Helper.UrlImgToBase64(item.Url);
                     if (string.IsNullOrWhiteSpace(img64)) return 0;
-                    string token =await GetBaiduToken();
+                    string token = await GetBaiduToken();
                     string host = "https://aip.baidubce.com/rest/2.0/face/v3/match?access_token=" + token;
 
                     string str = "[{\"image\": \"" + img + "\", \"image_type\": \"BASE64\", \"face_type\": \"LIVE\", \"quality_control\": \"LOW\"}," +

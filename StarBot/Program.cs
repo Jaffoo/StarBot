@@ -1,6 +1,8 @@
-﻿using StarBot.DeskServer;
+﻿using StarBot.Controllers;
+using StarBot.DeskServer;
 using StarBot.DeskServer.Models;
 using System.Diagnostics;
+using System.Net;
 using TBC.CommonLib;
 
 namespace StarBot.Desk
@@ -8,11 +10,28 @@ namespace StarBot.Desk
 
     internal class Program
     {
+        static string GetLocalIpAddress()
+        {
+            string ipAddress = string.Empty;
+            IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
+
+            foreach (IPAddress ip in hostEntry.AddressList)
+            {
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    ipAddress = ip.ToString();
+                    break;
+                }
+            }
+
+            return ipAddress;
+        }
+
         [STAThread]
         public static void Main(string[] args)
         {
             var conf = File.ReadAllText("appsettings.json").ToJObject();
-            var url = conf["Urls"].ToString().Replace("*", "localhost");
+            var url = conf["Urls"].ToString().Replace("*", GetLocalIpAddress());
             #region 启动API服务
             try
             {
@@ -35,6 +54,11 @@ namespace StarBot.Desk
                     if (!process.HasExited)
                     {
                         process.Kill();
+                    }
+                    if (HomeController.AliProcess != null)
+                    {
+                        HomeController.AliProcess.Kill();
+                        HomeController.AliProcess = null;
                     }
                 };
             }
