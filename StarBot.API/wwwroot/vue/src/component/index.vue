@@ -110,15 +110,20 @@
                                 <el-scrollbar height="250px" style="margin-top:-10px">
                                     <ul style="margin-top:-3px;margin-left: -20px;">
                                         <li v-for="item in kdLogs">
-                                            <span v-if="item.type == 'text'"
-                                                @click="viewLog(item.name + ':' + item.content + '--' + item.time, '口袋消息')"
-                                                title="点击查看">
-                                                {{ item.name + ':' + item.content?.substring(0, 20) }}--{{ item.time }}
-                                            </span>
-                                            <el-image v-if="item.type == 'pic'" :src="item.url"
-                                                :preview-src-list="[item.url]" style="width: 120px;height: auto;" />
-                                            <span v-if="item.type == 'link'"><a target="_blank"
-                                                    :href="item.url">发送了带有链接的消息！</a></span>
+                                            <span>{{ item.name }}</span>
+                                            <span style="color: gray;font-size: 14px;">{{ item.time }}</span>
+                                            <div v-if="item.type == 'text'" @click="viewLog(item.content!, '口袋消息')"
+                                                title="点击查看" style="color:skyblue;cursor: pointer;">
+                                                {{ item.content?.substring(0, 20) }}
+                                                {{ (item.content?.length || 0) > 20 ? '...' : '' }}
+                                            </div>
+                                            <div v-if="item.type == 'pic'">
+                                                <el-image :src="item.url" :preview-src-list="[item.url]"
+                                                    style="width: 120px;height: auto;" />
+                                            </div>
+                                            <div v-if="item.type == 'link'"><a target="_blank"
+                                                    :href="item.url">此消息带链接，点击查看！</a>
+                                            </div>
                                         </li>
                                     </ul>
                                 </el-scrollbar>
@@ -208,7 +213,7 @@ const props = defineProps({
 
 const config = ref<Config>()
 const startMsg = ref("点击启动")
-const currentTime = ref();
+const currentTime = ref('');
 const currentTimeType = ref();
 const errLogs = ref();
 const botStart = ref(false);
@@ -260,6 +265,7 @@ const startBot = async () => {
         ElMessage.success("启动成功")
         botStart.value = true;
         startMsg.value = "正在运行";
+        localStorage.setItem("lastStart", currentTime.value)
         lastStart.value = currentTime.value;
         if (props.enable.bd && config.value?.bd?.saveAliyunDisk) await startAliYunPan();
     } else {
@@ -366,7 +372,7 @@ const handleMessage = async function (msg: any) {
         type: 'text',
         name: msg.ext.user.nickName,
         time: msg.time,
-        avatar: "https://source3.48.cn" + msg.ext.user.avatar ?? '',
+        avatar: config.value?.kd?.imgDomain + msg.ext.user.avatar ?? '',
         color: '#409eff',
         channel: msg.channelName,
         idol: config.value?.kd?.idolName,
@@ -414,7 +420,7 @@ const getTenLog = () => {
     let logs = logApi().getLogs();
     if (!logs || logs.length <= 0) return
     infoLogs.value = logs!.filter(x => x.type == 'system').splice(0, 10).reverse();
-    if (!props.enable.kd || !config.value || !config.value.kd || !config.value.kd.idolName) return;
+    if (!config.value?.enableModule.kd) return;
     logs = logs.filter(x => x.roleId == 3)
     kdLogs.value = logs.slice(0, 10).reverse();
 }
@@ -459,7 +465,9 @@ const oneSecFun = () => {
     if (hour >= 14 && hour < 17) currentTimeType.value = "下午好";
     if (hour >= 17 && hour < 19) currentTimeType.value = "傍晚好";
     if (hour >= 19 && hour <= 23) currentTimeType.value = "晚上好";
-    if (lastStart.value == "无记录") runTime.value = '0小时0分钟';
+    let lastStartTime = localStorage.getItem("lastStart")
+    if (lastStartTime) lastStart.value = lastStartTime
+    else if (lastStart.value == "无记录") runTime.value = '0小时0分钟';
     else {
         let tempLastTime = new Date(lastStart.value);
         var timeDiff = date.getTime() - tempLastTime.getTime();

@@ -47,7 +47,9 @@ export interface KD extends Base {
     msgType?: Array<string>,
     saveMsg?: number,
     saveImg?: boolean,
-    appKey?: string
+    appKey?: string,
+    imgDomain?:string,
+    videoDomain?:string,
 }
 export interface WB extends Listing {
     userAll?: string,
