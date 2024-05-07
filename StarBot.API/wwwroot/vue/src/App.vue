@@ -72,6 +72,7 @@ import { House, Cpu, Picture, Tickets, SetUp } from "@element-plus/icons-vue";
 import { onMounted, ref } from "vue";
 import type { EnableModule } from "./class/model";
 import { getConfig } from "./api";
+
 const startEnble = ref<EnableModule>();
 const enable = ref<EnableModule>({
   bot: false,
