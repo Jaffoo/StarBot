@@ -334,7 +334,7 @@ namespace StarBot.Controllers
             {
                 var ip = GetLocalIpAddress();
                 var domain = Helper.ConfigHelper.GetConfiguration("urls").Replace("*", ip);
-                url = domain + url;
+                url = Path.Combine(domain, url);
             }
             object obj = new
             {

@@ -2,7 +2,8 @@
   "profiles": {
     "Project": {
       "commandName": "Project",
-      "launchBrowser": false,
+      "launchBrowser": true,
+      "launchUrl": "bot/index.html",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -11,7 +12,8 @@
     },
     "Production": {
       "commandName": "Project",
-      "launchBrowser": false,
+      "launchBrowser": true,
+      "launchUrl": "bot/index.html",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       },

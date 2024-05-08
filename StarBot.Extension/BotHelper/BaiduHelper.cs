@@ -71,9 +71,16 @@ namespace StarBot.Extension
                 if (string.IsNullOrWhiteSpace(img)) return 0;
                 var imageList = config.BD.ImageList;
                 List<float> scores = [];
+                string img64 = string.Empty;
                 foreach (var item in imageList)
                 {
-                    string img64 = await Base64Helper.UrlImgToBase64(item.Url);
+                    if (item.Url.Contains("http"))
+                        img64 = await Base64Helper.UrlImgToBase64(item.Url);
+                    else
+                    {
+                        var path = Directory.GetCurrentDirectory() + item.Url;
+                        img64 = Base64Helper.PathToBase64(path);
+                    }
                     if (string.IsNullOrWhiteSpace(img64)) return 0;
                     string token = await GetBaiduToken();
                     string host = "https://aip.baidubce.com/rest/2.0/face/v3/match?access_token=" + token;
