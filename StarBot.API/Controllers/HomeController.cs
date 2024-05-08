@@ -16,8 +16,9 @@ using System.Net;
 
 namespace StarBot.Controllers
 {
-    public class HomeController(ISysConfig sysConfig, ISysCache sysCache, ISysIdol sysIdol, ISysLog sysLog) : BaseController
+    public class HomeController(ISysConfig sysConfig, ISysCache sysCache, ISysIdol sysIdol, ISysLog sysLog, IWebHostEnvironment env) : BaseController
     {
+        private readonly IWebHostEnvironment _env = env;
         ISysConfig _sysConfig = sysConfig;
         ISysCache _sysCache = sysCache;
         ISysIdol _sysIdol = sysIdol;
@@ -38,7 +39,9 @@ namespace StarBot.Controllers
         [HttpGet("/")]
         public ApiResult Index()
         {
-            return Success("服务启动成功！");
+            var environment = "development";
+            if (_env.IsProduction()) environment = "production";
+            return Success("Environment:" + environment);
         }
 
         /// <summary>
@@ -326,12 +329,17 @@ namespace StarBot.Controllers
                 using var stream = new FileStream(full, FileMode.Create);
                 await file.CopyToAsync(stream);
             }
-            var ip = GetLocalIpAddress();
-            var domain = Helper.ConfigHelper.GetConfiguration("urls").Replace("*", ip);
+            string url = "/images/standard/" + name;
+            if (_env.IsDevelopment())
+            {
+                var ip = GetLocalIpAddress();
+                var domain = Helper.ConfigHelper.GetConfiguration("urls").Replace("*", ip);
+                url = domain + url;
+            }
             object obj = new
             {
                 name,
-                url = domain + "/images/standard/" + name
+                url
             };
             return DataResult(obj);
         }

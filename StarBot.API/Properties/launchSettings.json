@@ -8,6 +8,15 @@
       },
       "dotnetRunMessages": true,
       "workingDirectory": "$(OutputPath)"
+    },
+    "Production": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      },
+      "dotnetRunMessages": true,
+      "workingDirectory": "$(OutputPath)"
     }
   }
 }

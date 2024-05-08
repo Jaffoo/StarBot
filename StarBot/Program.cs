@@ -4,12 +4,17 @@ using StarBot.DeskServer.Models;
 using System.Diagnostics;
 using System.Net;
 using TBC.CommonLib;
+using StarBot.IService;
+using StarBot.Extension;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace StarBot.Desk
 {
 
     internal class Program
     {
+        static ISysLog _log;
+
         static string GetLocalIpAddress()
         {
             string ipAddress = string.Empty;
@@ -30,6 +35,9 @@ namespace StarBot.Desk
         [STAThread]
         public static void Main(string[] args)
         {
+            var factory = DataService.BuildServiceProvider();
+            _log = factory.GetService<ISysLog>()!;
+
             var conf = File.ReadAllText("appsettings.json").ToJObject();
             var url = conf["Urls"].ToString().Replace("*", GetLocalIpAddress());
             #region 启动API服务
@@ -64,18 +72,18 @@ namespace StarBot.Desk
             }
             catch (Exception ex)
             {
-                Application.MessageBox.ShowError(nint.Zero, ex.Message);
+                _log.WriteLog(ex.Message);
             }
             #endregion
 
             #region 启动桌面
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            {
+                _log.WriteLog(e.ToString());
+            };
+
             try
             {
-                AppDomain.CurrentDomain.UnhandledException += (s, e) =>
-                {
-                    Application.MessageBox.ShowError(nint.Zero, e.ToString());
-                };
-
                 var builder = Application.Initialize();
                 Application.AppName = "StarBot";
                 Application.Icon = "wwwroot/system/star.png";
@@ -94,7 +102,7 @@ namespace StarBot.Desk
             }
             catch (Exception ex)
             {
-                Application.MessageBox.ShowError(nint.Zero, ex.Message);
+                _log.WriteLog(ex.Message);
             }
             #endregion
         }

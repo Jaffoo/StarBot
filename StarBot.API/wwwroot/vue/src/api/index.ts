@@ -1,11 +1,17 @@
 import axios from 'axios';
-import type { AxiosResponse } from 'axios';
 import type { Config, ApiResult } from '@/class/model';
 
 const _port = sessionStorage.getItem("HttpPort") || 5266;
-//const _baseUrl = `http://localhost:${_port}/api/v1`;
-const _baseUrl = `http://154.201.76.32:${_port}/api/v1`;
 
+const getApiurl = () => {
+    if (import.meta.env.MODE === "production") {
+        return `http://localhost:${_port}/api/v1`;
+    } else {
+        return `http://154.201.76.32:${_port}/api/v1`
+    }
+}
+
+const _baseUrl = getApiurl();
 export const ApiPrefix = _baseUrl;
 
 export const startBot = async (botReady = true) => {
@@ -14,12 +20,12 @@ export const startBot = async (botReady = true) => {
 }
 
 export const getConfig = async () => {
-    const response= await axios.get<ApiResult>(`${_baseUrl}/getconfig`);
+    const response = await axios.get<ApiResult>(`${_baseUrl}/getconfig`);
     return response.data
 }
 
 export const saveConfig = async (config: Config) => {
-    const response= await axios.post<ApiResult>(`${_baseUrl}/saveconfig`, config);
+    const response = await axios.post<ApiResult>(`${_baseUrl}/saveconfig`, config);
     return response.data;
 }
 
@@ -48,7 +54,7 @@ export const getFun = async () => {
     return response.data;
 };
 
-export const startPlugin = async (name: string,version:string) => {
+export const startPlugin = async (name: string, version: string) => {
     const response = await axios.get<ApiResult>(`${_baseUrl}/startplugin?name=${name}&version=${version}`);
     return response.data;
 };
