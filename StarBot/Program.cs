@@ -15,23 +15,6 @@ namespace StarBot.Desk
     {
         static ISysLog _log;
 
-        static string GetLocalIpAddress()
-        {
-            string ipAddress = string.Empty;
-            IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
-
-            foreach (IPAddress ip in hostEntry.AddressList)
-            {
-                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                {
-                    ipAddress = ip.ToString();
-                    break;
-                }
-            }
-
-            return ipAddress;
-        }
-
         [STAThread]
         public static void Main(string[] args)
         {
@@ -39,7 +22,7 @@ namespace StarBot.Desk
             _log = factory.GetService<ISysLog>()!;
 
             var conf = File.ReadAllText("appsettings.json").ToJObject();
-            var url = conf["Urls"].ToString().Replace("*", GetLocalIpAddress());
+            var url = conf["Urls"].ToString().Replace("*", "localhost");
             #region 启动API服务
             try
             {

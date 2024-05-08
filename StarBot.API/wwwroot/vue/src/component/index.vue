@@ -70,11 +70,12 @@
                                 <template #header><span title="每分钟更新一次">数据总览</span>
                                 </template>
                                 <div>
-                                    <label>系统日志</label>
+                                    <label>日志</label>
                                     <div>
                                         <span class="fs14">全部:{{ info.log.total }}</span>
                                         <el-divider direction="vertical" />
-                                        <span class="fs14">主要:{{ info.log.idol }}</span>
+                                        <span class="fs14" v-if="enable.kd">偶像:{{ info.log.idol }}</span>
+                                        <span class="fs14" v-else>系统:{{ info.log.system }}</span>
                                         <el-divider direction="vertical" />
                                         <span class="fs14">其他:{{ info.log.other }}</span>
                                     </div>
@@ -235,7 +236,8 @@ const info = ref({
     log: {
         total: 0,
         idol: 0,
-        other: 0
+        other: 0,
+        system: 0,
     }
 })
 
@@ -446,8 +448,8 @@ const oneMinFun = async () => {
     let tempLogs = logApi().getLogs();
     if (tempLogs) {
         info.value.log.total = tempLogs.length ?? 0
-        if (config.value?.kd?.idolName)
-            info.value.log.idol = tempLogs.filter(x => x.name?.includes(config.value!.kd!.idolName!) && x.roleId == 3).length
+        info.value.log.idol = tempLogs.filter(x => x.roleId == 3).length
+        info.value.log.system = tempLogs.filter(x => x.type == 'system').length
         info.value.log.other = info.value.log.total - info.value.log.idol
     }
 }
