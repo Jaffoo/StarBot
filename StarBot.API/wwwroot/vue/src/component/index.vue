@@ -98,7 +98,7 @@
                                         <el-divider direction="vertical" />
                                         <span class="fs14">启用:{{ info.plugin.using }}</span>
                                         <el-divider direction="vertical" />
-                                        <span class="fs14">启用:{{ info.plugin.unusing }}</span>
+                                        <span class="fs14">禁用:{{ info.plugin.unusing }}</span>
                                     </div>
                                 </div>
                             </el-card>
