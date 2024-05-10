@@ -1,93 +1,120 @@
-Ôªøusing StarBot.Controllers;
-using StarBot.DeskServer;
-using StarBot.DeskServer.Models;
-using System.Diagnostics;
-using System.Net;
-using TBC.CommonLib;
-using StarBot.IService;
-using StarBot.Extension;
 using Microsoft.Extensions.DependencyInjection;
+using StarBot.Controllers;
+using StarBot.Extension;
+using StarBot.IService;
+using System.Diagnostics;
+using TBC.CommonLib;
+using WinFormium;
+using WinFormium.Forms;
 
-namespace StarBot.Desk
+namespace StarBot;
+internal static class Program
 {
-
-    internal class Program
+    /// <summary>
+    ///  The main entry point for the application.
+    /// </summary>
+    [STAThread]
+    static void Main()
     {
-        static ISysLog _log;
+        var builder = WinFormiumApp.CreateBuilder();
 
-        [STAThread]
-        public static void Main(string[] args)
+        builder.UseWinFormiumApp<App>();
+#if DEBUG
+        builder.UseDevToolsMenu();
+#endif
+        var app = builder.Build();
+
+        app.Run();
+    }
+}
+
+internal class App : WinFormiumStartup
+{
+    protected override MainWindowCreationAction? UseMainWindow(MainWindowOptions opts)
+    {
+        // …Ë÷√”¶”√≥Ã–Úµƒ÷˜¥∞ÃÂ
+        return opts.UseMainFormium<StarBotUI>();
+    }
+
+    protected override void WinFormiumMain(string[] args)
+    {
+        var factory = DataService.BuildServiceProvider();
+        var _log = factory.GetService<ISysLog>()!;
+        #region ∆Ù∂ØAPI∑˛ŒÒ
+        try
         {
-            var factory = DataService.BuildServiceProvider();
-            _log = factory.GetService<ISysLog>()!;
-
-            var conf = File.ReadAllText("appsettings.json").ToJObject();
-            var url = conf["Urls"].ToString().Replace("*", "localhost");
-            #region ÂêØÂä®APIÊúçÂä°
-            try
+            ProcessStartInfo startInfo = new()
             {
-                ProcessStartInfo startInfo = new()
-                {
-                    FileName = "dotnet", // ‰ΩøÁî® dotnet ÂëΩ‰ª§Êù•ËøêË°å .NET Core ÊéßÂà∂Âè∞Â∫îÁî®Á®ãÂ∫è
-                    Arguments = "StarBot.API.dll", // ÊåáÂÆöÂ≠êËøõÁ®ãÁöÑÂèØÊâßË°åÊñá‰ª∂Ë∑ØÂæÑ
-                    UseShellExecute = false, // ÂøÖÈ°ªËÆæÁΩÆ‰∏∫ falseÔºå‰ª•‰æøÂú®ÊéßÂà∂Âè∞‰∏≠ÂêØÂä®Âè¶‰∏Ä‰∏™ÊéßÂà∂Âè∞Â∫îÁî®Á®ãÂ∫è
-                    CreateNoWindow = true,
-                };
-                // ÂàõÂª∫‰∏Ä‰∏™ Process ÂØπË±°ÔºåÂπ∂Â∞Ü ProcessStartInfo ÂØπË±°ËµãÁªôÂÆÉ
-                Process process = new()
-                {
-                    StartInfo = startInfo
-                };
-                process.Start();
-
-                AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
-                {
-                    if (!process.HasExited)
-                    {
-                        process.Kill();
-                    }
-                    if (HomeController.AliProcess != null)
-                    {
-                        HomeController.AliProcess.Kill();
-                        HomeController.AliProcess = null;
-                    }
-                };
-            }
-            catch (Exception ex)
-            {
-                _log.WriteLog(ex.Message);
-            }
-            #endregion
-
-            #region ÂêØÂä®Ê°åÈù¢
-            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
-            {
-                _log.WriteLog(e.ToString());
+                FileName = "dotnet", //  π”√ dotnet √¸¡Ó¿¥‘À–– .NET Core øÿ÷∆Ã®”¶”√≥Ã–Ú
+                Arguments = "StarBot.API.dll", // ÷∏∂®◊”Ω¯≥Ãµƒø…÷¥––Œƒº˛¬∑æ∂
+                UseShellExecute = false, // ±ÿ–Î…Ë÷√Œ™ false£¨“‘±„‘⁄øÿ÷∆Ã®÷–∆Ù∂Ø¡Ì“ª∏ˆøÿ÷∆Ã®”¶”√≥Ã–Ú
+                CreateNoWindow = true,
             };
-
-            try
+            // ¥¥Ω®“ª∏ˆ Process ∂‘œÛ£¨≤¢Ω´ ProcessStartInfo ∂‘œÛ∏≥∏¯À¸
+            Process process = new()
             {
-                var builder = Application.Initialize();
-                Application.AppName = "StarBot";
-                Application.Icon = "wwwroot/system/star.png";
-                builder.RegisterResource(typeof(Program));
+                StartInfo = startInfo
+            };
+            process.Start();
 
-                var windowConfig = new WindowConfig()
+            AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
+            {
+                if (!process.HasExited)
                 {
-                    Chromeless = false,
-                    Size = new System.Drawing.Size(1200, 800),
-                    IsDebug = true,
-                    WebAppType = WebAppType.Http,
-                    Url = url + "/bot/index.html"
-                };
-                builder.CreateWindow(windowConfig);
-                builder.Run();
-            }
-            catch (Exception ex)
-            {
-                _log.WriteLog(ex.Message);
-            }
-            #endregion
+                    process.Kill();
+                }
+                if (HomeController.AliProcess != null)
+                {
+                    HomeController.AliProcess.Kill();
+                    HomeController.AliProcess = null;
+                }
+            };
         }
+        catch (Exception ex)
+        {
+            _log.WriteLog(ex.Message);
+        }
+        #endregion
+
+        // Main∫Ø ˝÷–µƒ¥˙¬Î”¶∏√‘⁄’‚¿Ô£¨∏√∫Ø ˝÷ª‘⁄÷˜Ω¯≥Ã÷–‘À––°£’‚—˘ø…“‘∑¿÷π◊”Ω¯≥Ã‘À––“ª–©≤ª’˝»∑µƒ≥ı ºªØ¥˙¬Î°£
+        ApplicationConfiguration.Initialize();
+    }
+}
+
+internal class StarBotUI : Formium
+{
+    string url = "";
+    string port = "5266";
+    public StarBotUI()
+    {
+        var conf = File.ReadAllText("appsettings.json").ToJObject();
+        var host = conf["Urls"]?.ToString();
+        url = host?.Replace("*", "localhost") ?? "http://localhost:" + port;
+        port = host?.Replace("http://*:", "") ?? port;
+        // …Ë÷√÷˜“≥µÿ÷∑
+        Url = url + "/bot/index.html";
+
+        EnableSplashScreen = false;
+    }
+
+    protected override void OnBeforeBrowse(BeforeBrowseEventArgs args)
+    {
+        ExecuteJavaScript($"sessionStorage.setItem('HttpPort','{port}')");
+#if DEBUG
+        ShowDevTools();
+#endif
+    }
+
+    protected override FormStyle ConfigureWindowStyle(WindowStyleBuilder builder)
+    {
+        // ¥À¥¶≈‰÷√¥∞ÃÂµƒ—˘ Ω∫Õ Ù–‘£¨ªÚ≤ªºÃ≥–¥À∑Ω∑®“‘ π”√ƒ¨»œ—˘ Ω°£
+        var style = builder.UseSystemForm();
+        style.Size = new Size(1200, 800);
+        style.TitleBar = true;
+        style.Icon = new Icon("wwwroot/system/star.ico");
+        style.DefaultAppTitle = "StarBot";
+        style.ColorMode = FormiumColorMode.SystemPreference;
+        style.StartCentered = StartCenteredMode.CenterScreen;
+        return style;
     }
 }

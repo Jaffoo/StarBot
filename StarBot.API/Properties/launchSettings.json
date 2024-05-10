@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Project": {
+    "Development": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "bot/index.html",
