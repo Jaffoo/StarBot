@@ -111,7 +111,7 @@ internal class StarBotUI : Formium
         var style = builder.UseSystemForm();
         style.Size = new Size(1200, 800);
         style.TitleBar = true;
-        style.Icon = new Icon("wwwroot/system/star.ico");
+        style.Icon = new Icon("logo.ico");
         style.DefaultAppTitle = "StarBot";
         style.ColorMode = FormiumColorMode.SystemPreference;
         style.StartCentered = StartCenteredMode.CenterScreen;
