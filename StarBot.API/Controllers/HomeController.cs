@@ -10,7 +10,6 @@ using System.Diagnostics;
 using TBC.CommonLib;
 using Newtonsoft.Json.Linq;
 using SqlSugar.Extensions;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Net;
 
@@ -269,40 +268,19 @@ namespace StarBot.Controllers
                     AliProcess.Kill();
                     AliProcess = null;
                 }
-                var os = Environment.OSVersion.Platform.ToString();
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                Task.Run(() =>
                 {
-                    Task.Run(() =>
+                    if (Process.GetProcessesByName("wwwroot/script/alipan-win").Length == 0)
                     {
-                        if (Process.GetProcessesByName("wwwroot/script/alipan-linux").Length == 0)
+                        ProcessStartInfo startInfo = new()
                         {
-                            var path = "wwwroot/script/alipan-linux";
-                            using Process chmodProcess = new();
-                            chmodProcess.StartInfo.FileName = "sudo";
-                            chmodProcess.StartInfo.Arguments = $"chmod +x {path}";
-                            chmodProcess.StartInfo.UseShellExecute = false;
-                            chmodProcess.Start();
-                            chmodProcess.WaitForExit();
-                            AliProcess = Process.Start(path)!;
-                        }
-                    });
-                }
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    Task.Run(() =>
-                    {
-                        if (Process.GetProcessesByName("wwwroot/script/alipan-win").Length == 0)
-                        {
-                            ProcessStartInfo startInfo = new()
-                            {
-                                FileName = "wwwroot/script/alipan-win.exe",
-                                CreateNoWindow = true,
-                                UseShellExecute = false,
-                            };
-                            AliProcess = Process.Start(startInfo)!;
-                        }
-                    });
-                }
+                            FileName = "wwwroot/script/alipan-win.exe",
+                            CreateNoWindow = true,
+                            UseShellExecute = false,
+                        };
+                        AliProcess = Process.Start(startInfo)!;
+                    }
+                });
             }
             return Success();
         }

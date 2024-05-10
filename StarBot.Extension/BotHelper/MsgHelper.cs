@@ -73,6 +73,7 @@ namespace StarBot.Extension
         #region 全局变量
         public string Admin => Config.QQ.Admin;
         public bool Notice => Config.QQ.Notice;
+        public bool Debug => Config.QQ.Debug;
         public List<string> Check
         {
             get
@@ -812,7 +813,7 @@ namespace StarBot.Extension
             }
             catch (Exception ex)
             {
-                await _sysLog.WriteLog(ex.Message);
+                await _sysLog.WriteLog(ex.Message, false);
             }
         }
 
@@ -833,7 +834,7 @@ namespace StarBot.Extension
             }
             catch (Exception ex)
             {
-                await _sysLog.WriteLog(ex.Message);
+                await _sysLog.WriteLog(ex.Message, false);
             }
         }
 
@@ -851,7 +852,7 @@ namespace StarBot.Extension
             }
             catch (Exception ex)
             {
-                await _sysLog.WriteLog(ex.Message);
+                await _sysLog.WriteLog(ex.Message, false);
                 return;
             }
         }
@@ -873,7 +874,7 @@ namespace StarBot.Extension
             }
             catch (Exception ex)
             {
-                await _sysLog.WriteLog(ex.Message);
+                await _sysLog.WriteLog(ex.Message, false);
                 return;
             }
         }
@@ -892,7 +893,7 @@ namespace StarBot.Extension
             }
             catch (Exception ex)
             {
-                await _sysLog.WriteLog(ex.Message);
+                await _sysLog.WriteLog(ex.Message, false);
                 return;
             }
         }
@@ -914,7 +915,7 @@ namespace StarBot.Extension
             }
             catch (Exception ex)
             {
-                await _sysLog.WriteLog(ex.Message);
+                await _sysLog.WriteLog(ex.Message, false);
                 return;
             }
         }
@@ -933,7 +934,7 @@ namespace StarBot.Extension
             }
             catch (Exception ex)
             {
-                await _sysLog.WriteLog(ex.Message);
+                await _sysLog.WriteLog(ex.Message, false);
                 return;
             }
         }
@@ -955,7 +956,7 @@ namespace StarBot.Extension
             }
             catch (Exception ex)
             {
-                await _sysLog.WriteLog(ex.Message);
+                await _sysLog.WriteLog(ex.Message, false);
                 return;
             }
         }
@@ -974,7 +975,7 @@ namespace StarBot.Extension
             }
             catch (Exception ex)
             {
-                await _sysLog.WriteLog(ex.Message);
+                await _sysLog.WriteLog(ex.Message, false);
                 return;
             }
         }
@@ -992,11 +993,28 @@ namespace StarBot.Extension
             }
             catch (Exception ex)
             {
-                await _sysLog.WriteLog(ex.Message);
+                await _sysLog.WriteLog(ex.Message, false);
                 return;
             }
         }
-
+        public async Task SendAdminErrorMsg(string msg)
+        {
+            try
+            {
+                if (!BotReady) return;
+                if (!Config.EnableModule.Bot) return;
+                if (Bot == null || !Debug) return;
+                var friend = Bot.Friends?.FirstOrDefault(t => t.QQ == Admin.ToLong());
+                if (friend == null) return;
+                await friend.SendMessage(msg);
+                return;
+            }
+            catch (Exception ex)
+            {
+                await _sysLog.WriteLog(ex.Message, false);
+                return;
+            }
+        }
         public async void HandlMsg()
         {
             while (true)

@@ -22,7 +22,7 @@ namespace StarBot.Service
         /// </summary>
         /// <param name="content">内容</param>
         /// <returns></returns>
-        public async Task WriteLog(string content)
+        public async Task WriteLog(string content, bool send = true)
         {
             var log = new SysLog()
             {
@@ -30,9 +30,8 @@ namespace StarBot.Service
                 Time = DateTime.Now
             };
             if (!ReciverMsg.BotReady) return;
-            var config = await _sysConfig.GetConfig();
-            if (config.EnableModule.Bot && config.EnableModule.QQ && config.QQ.Debug)
-                await ReciverMsg.Instance.SendAdminMsg(content);
+            if (send)
+                await ReciverMsg.Instance.SendAdminErrorMsg(content);
             await AddAsync(log);
         }
     }

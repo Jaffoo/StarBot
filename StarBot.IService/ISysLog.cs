@@ -11,9 +11,8 @@ namespace StarBot.IService
         /// <summary>
         /// 记录日志
         /// </summary>
-        /// <param name="title">标题</param>
         /// <param name="content">内容</param>
         /// <returns></returns>
-        Task WriteLog(string content);
+        Task WriteLog(string content,bool send=true);
     }
 }
