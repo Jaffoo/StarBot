@@ -275,8 +275,8 @@ namespace StarBot.Controllers
                         ProcessStartInfo startInfo = new()
                         {
                             FileName = "wwwroot/script/alipan-win.exe",
-                            CreateNoWindow = true,
-                            UseShellExecute = false,
+                            WorkingDirectory = Directory.GetCurrentDirectory(),
+                            CreateNoWindow = true
                         };
                         AliProcess = Process.Start(startInfo)!;
                     }

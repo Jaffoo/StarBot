@@ -16,7 +16,7 @@
             <el-form-item label="程序错误通知">
                 <el-switch v-model="qq.debug" active-text="启用" inactive-text="禁用" />
             </el-form-item>
-            <el-form-item label="新动态消息通知">
+            <el-form-item label="普通消息通知">
                 <el-switch v-model="qq.notice" active-text="启用" inactive-text="禁用" />
             </el-form-item>
             <el-form-item label="保存群消息">

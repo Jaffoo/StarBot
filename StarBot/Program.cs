@@ -45,9 +45,8 @@ internal class App : WinFormiumStartup
         {
             ProcessStartInfo startInfo = new()
             {
-                FileName = "dotnet", // 使用 dotnet 命令来运行 .NET Core 控制台应用程序
-                Arguments = "StarBot.API.dll", // 指定子进程的可执行文件路径
-                UseShellExecute = false, // 必须设置为 false，以便在控制台中启动另一个控制台应用程序
+                FileName = "StarBot.API.exe",
+                WorkingDirectory = Directory.GetCurrentDirectory(),
                 CreateNoWindow = true,
             };
             // 创建一个 Process 对象，并将 ProcessStartInfo 对象赋给它
