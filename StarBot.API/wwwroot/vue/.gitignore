@@ -27,3 +27,5 @@ coverage
 *.sln
 *.sw?
 *lock*
+auto-imports.d.ts
+components.d.ts
