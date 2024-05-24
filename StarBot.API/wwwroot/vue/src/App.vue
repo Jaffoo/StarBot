@@ -51,11 +51,12 @@
     <el-card style="width: 90%; margin-left: 10px">
       <el-container>
         <el-main style="padding-left: 20px; padding-right: 20px" id="parentContainer">
-          <Index :enable="enable" v-show="component === 'index'" />
-          <Log v-show="component === 'log'" :enable="enable"/>
+          <Index ref="indexRef" :enable="enable" v-show="component === 'index'" />
+          <Log v-show="component === 'log'" :enable="enable" />
           <Pic v-if="component === 'pic'" />
           <Plugin v-if="component === 'plugin' && enable.qq" />
-          <Config ref="configRef" :enable="enable" v-if="component === 'config'" @top-enable-change="enableChange" @change-menu="scrollSet"/>
+          <Config ref="configRef" :enable="enable" v-if="component === 'config'" @top-enable-change="enableChange"
+            @change-menu="scrollSet" @config-change="configChanged" />
         </el-main>
       </el-container>
     </el-card>
@@ -86,6 +87,7 @@ const enable = ref<EnableModule>({
 });
 const menu = ["index", "log", "pic", "plugin"];
 const configRef = ref();
+const indexRef = ref();
 const component = ref("index");
 const changeMenu = async (com: string) => {
   if (menu.find((x) => x === com)) {
@@ -131,6 +133,10 @@ const getEnableModule = async () => {
   let deepObj = JSON.parse(deepStr);
   startEnble.value = deepObj;
 };
+
+const configChanged = async () => {
+  await indexRef.value.refreshConfig();
+}
 
 onMounted(async () => {
   await getEnableModule();

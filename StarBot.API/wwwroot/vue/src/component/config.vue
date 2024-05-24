@@ -63,7 +63,7 @@ const model = ref<Config>({
 });
 const startModel = ref<Config>();
 // 定义子组件向父组件传值/事件
-const emit = defineEmits(["top-enable-change", 'change-menu']);
+const emit = defineEmits(["top-enable-change", 'change-menu', 'config-change']);
 
 const enableChange = (enableNew: EnableModule) => {
   model.value.enableModule = enableNew;
@@ -74,49 +74,49 @@ const save = async () => {
   let valid = true;
   if (model.value.enableModule.bot) valid = await botRef.value.validForm();
   if (!valid) {
-    emit('change-menu','bot')
+    emit('change-menu', 'bot')
     ElMessage.error("请填入机器人配置中的必填项！");
     return;
   }
   if (model.value.enableModule.wb) valid = await wbRef.value.validForm();
   if (!valid) {
-    emit('change-menu','wb')
+    emit('change-menu', 'wb')
     ElMessage.error("请填入微博配置中的必填项！");
     return;
   }
   if (model.value.enableModule.qq) valid = await qqRef.value.validForm();
   if (!valid) {
-    emit('change-menu','qq')
+    emit('change-menu', 'qq')
     ElMessage.error("请填入QQ配置中的必填项！");
     return;
   }
   if (model.value.enableModule.bz) valid = await bzRef.value.validForm();
   if (!valid) {
-    emit('change-menu','bz')
+    emit('change-menu', 'bz')
     ElMessage.error("请填入B站配置中的必填项！");
     return;
   }
   if (model.value.enableModule.bd) valid = await bdRef.value.validForm();
   if (!valid) {
-    emit('change-menu','bd')
+    emit('change-menu', 'bd')
     ElMessage.error("请填入百度配置中的必填项！");
     return;
   }
   if (model.value.enableModule.kd) valid = await kdRef.value.validForm();
   if (!valid) {
-    emit('change-menu','kd')
+    emit('change-menu', 'kd')
     ElMessage.error("请填入口袋配置中的必填项！");
     return;
   }
   if (model.value.enableModule.xhs) valid = await xhsRef.value.validForm();
   if (!valid) {
-    emit('change-menu','xhs')
+    emit('change-menu', 'xhs')
     ElMessage.error("请填入小红书配置中的必填项！");
     return;
   }
   if (model.value.enableModule.dy) valid = await dyRef.value.validForm();
   if (!valid) {
-    emit('change-menu','dy')
+    emit('change-menu', 'dy')
     ElMessage.error("请填入抖音配置中的必填项！");
     return;
   }
@@ -125,6 +125,7 @@ const save = async () => {
   if (res && res.success) {
     startModel.value = model.value;
     ElMessage.success(res.msg);
+    emit('config-change');
   } else ElMessage.error(res.msg || "保存失败！");
 };
 
@@ -182,9 +183,11 @@ defineExpose({
 .mt10 {
   margin-top: 10px;
 }
+
 .mt50 {
   margin-top: 50px;
 }
+
 .mb50 {
   margin-bottom: 50px;
 }

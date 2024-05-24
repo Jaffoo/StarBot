@@ -44,7 +44,8 @@
                         <el-row>
                             <el-col><span title="每分钟更新一次">错误日志</span>
                                 <el-icon :size="18">
-                                    <Refresh class="et5" @click="async () => errLogs = (await getLogs()).data.reverse()" />
+                                    <Refresh class="et5"
+                                        @click="async () => errLogs = (await getLogs()).data.reverse()" />
                                 </el-icon>
                             </el-col>
                         </el-row>
@@ -335,7 +336,7 @@ const initPocket = async () => {
             qChat.value.on("message", handleMessage);
             qChat.value.on("disconnect", handleRoomSocketDisconnect);
             await qChat.value.login();
-            
+
         }
         catch (e) {
             throw (e)
@@ -481,14 +482,22 @@ const oneSecFun = () => {
     }
 }
 
-onMounted(async () => {
+const refreshConfig = async () => {
     let configTemp = await getConfig();
     config.value = configTemp.data;
+}
+
+onMounted(async () => {
+    await refreshConfig();
     oneMinFun();
     oneSecFun();
     oneSecTimer();
     getTenLog();
 });
+
+defineExpose({
+    refreshConfig
+})
 </script>
 <style>
 .ch250 {
