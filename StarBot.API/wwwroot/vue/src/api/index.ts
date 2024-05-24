@@ -4,6 +4,8 @@ import type { Config, ApiResult } from '@/class/model';
 const _port = sessionStorage.getItem("HttpPort") || 5266;
 
 const getApiurl = () => {
+    console.log('environment',import.meta.env.MODE);
+    return `http://localhost:${_port}/api/v1`;
     if (import.meta.env.MODE === "production") {
         return `http://localhost:${_port}/api/v1`;
     } else {

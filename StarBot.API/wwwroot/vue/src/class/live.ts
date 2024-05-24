@@ -27,6 +27,7 @@ class NimChatroomSocket {
 
   // 初始化
   init(appkey: string): void {
+    console.log(111)
     this.nimChatroomSocket = NIM_SDK.Chatroom.getInstance({
       appKey: atob(appkey),
       chatroomId: this.liveId,
