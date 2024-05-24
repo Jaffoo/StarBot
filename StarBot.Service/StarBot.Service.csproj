@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TBC.CommonLib" Version="1.0.9" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\StarBot.Extension\StarBot.Extension.csproj" />
     <ProjectReference Include="..\StarBot.IService\StarBot.IService.csproj" />
   </ItemGroup>

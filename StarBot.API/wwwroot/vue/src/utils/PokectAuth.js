@@ -10,7 +10,6 @@ function objectSome(obj, callback) {
 
     return result;
 }
-
 var orgSend = WebSocket.prototype.send;
 WebSocket.prototype.send = function () {
     if (/3:::/.test(arguments[0])) {
@@ -23,8 +22,9 @@ WebSocket.prototype.send = function () {
 
         //NIM_BROWSER_SDK.js拦截处理
         if (data && data?.SER === 1 && data?.SID === 2 && data?.Q?.length) {
+            console.log('开始注入NIM_BROWSER_SDK.js拦截处理')
             for (const Q of data.Q) {
-                if (/Property/i.test(Q.t) && Q.v && objectSome(Q.v, (k, v) => /Microsoft Edge/i.test(v))) {
+                if (/Property/i.test(Q.t) && Q.v && (objectSome(Q.v, (k, v) => /Microsoft Edge/i.test(v)) || objectSome(Q.v, (k, v) => /Chromium/i.test(v)))) {
                     Q.v['3'] = 2;
                     Q.v['42'] = 'PocketFans201807/24020203';
                     arguments[0] = `3:::${JSON.stringify(data)}`;
@@ -36,7 +36,8 @@ WebSocket.prototype.send = function () {
         //NIM_BROWSER_SDK.js拦截处理
         if (data && data?.SER === 1 && data?.SID === 24 && data?.Q?.length) {
             for (const Q of data.Q) {
-                if (/Property/i.test(Q.t) && Q.v && objectSome(Q.v, (k, v) => /Microsoft Edge/i.test(v))) {
+                if (/Property/i.test(Q.t) && Q.v && (objectSome(Q.v, (k, v) => /Microsoft Edge/i.test(v)) || objectSome(Q.v, (k, v) => /Chromium/i.test(v)))) {
+                    console.log('开始注入NIM_BROWSER_SDK.js拦截处理')
                     Q.v['6'] = 2;
                     arguments[0] = `3:::${JSON.stringify(data)}`;
                     break;
@@ -47,7 +48,7 @@ WebSocket.prototype.send = function () {
         //直播websocket拦截处理
         if (data && data?.SER === 1 && data?.SID === 13 && data?.Q?.length) {
             for (const Q of data.Q) {
-                if (/Property/i.test(Q.t) && Q.v && objectSome(Q.v, (k, v) => /BROWSER/i.test(v))) {
+                if (/Property/i.test(Q.t) && Q.v && (objectSome(Q.v, (k, v) => /Microsoft Edge/i.test(v)) || objectSome(Q.v, (k, v) => /Chromium/i.test(v)))) {
                     Q.v['3'] = 2;
                     Q.v['6'] = 2;
                     Q.v['42'] = 'PocketFans201807/24020203';

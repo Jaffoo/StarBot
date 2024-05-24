@@ -13,7 +13,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.4" />
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
-    <PackageReference Include="TBC.CommonLib" Version="1.0.9" />
+    <PackageReference Include="TBC.CommonLib" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>

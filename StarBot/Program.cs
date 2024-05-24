@@ -94,6 +94,14 @@ internal class StarBotUI : Formium
         Url = url + "/bot/index.html";
 
         EnableSplashScreen = false;
+        Closing += StarBotUI_Closing;
+    }
+
+    private void StarBotUI_Closing(object? sender, ClosingEventArgs e)
+    {
+        DialogResult res = MessageBox.Show(Owner, "确认关闭！", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        if (res == DialogResult.Yes) e.Cancel = false;
+        else e.Cancel = true; 
     }
 
     protected override void OnBeforeBrowse(BeforeBrowseEventArgs args)
@@ -116,4 +124,5 @@ internal class StarBotUI : Formium
         style.StartCentered = StartCenteredMode.CenterScreen;
         return style;
     }
+
 }
