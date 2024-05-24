@@ -11,12 +11,12 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
-    "@yxim/nim-web-sdk": "^9.11.0",
+    "@yxim/nim-web-sdk": "^9.16.1",
     "axios": "^1.4.0",
     "dayjs": "^1.11.7",
     "element-plus": "^2.3.4",
     "file-saver": "^2.0.5",
-    "nim-web-sdk-ng": "^0.13.1",
+    "nim-web-sdk-ng": "^0.17.2",
     "vue": "^3.2.47"
   },
   "devDependencies": {

@@ -52,13 +52,11 @@ const rules = ref<FormRules>(
     }
 )
 const validForm = async () => {
-    return await qqform.value?.validate(valid => {
-        if (valid) {
-            return true
-        } else {
-            return false
-        }
-    })
+    return new Promise((resolve) => {
+        qqform.value?.validate((valid: boolean) => {
+            resolve(valid);
+        });
+    });
 }
 defineExpose({
     validForm

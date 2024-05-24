@@ -44,13 +44,11 @@ const rules = ref<FormRules>(
     },
 )
 const validForm = async () => {
-    return await botform.value?.validate(valid => {
-        if (valid) {
-            return true
-        } else {
-            return false
-        }
-    })
+    return new Promise((resolve) => {
+        botform.value?.validate((valid: boolean) => {
+            resolve(valid);
+        });
+    });
 }
 defineExpose({
     validForm

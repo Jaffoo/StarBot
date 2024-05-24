@@ -50,13 +50,11 @@ const rules = ref<FormRules>(
     },
 )
 const validForm = async () => {
-    return await bzform.value?.validate(valid => {
-        if (valid) {
-            return true
-        } else {
-            return false
-        }
-    })
+    return new Promise((resolve) => {
+        bzform.value?.validate((valid: boolean) => {
+            resolve(valid);
+        });
+    });
 }
 defineExpose({
     validForm

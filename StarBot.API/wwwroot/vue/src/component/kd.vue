@@ -287,13 +287,11 @@ const subtraction = () => {
     }, 1000);
 }
 const validForm = async () => {
-    return await kdform.value?.validate(valid => {
-        if (valid) {
-            return true
-        } else {
-            return false
-        }
-    })
+    return new Promise((resolve) => {
+        kdform.value?.validate((valid: boolean) => {
+            resolve(valid);
+        });
+    });
 }
 
 const idolWindow = (url: string) => {

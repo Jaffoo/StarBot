@@ -242,8 +242,8 @@ const info = ref({
     }
 })
 
-const nim = ref<NIMSDK>();
-const qChat = ref<QChatSDK>();
+const nim = ref<any>();
+const qChat = ref<any>();
 const liveNim = ref<NimChatroomSocket>();
 
 const oneMin = ref<NodeJS.Timeout>();
