@@ -27,7 +27,13 @@ class NimChatroomSocket {
 
   // 初始化
   init(appkey: string): void {
-    console.log(111)
+    logApi().add({
+      content:"由于官方更新过协议，虽然房间功能修复，但是直播间监听功能仍未修复，暂时关闭！",
+      type:'system',
+      color:'red',
+      time:new Date().toLocaleString()
+    });
+    return;
     this.nimChatroomSocket = NIM_SDK.Chatroom.getInstance({
       appKey: atob(appkey),
       chatroomId: this.liveId,

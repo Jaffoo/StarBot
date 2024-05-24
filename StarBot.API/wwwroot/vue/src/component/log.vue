@@ -35,13 +35,13 @@
                                     item.time
                                 }}</span>
                             </span>
-                            <span v-else>系统信息：</span>
+                            <span v-else>系统信息：<span style="font-size: 12px;color: gray">{{ item.time }}</span></span>
                         </el-row>
                         <el-row>
                             <el-card body-class="card-body-diy">
                                 <span v-if="item.type == 'text' || 'system'" :style="{ color: item.color }">{{
                                     item.content
-                                    }}</span>
+                                }}</span>
                                 <span v-if="item.type == 'link'"
                                     :style="{ color: item.color, 'text-decoration': 'underline', cursor: 'pointer' }"
                                     @click="openUrl(item.url)">

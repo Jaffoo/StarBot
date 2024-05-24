@@ -48,8 +48,8 @@ export interface KD extends Base {
     saveMsg?: number,
     saveImg?: boolean,
     appKey?: string,
-    imgDomain?:string,
-    videoDomain?:string,
+    imgDomain?: string,
+    videoDomain?: string,
 }
 export interface WB extends Listing {
     userAll?: string,
@@ -105,7 +105,7 @@ export interface logI {
     type: 'pic' | 'text' | 'link' | 'system',
     content?: string,
     url?: string,
-    color?: '#409eff' | '#67c23a' | '#f56c6c',
+    color?: '#409eff' | '#67c23a' | '#f56c6c' | string,
     channel?: string,
     idol?: string,
     roleId?: number
