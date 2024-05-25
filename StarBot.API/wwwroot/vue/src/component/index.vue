@@ -269,6 +269,7 @@ const startBot = async () => {
         botStart.value = true;
         startMsg.value = "正在运行";
         localStorage.setItem("lastStart", currentTime.value)
+        runTime.value = "0小时0分钟";
         lastStart.value = currentTime.value;
         if (props.enable.bd && config.value?.bd?.saveAliyunDisk) await startAliYunPan();
     } else {
@@ -434,7 +435,7 @@ const viewLog = (log: string, title = '错误') => {
 }
 
 const oneMinTimer = () => {
-    oneMin.value = setInterval(oneMinFun, 1000 * 60)
+    oneMin.value = setInterval(oneMinFun, 10000)
 }
 const oneMinFun = async () => {
     errLogs.value = (await getLogs()).data.reverse();
@@ -458,7 +459,7 @@ const oneMinFun = async () => {
 }
 
 const oneSecTimer = () => {
-    oneSec.value = setInterval(oneSecFun, 1000);
+    oneSec.value = setInterval(oneSecFun, 1000 * 60);
 }
 const oneSecFun = () => {
     var date = new Date();
@@ -471,8 +472,11 @@ const oneSecFun = () => {
     if (hour >= 18 && hour <= 19) currentTimeType.value = "傍晚好";
     if (hour >= 20 && hour <= 23) currentTimeType.value = "晚上好";
     let lastStartTime = localStorage.getItem("lastStart")
-    if (lastStartTime) lastStart.value = lastStartTime
-    else if (lastStart.value == "无记录") runTime.value = '0小时0分钟';
+    if (lastStartTime)
+        lastStart.value = lastStartTime
+    else
+        lastStart.value = "无记录"
+    if (lastStart.value == "无记录") runTime.value = '0小时0分钟';
     else {
         let tempLastTime = new Date(lastStart.value);
         var timeDiff = date.getTime() - tempLastTime.getTime();
