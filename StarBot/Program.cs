@@ -128,23 +128,15 @@ internal class StarBotUI : Formium
 
     protected void InjectJavaScript(CefFrame frame)
     {
-        try
+        ShowDevTools();
+        var jsInjectHandl = BeginRegisterJavaScriptObject(frame);
+        var obj = new JavaScriptObject();
+        obj.Add("openDevTool", args =>
         {
             ShowDevTools();
-            var jsInjectHandl = BeginRegisterJavaScriptObject(frame);
-            var obj = new JavaScriptObject();
-            obj.Add("openDevTool", args =>
-            {
-                ShowDevTools();
-                return true;
-            });
-            RegisterJavaScriptObject(jsInjectHandl, "devTool", obj);
-            EndRegisterJavaScriptObject(jsInjectHandl);
-
-        }
-        catch (Exception ex)
-        {
-            return;
-        }
+            return true;
+        });
+        RegisterJavaScriptObject(jsInjectHandl, "devTool", obj);
+        EndRegisterJavaScriptObject(jsInjectHandl);
     }
 }
