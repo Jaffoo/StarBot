@@ -110,11 +110,6 @@ export const kdUserInfo = async (data: object) => {
     return response.data;
 }
 
-export const openWindow = async (url: string) => {
-    const response = await axios.get<ApiResult>(`${_baseUrl}/openwindow?url=${url}`);
-    return response.data;
-}
-
 export const botInfo = async () => {
     const response = await axios.get<ApiResult>(`${_baseUrl}/botinfo`);
     return response.data;

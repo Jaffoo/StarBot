@@ -94,7 +94,7 @@
                 </el-form-item>
                 <div v-if="searchModel.url" style="width:95%;margin-top:5px">
                     <span>未查询到小偶像，检查名称等后重新查询或者点击下方地址自行获取小偶像信息填入：</span>
-                    <a style="word-break:break-all" @click="idolWindow(searchModel.url)">{{ searchModel.url }}</a>
+                    <a style="word-break:break-all" :href="searchModel.url" target="_blank">{{ searchModel.url }}</a>
                 </div>
             </el-form>
         </el-dialog>
@@ -105,7 +105,7 @@
 import { ref, type PropType } from 'vue'
 import type { KD, MsgType } from '@/class/model'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
-import { kdUserInfo, pocketLogin, sendSmsCode, searchIdol, openWindow } from "@/api"
+import { kdUserInfo, pocketLogin, sendSmsCode, searchIdol, } from "@/api"
 
 const props = defineProps({
     kd: {
@@ -292,10 +292,6 @@ const validForm = async () => {
             resolve(valid);
         });
     });
-}
-
-const idolWindow = (url: string) => {
-    openWindow(url);
 }
 
 defineExpose({

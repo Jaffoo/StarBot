@@ -28,25 +28,21 @@
                     <el-col :span="22">
                         <el-row>
                             <span v-if="item.type !== 'system'">{{ item.name }}
-                                <span style="font-size: 12px;color: gray">{{
-                                    (item.idol ||
-                                        "") + (item.channel ?
-                                            "【" + item.channel + "】" : '') +
-                                    item.time
-                                }}</span>
+                                <span style="font-size: 12px;color: gray">
+                                    {{ (item.idol || "") + (item.channel ? "【" + item.channel + "】" : '') + item.time }}
+                                </span>
                             </span>
                             <span v-else>系统信息：<span style="font-size: 12px;color: gray">{{ item.time }}</span></span>
                         </el-row>
                         <el-row>
                             <el-card body-class="card-body-diy">
-                                <span v-if="item.type == 'text' || 'system'" :style="{ color: item.color }">{{
-                                    item.content
-                                }}</span>
-                                <span v-if="item.type == 'link'"
-                                    :style="{ color: item.color, 'text-decoration': 'underline', cursor: 'pointer' }"
-                                    @click="openUrl(item.url)">
-                                    {{ item.url }}
+                                <span v-if="item.type == 'text' || 'system'" :style="{ color: item.color }">
+                                    <span v-if="item.reply" style="font-size: 12px;color: grey;">{{ item.reply }}</span>
+                                    {{ item.content }}
                                 </span>
+                                <a v-if="item.type == 'link'" :href="item.url" target="_blank">
+                                    {{ item.url }}
+                                </a>
                                 <el-image v-if="item.type == 'pic'" :src="item.url" :initial-index="getIndex(item.url)"
                                     :preview-src-list="imgList()" style="width: 120px;height: auto;" />
                             </el-card>
@@ -60,7 +56,6 @@
 
 <script setup lang="ts" name="log">
 import { onMounted, ref, type PropType } from 'vue';
-import { openWindow } from '@/api'
 import { saveAs } from "file-saver";
 import { type logI, logApi, type EnableModule } from '@/class/model';
 
@@ -82,9 +77,7 @@ const props = defineProps({
 const logType = ref<'system' | 'pic' | 'text' | 'link' | 'all' | 'idol'>('all')
 const num = ref(30)
 const logs = ref<Array<logI>>(new Array<logI>)
-const openUrl = (url?: string) => {
-    if (url) openWindow(url)
-}
+
 const clear = async () => {
     if (logs.value.length <= 0) {
         ElMessage.info("无日志")

@@ -5,6 +5,14 @@
                 <el-card shadow="hover" class="ch250">
                     <template #header>
                         StarBot
+                        <el-icon title="开发者工具" size="20" class="et4" @click="openDebug">
+                            <svg t="1716695388000" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" p-id="2741" width="200" height="200">
+                                <path
+                                    d="M128 128h768a42.666667 42.666667 0 0 1 42.666667 42.666667v682.666666a42.666667 42.666667 0 0 1-42.666667 42.666667H128a42.666667 42.666667 0 0 1-42.666667-42.666667V170.666667a42.666667 42.666667 0 0 1 42.666667-42.666667z m42.666667 85.333333v597.333334h682.666666V213.333333z m341.333333 426.666667h256v85.333333h-256z m-142.208-128L249.088 391.338667l60.373333-60.373334L490.453333 512l-180.992 181.034667-60.373333-60.373334z"
+                                    p-id="2742" fill="#d81e06"></path>
+                            </svg>
+                        </el-icon>
                     </template>
                     <el-row>
                         <el-col :span="6">
@@ -43,8 +51,8 @@
                     <template #header>
                         <el-row>
                             <el-col><span title="每分钟更新一次">错误日志</span>
-                                <el-icon :size="18">
-                                    <Refresh class="et5"
+                                <el-icon :size="18" title="每分钟更新一次">
+                                    <Refresh class="et3"
                                         @click="async () => errLogs = (await getLogs()).data.reverse()" />
                                 </el-icon>
                             </el-col>
@@ -391,9 +399,21 @@ const handleMessage = async function (msg: any) {
         kdMsg.type = 'pic'
         kdMsg.url = msg?.attach?.url;
     }
-    else if (msg.type == "video" || msg.type == "audio") {
-        kdMsg.type = 'link'
+    else if (msg.type == "video") {
+        kdMsg.type = 'video'
         kdMsg.url = msg?.attach?.url;
+    }
+    else if (msg.type == "audio") {
+        kdMsg.type = 'audio'
+        kdMsg.url = msg?.attach?.url;
+    }
+    else if (msg.type == "custom") {
+        //回复消息
+        let customType = msg?.attach?.messageType;
+        if (customType == "REPLY") {
+            kdMsg.content = msg?.attach?.replyInfo?.text;
+            kdMsg.reply = msg?.attach?.replyInfo?.replyName + ":" + msg?.attach?.replyInfo?.replyText
+        }
     }
     else {
         kdMsg.content = '暂不支持此类型消息，请前往口袋查看。'
@@ -491,6 +511,11 @@ const refreshConfig = async () => {
     config.value = configTemp.data;
 }
 
+const openDebug = () => {
+    // @ts-ignore
+    window.external.devTool.openDevTool();
+}
+
 onMounted(async () => {
     await refreshConfig();
     oneMinFun();
@@ -530,8 +555,19 @@ defineExpose({
     cursor: pointer;
 }
 
-.et5 {
+.et3 {
     position: absolute;
+    top: 3px;
+    cursor: pointer;
+}
+
+.et4 {
+    top: 4px;
+    cursor: pointer;
+}
+
+
+.et5 {
     top: 5px;
     cursor: pointer;
 }

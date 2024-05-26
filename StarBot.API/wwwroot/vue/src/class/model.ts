@@ -102,13 +102,14 @@ export interface logI {
     name?: string,
     time?: string,
     avatar?: string,
-    type: 'pic' | 'text' | 'link' | 'system',
+    type: 'pic' | 'text' | 'link' | 'system' | 'video' | 'audio',
     content?: string,
     url?: string,
     color?: '#409eff' | '#67c23a' | '#f56c6c' | string,
     channel?: string,
     idol?: string,
-    roleId?: number
+    roleId?: number,
+    reply?: string
 }
 
 export const logApi = () => {

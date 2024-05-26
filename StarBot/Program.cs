@@ -1,11 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
+using SqlSugar.Extensions;
 using StarBot.Controllers;
 using StarBot.Extension;
 using StarBot.IService;
 using System.Diagnostics;
 using TBC.CommonLib;
 using WinFormium;
+using WinFormium.CefGlue;
 using WinFormium.Forms;
+using WinFormium.JavaScript;
 
 namespace StarBot;
 internal static class Program
@@ -19,9 +22,7 @@ internal static class Program
         var builder = WinFormiumApp.CreateBuilder();
 
         builder.UseWinFormiumApp<App>();
-#if DEBUG
-        builder.UseDevToolsMenu();
-#endif
+
         var app = builder.Build();
 
         app.Run();
@@ -91,7 +92,7 @@ internal class StarBotUI : Formium
         url = host?.Replace("*", "localhost") ?? "http://localhost:" + port;
         port = host?.Replace("http://*:", "") ?? port;
         // 设置主页地址
-        Url = url + "/bot/index.html";
+        Url = "http://localhost:5173";
 
         EnableSplashScreen = false;
         Closing += StarBotUI_Closing;
@@ -101,17 +102,17 @@ internal class StarBotUI : Formium
     {
         DialogResult res = MessageBox.Show(Owner, "确认关闭！", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         if (res == DialogResult.Yes) e.Cancel = false;
-        else e.Cancel = true; 
+        else e.Cancel = true;
     }
 
-    protected override void OnBeforeBrowse(BeforeBrowseEventArgs args)
+    protected override void OnLoaded(BrowserEventArgs args)
     {
         ExecuteJavaScript($"sessionStorage.setItem('HttpPort','{port}')");
-#if DEBUG
-        ShowDevTools();
-#endif
+        InjectJavaScript(args.Browser.GetMainFrame());
     }
-
+    protected override void OnBeforeBrowse(BeforeBrowseEventArgs args)
+    {
+    }
     protected override FormStyle ConfigureWindowStyle(WindowStyleBuilder builder)
     {
         // 此处配置窗体的样式和属性，或不继承此方法以使用默认样式。
@@ -125,4 +126,25 @@ internal class StarBotUI : Formium
         return style;
     }
 
+    protected void InjectJavaScript(CefFrame frame)
+    {
+        try
+        {
+            ShowDevTools();
+            var jsInjectHandl = BeginRegisterJavaScriptObject(frame);
+            var obj = new JavaScriptObject();
+            obj.Add("openDevTool", args =>
+            {
+                ShowDevTools();
+                return true;
+            });
+            RegisterJavaScriptObject(jsInjectHandl, "devTool", obj);
+            EndRegisterJavaScriptObject(jsInjectHandl);
+
+        }
+        catch (Exception ex)
+        {
+            return;
+        }
+    }
 }
