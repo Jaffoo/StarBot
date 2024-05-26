@@ -37,12 +37,14 @@
                         <el-row>
                             <el-card body-class="card-body-diy">
                                 <span v-if="item.type == 'text' || 'system'" :style="{ color: item.color }">
-                                    <span v-if="item.reply" style="font-size: 12px;color: grey;">{{ item.reply }}</span>
+                                    <div v-if="item.reply" style="font-size: 12px;color: grey;">引用--{{ item.reply }}</div>
                                     {{ item.content }}
                                 </span>
                                 <a v-if="item.type == 'link'" :href="item.url" target="_blank">
                                     {{ item.url }}
                                 </a>
+                                <audio v-if="item.type == 'audio'" :src="item.url" controls></audio>
+                                <video v-if="item.type == 'video'" :src="item.url" controls height="200px"></video>
                                 <el-image v-if="item.type == 'pic'" :src="item.url" :initial-index="getIndex(item.url)"
                                     :preview-src-list="imgList()" style="width: 120px;height: auto;" />
                             </el-card>

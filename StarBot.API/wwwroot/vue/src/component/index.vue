@@ -445,10 +445,10 @@ const getChannel = async function (id: number) {
 const getTenLog = () => {
     let logs = logApi().getLogs();
     if (!logs || logs.length <= 0) return
-    infoLogs.value = logs!.filter(x => x.type == 'system').splice(0, 10).reverse();
+    infoLogs.value = logs!.filter(x => x.type == 'system').reverse().splice(0, 10);
     if (!config.value?.enableModule.kd) return;
     logs = logs.filter(x => x.roleId == 3)
-    kdLogs.value = logs.slice(0, 10).reverse();
+    kdLogs.value = logs.reverse().slice(0, 10);
 }
 const viewLog = (log: string, title = '错误') => {
     ElMessageBox.alert(log, title + "详情")

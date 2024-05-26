@@ -92,7 +92,7 @@ internal class StarBotUI : Formium
         url = host?.Replace("*", "localhost") ?? "http://localhost:" + port;
         port = host?.Replace("http://*:", "") ?? port;
         // ÉèÖÃÖ÷Ò³µØÖ·
-        Url = "http://localhost:5173";
+        Url = url + "/bot/index.html";
 
         EnableSplashScreen = false;
         Closing += StarBotUI_Closing;
@@ -105,11 +105,13 @@ internal class StarBotUI : Formium
         else e.Cancel = true;
     }
 
+
     protected override void OnLoaded(BrowserEventArgs args)
     {
         ExecuteJavaScript($"sessionStorage.setItem('HttpPort','{port}')");
         InjectJavaScript(args.Browser.GetMainFrame());
     }
+
     protected override void OnBeforeBrowse(BeforeBrowseEventArgs args)
     {
     }
@@ -128,7 +130,6 @@ internal class StarBotUI : Formium
 
     protected void InjectJavaScript(CefFrame frame)
     {
-        ShowDevTools();
         var jsInjectHandl = BeginRegisterJavaScriptObject(frame);
         var obj = new JavaScriptObject();
         obj.Add("openDevTool", args =>
