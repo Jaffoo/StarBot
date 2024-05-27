@@ -260,6 +260,9 @@ const oneSec = ref<NodeJS.Timeout>()
 const carousel = ref('help')
 
 const startBot = async () => {
+    
+    initPocketLive()
+    return;
     const allFalse = Object.values(props.enable).every(value => value === false);
     if (allFalse) {
         ElMessageBox.alert('没有启用任何功能')

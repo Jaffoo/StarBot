@@ -4,7 +4,8 @@ import type { Config, ApiResult } from '@/class/model';
 const _port = sessionStorage.getItem("HttpPort") || 5266;
 
 const getApiurl = () => {
-    console.log('environment',import.meta.env.MODE);
+    console.log('environment', import.meta.env.MODE);
+    return `http://localhost:${_port}/api/v1`;
     if (import.meta.env.MODE === "production") {
         return `http://localhost:${_port}/api/v1`;
     } else {
@@ -67,6 +68,11 @@ export const stopPlugin = async (name: string) => {
 
 export const delPlugin = async (name: string) => {
     const response = await axios.get<ApiResult>(`${_baseUrl}/delplugin?name=${name}`);
+    return response.data;
+};
+
+export const open = async (path: string) => {
+    const response = await axios.get<ApiResult>(`${_baseUrl}/openpluginconf?path=${path}`);
     return response.data;
 };
 

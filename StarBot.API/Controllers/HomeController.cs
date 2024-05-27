@@ -211,6 +211,13 @@ namespace StarBot.Controllers
         {
             PluginHelper.LoadPlugins();
             var plugins = PluginHelper.Plugins;
+            plugins.ForEach(x =>
+            {
+                if (!System.IO.File.Exists(x.PluginInfo!.ConfPath))
+                    x.PluginInfo.ConfPath = "";
+                if (!System.IO.File.Exists(x.PluginInfo.LogPath))
+                    x.PluginInfo.LogPath = "";
+            });
             return DataResult(plugins);
         }
 
@@ -252,6 +259,20 @@ namespace StarBot.Controllers
             {
                 return Failed(e.Message);
             }
+        }
+
+        /// <summary>
+        /// 打开配置文件
+        /// </summary>
+        /// <param name="plugin"></param>
+        /// <returns></returns>
+        [HttpGet("openpluginconf")]
+        public ApiResult OpenPluginConf(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path)) return Failed("此插件没有配置文件");
+            if (!System.IO.File.Exists(path)) return Failed("文件不存在");
+            Process.Start("notepad.exe", path);
+            return Success("打开成功！");
         }
 
         /// <summary>

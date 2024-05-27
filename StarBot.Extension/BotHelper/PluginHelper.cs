@@ -1,9 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using PluginServer;
+using SixLabors.ImageSharp.Drawing;
 using StarBot.IService;
 using StarBot.Model;
 using System;
 using System.Data;
+using System.IO;
 using System.Reflection;
 using TBC.CommonLib;
 using UnifyBot.Receiver.EventReceiver;
@@ -49,7 +51,9 @@ namespace StarBot.Extension
                 }
                 else
                 {
-                    var list = File.ReadAllLines(path).ToList();
+                    using FileStream fs = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    using StreamReader sr = new(fs);
+                    var list = sr.ReadToEnd().Trim().Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
                     return list;
                 }
             }
@@ -147,7 +151,9 @@ namespace StarBot.Extension
 
         private static void UpdateStart(List<string> startList)
         {
-            File.WriteAllLines("plugins/start.txt", startList);
+            using StreamWriter sr = new("plugins/start.txt");
+            foreach (var item in startList)
+                sr.WriteLine(item);
         }
 
         /// <summary>

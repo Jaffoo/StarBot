@@ -39,30 +39,34 @@ namespace PluginServer
         /// </summary>
         public abstract string Version { get; set; }
 
+        private string? _confPath = null;
         /// <summary>
         /// 配置文件路径（xml格式）
         /// </summary>
-        public static string ConfPath
+        public virtual string ConfPath
         {
             get
             {
-                var dir = Path.Combine(Environment.CurrentDirectory, "plugins/conf/");
-                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                if (_confPath != null) return _confPath;
+                var dir = Path.Combine(Environment.CurrentDirectory, $"plugins/conf/{Name}/");
                 return dir;
             }
+            set { _confPath = value; }
         }
 
+        private string? _logPath = null;
         /// <summary>
         /// 日志
         /// </summary>
-        public static string LogPath
+        public virtual string LogPath
         {
             get
             {
-                var dir = Path.Combine(Environment.CurrentDirectory, "plugins/logs/");
-                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                if (_logPath != null) return _logPath;
+                var dir = Path.Combine(Environment.CurrentDirectory, $"plugins/logs/{Name}");
                 return dir;
             }
+            set { _logPath = value; }
         }
 
         /// <summary>

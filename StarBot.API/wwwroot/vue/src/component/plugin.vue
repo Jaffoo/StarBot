@@ -4,7 +4,7 @@
       <el-space wrap>
         <el-upload accept=".dll" :action="ApiPrefix + '/uploaddll'" multiple :show-file-list="false"
           :on-success="onSuccess">
-          <el-button type="info" :icon="Upload">上传插件</el-button>
+          <el-button type="success" :icon="Upload">上传插件</el-button>
         </el-upload>
         <el-button type="primary" :icon="Refresh" @click="getData">刷新</el-button>
       </el-space>
@@ -33,11 +33,15 @@
             {{ scope.row.pluginInfo.desc }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="180">
+        <el-table-column label="操作" width="250">
           <template #default="scope">
-            <el-button type="primary" v-if="!scope.row.status" @click="start(scope.row.pluginInfo)">启用</el-button>
-            <el-button type="warning" v-else @click="stop(scope.row.pluginInfo.name)">禁用</el-button>
-            <el-button type="danger" @click="del(scope.row.pluginInfo.name)">删除</el-button>
+            <el-button size="small" type="primary" v-if="!scope.row.status" @click="start(scope.row.pluginInfo)">启用</el-button>
+            <el-button size="small" type="warning" v-else @click="stop(scope.row.pluginInfo.name)">禁用</el-button>
+            <el-button size="small" type="danger" @click="del(scope.row.pluginInfo.name)">删除</el-button>
+            <el-button size="small" type="info" v-if="scope.row.pluginInfo.confPath"
+              @click="openConf(scope.row.pluginInfo.confPath)">配置</el-button>
+            <el-button size="small" type="info" v-if="scope.row.pluginInfo.logPath"
+              @click="openConf(scope.row.pluginInfo.logPath)">日志</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -47,10 +51,10 @@
 
 <script setup lang="ts" name="pic">
 import { onMounted, ref } from "vue";
-import { getFun, startPlugin, stopPlugin, delPlugin } from "@/api";
+import { getFun, startPlugin, stopPlugin, delPlugin, open } from "@/api";
 import { ApiPrefix } from '@/api/index'
 import type { UploadProps } from "element-plus";
-import { Refresh,Upload } from '@element-plus/icons-vue'
+import { Refresh, Upload } from '@element-plus/icons-vue'
 
 const tableData = ref();
 
@@ -60,7 +64,7 @@ const getData = async () => {
 };
 
 const start = async (info: any) => {
-  let res = await startPlugin(info.name,info.version);
+  let res = await startPlugin(info.name, info.version);
   if (res.success) ElMessage.success(res.msg);
   else ElMessage.error(res.msg);
   await getData();
@@ -82,6 +86,12 @@ const del = async (name: string) => {
 
 const onSuccess: UploadProps['onSuccess'] = async () => {
   await getData()
+}
+
+const openConf = async (path: string) => {
+  var res = await open(path)
+  if(res.success) ElMessage.success(res.msg)
+  else ElMessage.error(res.msg)
 }
 
 onMounted(async () => {

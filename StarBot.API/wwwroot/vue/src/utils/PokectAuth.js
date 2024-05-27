@@ -52,7 +52,6 @@ WebSocket.prototype.send = function () {
                     Q.v['6'] = 2;
                     Q.v['42'] = 'PocketFans201807/24020203';
                     arguments[0] = `3:::${JSON.stringify(data)}`;
-                    break;
                 }
             }
         }
