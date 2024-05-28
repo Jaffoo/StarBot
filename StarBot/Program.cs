@@ -44,18 +44,36 @@ internal class App : WinFormiumStartup
         #region 启动API服务
         try
         {
-            ProcessStartInfo startInfo = new()
+            Process process = new();
+            //先检测服务存在不存在
+            var list = Process.GetProcessesByName("StarBot.API");
+            if (list.Length == 1)
             {
-                FileName = "StarBot.API.exe",
-                WorkingDirectory = Directory.GetCurrentDirectory(),
-                CreateNoWindow = true,
-            };
-            // 创建一个 Process 对象，并将 ProcessStartInfo 对象赋给它
-            Process process = new()
+                process = list[0];
+            }
+            if (list.Length > 1)
             {
-                StartInfo = startInfo
-            };
-            process.Start();
+                foreach (var item in list)
+                {
+                    item.Kill();
+                    list = [];
+                }
+            }
+            if (list?.Length <= 0)
+            {
+                ProcessStartInfo startInfo = new()
+                {
+                    FileName = "StarBot.API.exe",
+                    WorkingDirectory = Directory.GetCurrentDirectory(),
+                    CreateNoWindow = true,
+                };
+                // 创建一个 Process 对象，并将 ProcessStartInfo 对象赋给它
+                process = new()
+                {
+                    StartInfo = startInfo
+                };
+                process.Start();
+            }
 
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
