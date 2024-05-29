@@ -11,10 +11,11 @@
                 <el-input v-model="kd.serverId"></el-input>
             </el-form-item>
             <el-form-item label="直播房间Id" prop="liveRoomId">
-                <el-input v-model="kd.liveRoomId"></el-input>
+                <el-input v-model="kd.liveRoomId"></el-input><span
+                    style="color: red;font-size: 12px;">*直播间监听功能已失效</span>
             </el-form-item>
             <el-form-item>
-                <el-button @click="searchModel.show = true">查询小偶像信息</el-button>
+                <el-button @click="openSearch">查询小偶像信息</el-button>
                 <span style="color:red">*以上信息可通过查询获取</span>
             </el-form-item>
             <el-form-item label="IM账号" prop="account">
@@ -44,7 +45,7 @@
                 <el-checkbox-group v-model="kd.msgType">
                     <el-checkbox v-for="(item, index) in kd.msgTypeAll" :label="item.value" :key="index">{{
                         item.name
-                        }}</el-checkbox>
+                    }}</el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
             <el-form-item label="转发至群">
@@ -60,11 +61,10 @@
                 <el-input v-model="kd.qq" />
             </el-form-item>
         </el-form>
-        <el-dialog title="登录口袋48" v-model="loginKD" :before-close="close" :close-on-click-modal="false">
+        <el-dialog draggable title="登录口袋48" v-model="loginKD" :before-close="close" :close-on-click-modal="false">
             <el-form label-width="100px" :rules="rules" :model="loginfo">
                 <el-form-item label="手机号" class="mt-4" prop="phone">
                     <el-input v-model="loginfo.phone" style="width:95%">
-
                         <template #prepend>+{{ loginfo.area }}</template>
                     </el-input>
                 </el-form-item>
@@ -79,23 +79,28 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
-        <el-dialog title="查询小偶像 " v-model="searchModel.show" :before-close="close" :close-on-click-modal="false">
+        <el-dialog draggable title="查询小偶像" :destroy-on-close="true" v-model="searchModel.show" :before-close="close"
+            :close-on-click-modal="false" width="40%">
             <el-form label-width="100px" :rules="rules" :model="searchModel">
                 <el-form-item label="队伍" class="mt-4">
                     <el-cascader :props="{ expandTrigger: 'hover', checkStrictly: 'true' }" placeholder="请选择"
-                        v-model="searchModel.group" :options="groups" style="width:95%"></el-cascader>
+                        v-model="searchModel.group" :options="groups" style="width:95%"
+                        @change="teamChange"></el-cascader>
                 </el-form-item>
                 <el-form-item label="姓名" prop="name">
-                    <el-input v-model="searchModel.name" style="width:95%">
-                    </el-input>
+                    <el-select filterable remote placeholder="小偶像搜索" v-model="searchModel.name"
+                        :remote-method="searchXox" style="width: 95%;">
+                        <el-option v-for="item in options" :key="item.id" :label="item.Name" :value="item.name"
+                            @click="() => selected = item"></el-option>
+                    </el-select>
+                    <!-- <el-input v-model="searchModel.name" style="width:95%">
+                    </el-input> -->
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" :loading="searchModel.loading" @click="searchXox">查询</el-button>
+                    <el-button type="primary" @click="addIdol">添加</el-button>
+                    <el-button type="success" @click="close">确定</el-button>
+                    <span style="font-size: 14px;color: red;margin-left: 10px;">注：支持监听最多10位小偶像</span>
                 </el-form-item>
-                <div v-if="searchModel.url" style="width:95%;margin-top:5px">
-                    <span>未查询到小偶像，检查名称等后重新查询或者点击下方地址自行获取小偶像信息填入：</span>
-                    <a style="word-break:break-all" :href="searchModel.url" target="_blank">{{ searchModel.url }}</a>
-                </div>
             </el-form>
         </el-dialog>
     </el-card>
@@ -145,7 +150,6 @@ const searchModel = ref({
     show: false,
     group: [],
     name: '',
-    loading: false,
     url: ''
 })
 const loginfo = ref({
@@ -192,30 +196,67 @@ const groups = ref(
         value: 'CKG48',
     }]
 )
-const searchXox = async () => {
-    if (!searchModel.value.name) {
-        ElMessage({ message: "请输入小偶像姓名", type: 'error' });
-        return;
+const options = ref<any[]>();
+const selected = ref<any>();
+
+const teamChange = () => {
+    options.value = [];
+}
+
+const openSearch = () => {
+    if (props.kd.idolName && props.kd.liveRoomId && props.kd.serverId) {
+        let idolLen = props.kd.idolName.split(",").length;
+        let liveLen = props.kd.liveRoomId.split(",").length;
+        let serLen = props.kd.serverId.split(",").length;
+        if (idolLen != liveLen || idolLen != serLen || liveLen != serLen) {
+            ElMessage({ message: "小偶像姓名，IMServerId，直播间Id数量不匹配，请确认后重试！", type: 'error' });
+            return;
+        }
+        if (idolLen >= 10) {
+            ElMessage({ message: "最多支持10位小偶像", type: 'error' });
+            return;
+        }
+        searchModel.value.show = true;
     }
-    searchModel.value.loading = true;
-    var res = await searchIdol(searchModel.value.group.toString(), searchModel.value.name);
+}
+
+const searchXox = async (keywords: string) => {
+    if (!keywords) return;
+    var res = await searchIdol(searchModel.value.group.toString(), keywords);
     if (res.success) {
-        var data = res.data;
-        props.kd.idolName = data.name;
-        props.kd.liveRoomId = data.liveId;
-        props.kd.serverId = data.serverId;
-        close();
+        options.value = res.data;
     } else {
-        searchModel.value.url = res.msg || "";
+        ElMessage.error(res.msg)
     }
-    searchModel.value.loading = false;
+}
+
+const addIdol = (notice = true) => {
+    if (selected.value) {
+        let data = selected.value;
+        if (!props.kd.idolName && !props.kd.liveRoomId && !props.kd.serverId) {
+            props.kd.idolName = data.name;
+            props.kd.liveRoomId = data.liveId;
+            props.kd.serverId = data.serverId;
+        } else {
+            if (!props.kd!.serverId!.includes(data.serverId)) {
+                props.kd.idolName += "," + data.name;
+                props.kd.liveRoomId += "," + data.liveId;
+                props.kd.serverId += "," + data.serverId;
+            }
+        }
+        if (notice) ElMessage.success("小偶像已关注")
+    } else {
+        if (notice) ElMessage.warning("未选中小偶像！")
+    }
 }
 const close = () => {
-    searchModel.value.loading = false;
+    addIdol(false)
     searchModel.value.show = false;
     searchModel.value.name = '';
     searchModel.value.url = "";
     searchModel.value.group = [];
+    options.value = [];
+    selected.value = ""
     loginKD.value = false;
     loginfo.value.hasSend = false;
     loginfo.value.sec = 60;

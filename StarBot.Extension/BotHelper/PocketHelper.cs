@@ -68,7 +68,7 @@ namespace StarBot.Extension
                 };
 
                 MessageChainBuild mcb = new();
-                mcb.Text($"【{Config.KD.IdolName}|{channelName}】\n【{time}】\n{name}:");
+                mcb.Text($"【{GetIdolName(result["serverId"]!.ToString())}|{channelName}】\n【{time}】\n{name}:");
                 //图片
                 if (msgType == "image")
                 {
@@ -301,6 +301,15 @@ namespace StarBot.Extension
                 await _sysLog.WriteLog(e.Message);
                 return;
             }
+        }
+
+        private string GetIdolName(string serverId)
+        {
+            var names = Config.KD.IdolName.ToListStr();
+            var servers = Config.KD.ServerId.ToListStr();
+            var index = servers.IndexOf(serverId);
+            if (index == -1) return "未匹配";
+            return names[index];
         }
 
         private static void HandleEmoji(string str, ref MessageChainBuild mcb)

@@ -20,9 +20,9 @@ WebSocket.prototype.send = function () {
         try {
             data = JSON.parse(message);
         } catch { /* noop */ }
-
         //NIM_BROWSER_SDK.js拦截处理
         if (data?.SID === 2 && data?.Q?.length) {
+            console.log("NIM_BROWSER_SDK.js拦截处理")
             for (const Q of data.Q) {
                 if (/Property/i.test(Q.t) && Q.v && objectSome(Q.v, (k, v) => /0.17.2/i.test(v))) {
                     Q.v['3'] = 2;

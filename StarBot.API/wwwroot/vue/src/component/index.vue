@@ -250,8 +250,8 @@ const info = ref({
     }
 })
 
-const nim = ref<any>();
-const qChat = ref<any>();
+const nim = ref<NIMSDK>();
+const qChat = ref<QChatSDK>();
 const liveNim = ref<NimChatroomSocket>();
 
 const oneMin = ref<NodeJS.Timeout>();
@@ -342,11 +342,11 @@ const initPocket = async () => {
                 linkAddresses: await nim.value.plugin.getQChatAddress({
                     ipType: 2,
                 }),
-            })
+            });
 
-            qChat.value.on("logined", handleLogined);
-            qChat.value.on("message", handleMessage);
-            qChat.value.on("disconnect", handleRoomSocketDisconnect);
+            (qChat.value as any).on("logined", handleLogined);
+            (qChat.value as any).on("message", handleMessage);
+            (qChat.value as any).on("disconnect", handleRoomSocketDisconnect);
             await qChat.value.login();
 
         }
@@ -368,7 +368,7 @@ const handleLogined = async function () {
     const result: SubscribeAllChannelResult =
         await qChat.value.qchatServer.subscribeAllChannel({
             type: 1,
-            serverIds: [config.value!.kd!.serverId!],
+            serverIds: config.value!.kd!.serverId!.split(",").map(String),
         });
     if (result.failServerIds.length) {
         msg = `进入小偶像${config.value!.kd!.idolName}的口袋房间失败。请检查配置后重试，如仍有问题，请联系开发者。`;
@@ -392,7 +392,7 @@ const handleMessage = async function (msg: any) {
         avatar: config.value?.kd?.imgDomain + msg.ext.user.avatar ?? '',
         color: '#409eff',
         channel: msg.channelName,
-        idol: config.value?.kd?.idolName,
+        idol: getIdolName(msg.serverId),
         roleId: msg.ext.user.roleId
     }
     if (msg.type == "text") {
@@ -445,6 +445,15 @@ const getChannel = async function (id: number) {
     }
     return "";
 };
+
+const getIdolName = (serverId:string)=>{
+    var names = config.value!.kd!.idolName!.split(",");
+    var serverIds = config.value!.kd!.serverId!.split(",");
+    var index = serverIds.indexOf(serverId);
+    if(index==-1) return '未匹配';
+    return names[index];
+}
+
 const getTenLog = () => {
     let logs = logApi().getLogs();
     if (!logs || logs.length <= 0) return

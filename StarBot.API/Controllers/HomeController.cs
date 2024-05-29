@@ -398,17 +398,15 @@ namespace StarBot.Controllers
             {
                 var groupList = group.Split(",").ToList();
                 if (groupList.Count >= 2)
-                    chain = await _sysIdol.GetListAsync(t => t.GroupName == groupList[0] && t.Team == groupList[1]);
+                    chain = await _sysIdol.GetListAsync(t => t.GroupName == groupList[0] && t.Team == groupList[1] && t.Name.Contains(name));
                 else
-                    chain = await _sysIdol.GetListAsync(t => t.GroupName == groupList[0]);
+                    chain = await _sysIdol.GetListAsync(t => t.GroupName == groupList[0] && t.Name.Contains(name));
             }
             else
             {
                 chain = await _sysIdol.GetListAsync(t => t.Name.Contains(name));
             }
-            xox = chain?.FirstOrDefault(t => t.Name.Contains(name));
-            if (xox == null) return Failed(url);
-            return DataResult(xox);
+            return Success(chain,url);
         }
 
         /// <summary>
