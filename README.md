@@ -18,15 +18,16 @@
    
 2. 其他配置项
 
-   **参考[ParkerBot](https://gitee.com/jaffoo/ParkerBot#%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B)，大同小异，不在赘述**
+   **参考[ParkerBot配置](https://gitee.com/jaffoo/ParkerBot#%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B)，大同小异，不在赘述**
 
 ## 三、插件使用和开发
 
    1. 插件使用
 
       找到基于本软件开发的插件，当配置菜单中起用了机器人项时会出现插件菜单，导入使用即可。
+
       
-   2. 插件开发
+   3. 插件开发
 
       找到本项目的PluginServer，新建插件类库项目，或者打包编译后引入编译好的dll文件或者导入nuget包文件，引用并且继承BasePlugin。
 
@@ -38,7 +39,7 @@
       其他属性说明
        - Admin：qq群超管
        - Permission：qq群普通管理员
-       - ConfPath：配置文件路径。注：如果插件需要配置文件，那么此属性必须重写，以为此属性只有文件夹路径，具体配置文件名称和格式自行定义，重写的get方法返回时必须为base.ConfPath+"config.json"，例如：public override string ConfPath {get{return base.ConfPath+"config.json"}}。
+       - ConfPath：配置文件路径。注：如果插件需要配置文件，那么此属性必须重写，因为此属性只有文件夹路径，具体配置文件名称和格式自行定义，重写的get方法返回时必须为base.ConfPath+"config.json"，例如：public override string ConfPath {get{return base.ConfPath+"config.json"}}。
        - LogPath：日志文件路径。和ConfPath一样的使用方式。
 
       插件方法说明
@@ -50,4 +51,23 @@
 
       **不持支前端界面插件，仅支持后端功能插件**。
 
+   4. 常见问题
+
+      - Q:启用了阿里云盘功能，但是无法上传？
       
+        A:请检查功能是否启用，然后检查打开图片的方式时候有配置默认程序，否则打不开二维码，如何配置自行百度。
+      - Q:口袋监听过一段时间就失效？
+      
+        A:尝试首页重新启动，如果一直失效，请联系作者。
+      - Q:抖音功能无效？
+
+        A:是的，抖音暂时无法使用
+      - Q:如何联系作者
+     
+        A:QQ:1737678289
+   5. 反馈
+
+      如果软件有问题或者有需要的功能可以通过此项目issue进行提问，或者联系作者。
+   6. 作者声明
+
+      此项目是开源的，个人可以任意更改代码使用，未经允许不可倒卖此软件和此项目代码以及修改过后的代码和软件。
