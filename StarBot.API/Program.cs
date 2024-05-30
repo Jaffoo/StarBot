@@ -6,6 +6,7 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using FluentScheduler;
 using StarBot.Timer;
+using Newtonsoft.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,7 @@ builder.Services.AddControllers()
     {
         //json序列化设置
         //json序列化设置默认首字母小写驼峰命名
-        options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
+        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         options.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
         //设置时间格式
         options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";

@@ -40,7 +40,7 @@
                 <el-switch v-model="bd.saveAliyunDisk" :active-value="true" :inactive-value="false"></el-switch>
                 <span style="color:red">*启用会将图片自动上传到阿里云盘相册</span>
             </el-form-item>
-            <el-form-item label="相册名称" v-show="bd.saveAliyunDisk" prop="albumName">
+            <el-form-item label="相册名称" v-show="bd.saveAliyunDisk && bd.faceVerify" prop="albumName">
                 <el-col :span="8">
                     <el-input v-model="bd.albumName"></el-input>
                 </el-col>

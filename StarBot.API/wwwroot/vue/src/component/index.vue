@@ -491,7 +491,7 @@ const oneMinFun = async () => {
 }
 
 const oneSecTimer = () => {
-    oneSec.value = setInterval(oneSecFun, 1000 * 60);
+    oneSec.value = setInterval(oneSecFun, 1000);
 }
 const oneSecFun = () => {
     var date = new Date();

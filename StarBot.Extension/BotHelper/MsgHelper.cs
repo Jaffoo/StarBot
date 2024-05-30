@@ -89,9 +89,9 @@ namespace StarBot.Extension
         public static bool BotReady { get; set; } = false;
         #endregion
 
-        public void BotStart(Bot bot, bool botReady)
+        public void BotStart(bool botReady, Bot? bot = null)
         {
-            Bot = bot;
+            if (bot != null) Bot = bot;
             Bot!.StartAsync();
             GroupMessageReceiver();
             FriendMessageReceiver();

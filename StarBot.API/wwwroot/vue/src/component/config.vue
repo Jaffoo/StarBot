@@ -10,7 +10,7 @@
   </el-affix>
   <el-scrollbar style="height: calc(100vh - 230px)" id="pdom">
     <Bot ref="botRef" :bot="model.bot" v-if="model.enableModule.bot" class="mt10" />
-    <QQ ref="qqRef" :qq="model.qq" v-if="model.enableModule.qq" class="mt10" />
+    <QQ ref="qqRef" :qq="model.qq" :bot="model.bot" v-if="model.enableModule.qq" class="mt10" />
     <WB ref="wbRef" :wb="model.wb" v-if="model.enableModule.wb" class="mt10" />
     <KD ref="kdRef" :kd="model.kd" v-if="model.enableModule.kd" class="mt10" />
     <BZ ref="bzRef" :bz="model.bz" v-if="model.enableModule.bz" class="mt10" />

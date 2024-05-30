@@ -12,6 +12,10 @@ using Newtonsoft.Json.Linq;
 using SqlSugar.Extensions;
 using System.Text;
 using System.Net;
+using System.Linq;
+using UnifyBot;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace StarBot.Controllers
 {
@@ -23,6 +27,7 @@ namespace StarBot.Controllers
         ISysIdol _sysIdol = sysIdol;
         ISysLog _sysLog = sysLog;
         public static Process? AliProcess = null;
+        private static UnifyBot.Bot? TempBot = null;
         public Config Config
         {
             get
@@ -62,7 +67,7 @@ namespace StarBot.Controllers
                     {
                         var connectConfig = new Connect(Config.Bot.Host, Config.Bot.WebsocktPort, Config.Bot.HttpPort, token: Config.Bot.Token);
                         var bot = new UnifyBot.Bot(connectConfig);
-                        ReciverMsg.Instance.BotStart(bot, true);
+                        ReciverMsg.Instance.BotStart(true, bot);
                         return AjaxResult(ReciverMsg.Instance.Bot!.Conn.CanConnetBot);
                     }
                     else
@@ -79,6 +84,99 @@ namespace StarBot.Controllers
             catch (Exception e)
             {
                 return Failed(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 搜索群
+        /// </summary>
+        /// <param name="groups"></param>
+        /// <param name="keywords"></param>
+        /// <returns></returns>
+        [HttpGet("searchgroup")]
+        public ApiResult SearchGroup(string host, int wsPort, int httpPort, string token = "", string keywords = "")
+        {
+            try
+            {
+                if (TempBot == null)
+                {
+                    var connectConfig = new Connect(host, wsPort, httpPort, token);
+                    var bot = new UnifyBot.Bot(connectConfig);
+                    TempBot = bot;
+                }
+                if (TempBot == null) return DataResult(new List<GroupInfo>());
+                var groupList = TempBot.Groups.Where(x => x.GroupName.Contains(keywords) || x.GroupQQ.ToString().Contains(keywords)).ToList();
+                return DataResult(groupList);
+            }
+            catch (Exception)
+            {
+                TempBot?.Dispose();
+                TempBot = null;
+                return Failed("机器人服务可能不存在，请核对bot配置项，或者重新尝试搜索！");
+            }
+        }
+
+        /// <summary>
+        /// 搜索群中的人作为管理员
+        /// </summary>
+        /// <param name="groups"></param>
+        /// <param name="keywords"></param>
+        /// <returns></returns>
+        [HttpGet("searchgroupmember")]
+        public ApiResult SearchGroupMember(string groups, string host, int wsPort, int httpPort, string token = "", string keywords = "")
+        {
+            try
+            {
+                if (TempBot == null)
+                {
+                    var connectConfig = new Connect(host, wsPort, httpPort, token);
+                    var bot = new UnifyBot.Bot(connectConfig);
+                    TempBot = bot;
+                }
+                if (TempBot == null) return DataResult(new List<GroupMemberInfo>());
+                var groupids = groups.ToListInt().Select(x => (long)x);
+                var groupList = TempBot.Groups.Where(x => groupids.Contains(x.GroupQQ)).ToList();
+                var members = new List<GroupMemberInfo>();
+                foreach (var group in groupList)
+                {
+                    members.AddRange(group.Members.Where(x => x.Nickname.Contains(keywords) || x.QQ.ToString().Contains(keywords)));
+                }
+                return DataResult(members);
+            }
+            catch (Exception)
+            {
+                TempBot?.Dispose();
+                TempBot = null;
+                return Failed("机器人服务可能不存在，请核对bot配置项，或者重新尝试搜索！");
+            }
+        }
+
+        /// <summary>
+        /// 搜索好友为超级管理员
+        /// </summary>
+        /// <param name="groups"></param>
+        /// <param name="keywords"></param>
+        /// <returns></returns>
+        [HttpGet("searchfriend")]
+        public ApiResult SearchFriend(string host, int wsPort, int httpPort, string token = "", string keywords = "")
+        {
+            try
+            {
+                if (TempBot == null)
+                {
+                    var connectConfig = new Connect(host, wsPort, httpPort, token);
+                    var bot = new UnifyBot.Bot(connectConfig);
+                    TempBot = bot;
+                }
+                if (TempBot == null) return DataResult(new List<FriendInfo>());
+                var friends = TempBot.Friends.Where(x => x.Nickname.Contains(keywords) || x.QQ.ToString().Contains(keywords)).ToList();
+                return DataResult(friends);
+            }
+            catch (Exception)
+            {
+                TempBot?.Dispose();
+                TempBot = null;
+                return Failed("机器人服务可能不存在，请核对bot配置项，或者重新尝试搜索！");
             }
         }
 
@@ -146,6 +244,7 @@ namespace StarBot.Controllers
                     }
                 }
             }
+            if (b) TempBot?.Dispose();
             return AjaxResult(b);
         }
 
@@ -406,7 +505,7 @@ namespace StarBot.Controllers
             {
                 chain = await _sysIdol.GetListAsync(t => t.Name.Contains(name));
             }
-            return Success(chain,url);
+            return Success(chain, url);
         }
 
         /// <summary>

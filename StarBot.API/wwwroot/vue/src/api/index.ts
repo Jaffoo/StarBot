@@ -125,3 +125,18 @@ export const getLogs = async () => {
     const response = await axios.get<ApiResult>(`${_baseUrl}/getlogs`);
     return response.data;
 }
+
+export const getSuperAdmin = async (keywords: string, host: string, wsPort: number, httpPort: number, token?: string) => {
+    const response = await axios.get<ApiResult>(`${_baseUrl}/searchfriend?keywords=${keywords}&host=${host}&wsPort=${wsPort}&httpPort=${httpPort}&token=${token}`);
+    return response.data;
+}
+
+export const getGroup = async (keywords: string, host: string, wsPort: number, httpPort: number, token?: string) => {
+    const response = await axios.get<ApiResult>(`${_baseUrl}/searchgroup?keywords=${keywords}&host=${host}&wsPort=${wsPort}&httpPort=${httpPort}&token=${token}`);
+    return response.data;
+}
+
+export const getAdmin = async (group: string, keywords: string, host: string, wsPort: number, httpPort: number, token?: string) => {
+    const response = await axios.get<ApiResult>(`${_baseUrl}/searchgroupmember?groups=${group}&keywords=${keywords}&host=${host}&wsPort=${wsPort}&httpPort=${httpPort}&token=${token}`);
+    return response.data;
+}
