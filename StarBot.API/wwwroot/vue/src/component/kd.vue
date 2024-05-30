@@ -45,7 +45,7 @@
                 <el-checkbox-group v-model="kd.msgType">
                     <el-checkbox v-for="(item, index) in kd.msgTypeAll" :label="item.value" :key="index">{{
                         item.name
-                    }}</el-checkbox>
+                        }}</el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
             <el-form-item label="转发至群">
@@ -216,8 +216,8 @@ const openSearch = () => {
             ElMessage({ message: "最多支持10位小偶像", type: 'error' });
             return;
         }
-        searchModel.value.show = true;
     }
+    searchModel.value.show = true;
 }
 
 const searchXox = async (keywords: string) => {

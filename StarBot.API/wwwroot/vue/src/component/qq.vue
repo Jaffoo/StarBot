@@ -184,7 +184,7 @@ onMounted(() => {
             await searchGroup("", true);
             await searchSuperAdmin("", true);
         }
-    }, 100);
+    }, 500);
 })
 
 
