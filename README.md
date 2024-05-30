@@ -3,7 +3,7 @@
 ## 一、食用教程
 1. 下载
 
-   方法1：前往夸克网盘下载，[下载地址](https://gitee.com/link?target=https%3A%2F%2Fpan.quark.cn%2Fs%2Fdd90d150e6d7)。
+   方法1：前往夸克网盘下载，[下载地址](https://pan.quark.cn/s/dd90d150e6d7)。
    
    方法2：自行编译，主项目StarBot(窗体)和StarBot.API(api服务)，编译运行StarBot可以得到windows桌面应用，而编译运行StarBot.API则是通过浏览器使用此项目，二选一。
 2. 安装和运行
