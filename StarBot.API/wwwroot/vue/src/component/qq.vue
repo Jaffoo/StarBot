@@ -68,6 +68,10 @@ const props = defineProps({
             httpPort: '',
             token: ''
         }
+    },
+    new: {
+        type: Boolean,
+        default: false
     }
 })
 const superAdmin = ref({
@@ -104,6 +108,7 @@ const searchSuperAdmin = async (keywords: string, first = false) => {
         ElMessage.warning("请先完填入bot信息")
         return;
     }
+    if (first && !props.qq.admin) return;
     superAdmin.value.loading = true;
     var res = await getSuperAdmin(keywords, props.bot.host, props.bot.websocktPort, props.bot.httpPort, props.bot.token)
     if (res.success) {
@@ -122,7 +127,7 @@ const searchGroup = async (keywords: string, first = false) => {
         ElMessage.warning("请先完填入bot信息")
         return;
     }
-    if (!props.qq.group) return;
+    if (first && !props.qq.group) return;
     group.value.loading = true;
     var res = await getGroup(keywords, props.bot.host, props.bot.websocktPort, props.bot.httpPort, props.bot.token)
     if (res.success) {
@@ -142,6 +147,7 @@ const searchAdmin = async (keywords: string, first = false) => {
         return;
     }
     if (!props.qq.group) return;
+    if (first && !props.qq.permission) return;
     admin.value.loading = true;
     var res = await getAdmin(props.qq.group, keywords, props.bot.host, props.bot.websocktPort, props.bot.httpPort, props.bot.token)
     if (res.success) {
@@ -173,9 +179,11 @@ defineExpose({
 
 onMounted(() => {
     setTimeout(async () => {
-        await searchAdmin("", true);
-        await searchGroup("", true);
-        await searchSuperAdmin("", true);
+        if (!props.new) {
+            await searchAdmin("", true);
+            await searchGroup("", true);
+            await searchSuperAdmin("", true);
+        }
     }, 100);
 })
 
