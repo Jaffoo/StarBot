@@ -157,17 +157,14 @@ const searchAdmin = async (keywords: string, first = false) => {
 
 const superChange = () => {
     props.qq.admin = superAdmin.value.value?.toString()
-    console.log("admin", props.qq.group)
 }
 
 const groupChange = () => {
     props.qq.group = group.value.value?.toString()
-    console.log("group", props.qq.group)
 }
 
 const memberChange = () => {
     props.qq.permission = admin.value.value.toString()
-    console.log("permission", props.qq.permission)
 }
 
 defineExpose({
