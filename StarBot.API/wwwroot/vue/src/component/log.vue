@@ -11,6 +11,8 @@
                     <el-option :key="2" label="图片" value="pic" />
                     <el-option :key="3" label="文本" value="text" />
                     <el-option :key="4" label="链接" value="link" />
+                    <el-option :key="6" label="音频" value="audio" />
+                    <el-option :key="7" label="链接" value="video" />
                     <el-option :key="5" label="小偶像" value="idol" v-if="enable.kd" />
                 </el-select>
                 <el-button type="primary" @click="clear">清空</el-button>
@@ -35,16 +37,18 @@
                             <span v-else>系统信息：<span style="font-size: 12px;color: gray">{{ item.time }}</span></span>
                         </el-row>
                         <el-row>
-                            <el-card body-class="card-body-diy">
+                            <el-card body-class="card-body-diy" class="wrap-text">
                                 <span v-if="item.type == 'text' || 'system'" :style="{ color: item.color }">
-                                    <div v-if="item.reply" style="font-size: 12px;color: grey;">引用--{{ item.reply }}</div>
+                                    <div v-if="item.reply" style="font-size: 12px;color: grey;">引用--{{ item.reply }}
+                                    </div>
                                     {{ item.content }}
                                 </span>
                                 <a v-if="item.type == 'link'" :href="item.url" target="_blank">
                                     {{ item.url }}
                                 </a>
-                                <audio v-if="item.type == 'audio'" :src="item.url" controls></audio>
-                                <video v-if="item.type == 'video'" :src="item.url" controls height="200px"></video>
+                                <div v-if="item.type == 'audio' || item.type == 'video'">
+                                    <a :href="item.url" target="_blank">视频或音频暂不支持播放，请点击后跳转至浏览器播放</a>
+                                </div>
                                 <el-image v-if="item.type == 'pic'" :src="item.url" :initial-index="getIndex(item.url)"
                                     :preview-src-list="imgList()" style="width: 120px;height: auto;" />
                             </el-card>
@@ -144,5 +148,8 @@ onMounted(() => {
 <style>
 .card-body-diy {
     padding: 6px 16px 6px 16px;
+}
+.wrap-text {
+  word-wrap: break-word;
 }
 </style>

@@ -2,18 +2,7 @@
     <el-scrollbar style="height: calc(100vh - 30px)">
         <el-row>
             <el-col :span="12">
-                <el-card shadow="hover" class="ch250">
-                    <template #header>
-                        StarBot
-                        <el-icon title="开发者工具" size="20" class="et4" @click="openDebug">
-                            <svg t="1716695388000" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                                xmlns="http://www.w3.org/2000/svg" p-id="2741" width="200" height="200">
-                                <path
-                                    d="M128 128h768a42.666667 42.666667 0 0 1 42.666667 42.666667v682.666666a42.666667 42.666667 0 0 1-42.666667 42.666667H128a42.666667 42.666667 0 0 1-42.666667-42.666667V170.666667a42.666667 42.666667 0 0 1 42.666667-42.666667z m42.666667 85.333333v597.333334h682.666666V213.333333z m341.333333 426.666667h256v85.333333h-256z m-142.208-128L249.088 391.338667l60.373333-60.373334L490.453333 512l-180.992 181.034667-60.373333-60.373334z"
-                                    p-id="2742" fill="#d81e06"></path>
-                            </svg>
-                        </el-icon>
-                    </template>
+                <el-card shadow="hover" header="StarBot" class="ch250">
                     <el-row>
                         <el-col :span="6">
                             <img title="点击关闭" v-if="botStart" @click="closeBot" src="/src/asset/rocket.gif"
@@ -132,7 +121,10 @@
                                                     style="width: 120px;height: auto;" />
                                             </div>
                                             <div v-if="item.type == 'link'"><a target="_blank"
-                                                    :href="item.url">此消息带链接，点击查看！</a>
+                                                    :href="item.url">链接消息，点击查看！</a>
+                                            </div>
+                                            <div v-if="item.type == 'audio' || item.type == 'video'">
+                                                <a :href="item.url" target="_blank">视频或音频不支持播放，请点击后跳转至浏览器播放</a>
                                             </div>
                                         </li>
                                     </ul>
@@ -446,11 +438,11 @@ const getChannel = async function (id: number) {
     return "";
 };
 
-const getIdolName = (serverId:string)=>{
+const getIdolName = (serverId: string) => {
     var names = config.value!.kd!.idolName!.split(",");
     var serverIds = config.value!.kd!.serverId!.split(",");
     var index = serverIds.indexOf(serverId);
-    if(index==-1) return '未匹配';
+    if (index == -1) return '未匹配';
     return names[index];
 }
 
