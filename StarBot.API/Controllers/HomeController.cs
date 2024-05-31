@@ -286,6 +286,7 @@ namespace StarBot.Controllers
         {
             var model = await _sysCache.GetModelAsync(id);
             var b = await new FileHelper().Save(model.Content);
+            if (b) await _sysCache.DeleteAsync(id);
             return AjaxResult(b);
         }
 
