@@ -148,23 +148,22 @@ const reset = async () => {
   startModel.value = deepObj;
 };
 
-const checkData = (): Promise<boolean> => {
+const checkData = async (): Promise<boolean> => {
   let temp1 = JSON.stringify(startModel.value);
   let temp2 = JSON.stringify(model.value);
   if (temp1 !== temp2) {
-    return ElMessageBox.confirm("配置已被修改，但未保存，是否保存", "警告", {
-      confirmButtonText: "保存",
-      cancelButtonText: "取消",
-      type: "warning",
-      closeOnClickModal: false
-    })
-      .then(async () => {
-        await save();
-        return true;
-      })
-      .catch(async () => {
-        return true;
+    try {
+      await ElMessageBox.confirm("配置已被修改，但未保存，是否保存", "警告", {
+        confirmButtonText: "保存",
+        cancelButtonText: "取消",
+        type: "warning",
+        closeOnClickModal: false
       });
+      await save();
+      return true;
+    } catch {
+      return true;
+    }
   } else
     return new Promise<boolean>((resolve, reject) => {
       resolve(true);

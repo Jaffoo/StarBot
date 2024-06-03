@@ -6,14 +6,9 @@
                 <el-input-number v-model="num" :min="1" :max="1000" @change="getLogs" />
                 <label>日志类型：</label>
                 <el-select v-model="logType" style="width: 120px;" @change="getLogs">
-                    <el-option :key="0" label="全部" value="all" />
-                    <el-option :key="1" label="系统" value="system" />
-                    <el-option :key="2" label="图片" value="pic" />
-                    <el-option :key="3" label="文本" value="text" />
-                    <el-option :key="4" label="链接" value="link" />
-                    <el-option :key="6" label="音频" value="audio" />
-                    <el-option :key="7" label="链接" value="video" />
-                    <el-option :key="5" label="小偶像" value="idol" v-if="enable.kd" />
+                    <el-option v-for="item in options.filter(item => !('visible' in item) || item.visible === true)"
+                        :key="item.key" :label="item.label" :value="item.value">
+                    </el-option>
                 </el-select>
                 <el-button type="primary" @click="clear">清空</el-button>
                 <el-button type="primary" @click="exportLog">导出</el-button>
@@ -61,7 +56,7 @@
 </template>
 
 <script setup lang="ts" name="log">
-import { onMounted, ref, type PropType } from 'vue';
+import { onMounted, ref, watch, type PropType } from 'vue';
 import { saveAs } from "file-saver";
 import { type logI, logApi, type EnableModule } from '@/class/model';
 
@@ -84,12 +79,33 @@ const logType = ref<'system' | 'pic' | 'text' | 'link' | 'all' | 'idol'>('all')
 const num = ref(30)
 const logs = ref<Array<logI>>(new Array<logI>)
 
+const options = ref([
+    { key: 0, label: '全部', value: 'all' },
+    { key: 1, label: '系统', value: 'system' },
+    { key: 3, label: '文本', value: 'text' },
+    { key: 2, label: '图片', value: 'pic' },
+    { key: 4, label: '链接', value: 'link' },
+    { key: 6, label: '音频', value: 'audio' },
+    { key: 7, label: '视频', value: 'video' },
+    { key: 5, label: '小偶像', value: 'idol', visible: props.enable.kd },
+])
+
+watch(() => props.enable.kd, (newVal, oldVal) => {
+    options.value[7].visible = newVal;
+})
+
 const clear = async () => {
     if (logs.value.length <= 0) {
         ElMessage.info("无日志")
         return;
     }
-    ElMessageBox.confirm("此操作将永久清空日志，是否删除", "警告", { cancelButtonText: '取消', confirmButtonText: '确定' })
+    ElMessageBox.confirm(`此操作将永久清空<span style="color:red">${options.value.find(x => x.value == logType.value)?.label}</span>的日志，是否继续？`,
+        "警告",
+        {
+            cancelButtonText: '取消',
+            confirmButtonText: '确定',
+            dangerouslyUseHTMLString: true
+        })
         .then(() => {
             logs.value = new Array<logI>;
             logApi().clearLog();
@@ -149,7 +165,8 @@ onMounted(() => {
 .card-body-diy {
     padding: 6px 16px 6px 16px;
 }
+
 .wrap-text {
-  word-wrap: break-word;
+    word-wrap: break-word;
 }
 </style>

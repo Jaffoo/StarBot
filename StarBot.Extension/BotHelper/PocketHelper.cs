@@ -131,7 +131,7 @@ namespace StarBot.Extension
                     {
                         msbBody = "直播啦！\n标题：" + attach["livePushInfo"]!["liveTitle"];
                         mcb.Text(msbBody).ImageByUrl(Config.KD.ImgDomain + attach["livePushInfo"]!["liveCover"]!.ToString());
-                        if (Config.KD.MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
+                        if (Config.KD.MsgType.Any(t => t == "AtAll"))
                             mcb.AtAll();
                         saveMsg.Type = messageType;
                         saveMsg.Msg = msbBody;
@@ -158,7 +158,7 @@ namespace StarBot.Extension
                         //判断是否at所有人
                         msbBody = "开启了房间电台";
                         mcb.Text(msbBody);
-                        if (Config.KD.MsgType.FirstOrDefault(t => t == "AtAll")?.ToBool() ?? false)
+                        if (Config.KD.MsgType.Any(t => t == "AtAll"))
                             mcb.AtAll();
                         saveMsg.Type = messageType;
                         saveMsg.Msg = msbBody;

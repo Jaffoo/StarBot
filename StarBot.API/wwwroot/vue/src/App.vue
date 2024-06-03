@@ -59,7 +59,7 @@
               </svg>
             </el-icon>
           </span>
-          <span class="hoverclass">
+          <span class="hoverclass" @click="openInfo">
             <el-icon title="关于" size="20">
               <svg t="1717120695958" viewBox="0 0 1024 1024" version="1.1"
                 xmlns="http://www.w3.org/2000/svg" p-id="1480" width="200" height="200">
@@ -168,6 +168,10 @@ const openDevTool = () => {
   console.log(11)
   // @ts-ignore
   window.external.devTool.openDevTool()
+}
+
+const openInfo =()=>{
+  ElMessageBox.alert("此软件免费提供使用，严禁转卖，违者必究！","关于软件")
 }
 
 onMounted(async () => {
