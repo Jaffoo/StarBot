@@ -372,6 +372,7 @@ const handleLogined = async function () {
 };
 
 const handleMessage = async function (msg: any) {
+    let domain = config.value?.kd?.imgDomain;
     msg.fromType = 1;
     msg.ext = JSON.parse(msg.ext as string);
     msg.channelName = await getChannel(msg.channelId);
@@ -381,7 +382,7 @@ const handleMessage = async function (msg: any) {
         type: 'text',
         name: msg.ext.user.nickName,
         time: msg.time,
-        avatar: config.value?.kd?.imgDomain + msg.ext.user.avatar ?? '',
+        avatar: domain + msg.ext.user.avatar ?? '',
         color: '#409eff',
         channel: msg.channelName,
         idol: getIdolName(msg.serverId),
@@ -403,15 +404,66 @@ const handleMessage = async function (msg: any) {
         kdMsg.url = msg?.attach?.url;
     }
     else if (msg.type == "custom") {
+        let attach = msg?.attach;
+        let customType = attach?.messageType;
         //回复消息
-        let customType = msg?.attach?.messageType;
         if (customType == "REPLY") {
-            kdMsg.content = msg?.attach?.replyInfo?.text;
-            kdMsg.reply = msg?.attach?.replyInfo?.replyName + ":" + msg?.attach?.replyInfo?.replyText
+            kdMsg.content = attach?.replyInfo?.text;
+            kdMsg.reply = attach?.replyInfo?.replyName + ":" + attach?.replyInfo?.replyText
+        }
+        //礼物回复
+        else if (customType == "GIFTREPLY") {
+            kdMsg.content = attach?.giftReplyInfo?.replyName + ":" + attach?.giftReplyInfo?.replyText + "<br/>" + attach?.giftReplyInfo?.text;
+        }
+        //表情
+        else if (customType == "EXPRESSIMAGE") {
+            kdMsg.type = 'pic'
+            kdMsg.url = attach?.expressImgInfo?.emotionRemote;
+        }
+        //直播
+        else if (customType == "LIVEPUSH") {
+            kdMsg.type = 'pic'
+            kdMsg.content = "直播啦！<br/>标题：" + attach?.livePushInfo?.liveTitle;
+            kdMsg.url = domain + attach?.livePushInfo?.liveCover;
+        }
+        //语音
+        else if (customType == "AUDIO") {
+            kdMsg.type = "audio"
+            kdMsg.url = attach?.audioInfo?.url;
+        }
+        //视频
+        else if (customType == "VIDEO") {
+            kdMsg.type = "video"
+            kdMsg.url = attach?.videoInfo?.url;
+        }
+        //房间电台
+        else if (customType == "") {
+            kdMsg.content = kdMsg.idol + "开启了房间电台";
+        }
+        //文字翻牌
+        else if (customType = "FLIPCARD") {
+            kdMsg.reply = "[文字翻牌]粉丝提问：<br/>" + attach?.filpCardInfo?.question;
+            kdMsg.content = attach?.filpCardInfo?.answer;
+        }
+        //语言翻牌
+        else if (customType = "FLIPCARD_AUDIO") {
+            kdMsg.type = 'audio'
+            kdMsg.reply = "[语言翻牌]粉丝提问：<br/>" + attach?.filpCardInfo?.question;
+            kdMsg.url = domain + attach?.filpCardInfo?.answer?.url;
+        }
+        //视频翻牌
+        else if (customType = "FLIPCARD_VIDEO") {
+            kdMsg.type = 'video'
+            kdMsg.reply = "[视频翻牌]粉丝提问：<br/>" + attach?.filpCardInfo?.question;
+            kdMsg.url = domain + attach?.filpCardInfo?.answer?.url;
+        } else {
+            kdMsg.content = '暂不支持此类型消息，请前往口袋查看。'
+            console.log("不支持的消息类型:", msg)
         }
     }
     else {
         kdMsg.content = '暂不支持此类型消息，请前往口袋查看。'
+        console.log("不支持的消息类型:", msg)
     }
     logApi().add(kdMsg);
     if (kdMsg.roleId == 3) getTenLog();

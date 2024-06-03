@@ -33,19 +33,21 @@
                         </el-row>
                         <el-row>
                             <el-card body-class="card-body-diy" class="wrap-text">
-                                <span v-if="item.type == 'text' || 'system'" :style="{ color: item.color }">
-                                    <div v-if="item.reply" style="font-size: 12px;color: grey;">引用--{{ item.reply }}
-                                    </div>
+                                <div v-if="item.reply" style="font-size: 12px;color: grey;">引用--{{ item.reply }}
+                                </div>
+                                <div v-if="item.content" :style="{ color: item.color }">
                                     {{ item.content }}
-                                </span>
+                                </div>
                                 <a v-if="item.type == 'link'" :href="item.url" target="_blank">
                                     {{ item.url }}
                                 </a>
                                 <div v-if="item.type == 'audio' || item.type == 'video'">
                                     <a :href="item.url" target="_blank">视频或音频暂不支持播放，请点击后跳转至浏览器播放</a>
                                 </div>
-                                <el-image v-if="item.type == 'pic'" :src="item.url" :initial-index="getIndex(item.url)"
-                                    :preview-src-list="imgList()" style="width: 120px;height: auto;" />
+                                <div v-if="item.type == 'pic'">
+                                    <el-image :src="item.url" :initial-index="getIndex(item.url)"
+                                        :preview-src-list="imgList()" style="width: 120px;height: auto;" />
+                                </div>
                             </el-card>
                         </el-row>
                     </el-col>
