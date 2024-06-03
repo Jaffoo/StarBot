@@ -60,4 +60,10 @@
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</None>
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="wwwroot\script\alipan.py">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using SqlSugar.Extensions;
+using IWshRuntimeLibrary;
 using StarBot.Controllers;
 using StarBot.Extension;
 using StarBot.IService;
@@ -105,7 +105,7 @@ internal class StarBotUI : Formium
     string port = "5266";
     public StarBotUI()
     {
-        var conf = File.ReadAllText("appsettings.json").ToJObject();
+        var conf = System.IO.File.ReadAllText("appsettings.json").ToJObject();
         var host = conf["Urls"]?.ToString();
         url = host?.Replace("*", "localhost") ?? "http://localhost:" + port;
         port = host?.Replace("http://*:", "") ?? port;
@@ -128,11 +128,9 @@ internal class StarBotUI : Formium
     {
         ExecuteJavaScript($"sessionStorage.setItem('HttpPort','{port}')");
         InjectJavaScript(args.Browser.GetMainFrame());
+        Task.Run(CreateShortIcon);
     }
 
-    protected override void OnBeforeBrowse(BeforeBrowseEventArgs args)
-    {
-    }
     protected override FormStyle ConfigureWindowStyle(WindowStyleBuilder builder)
     {
         // 此处配置窗体的样式和属性，或不继承此方法以使用默认样式。
@@ -157,5 +155,34 @@ internal class StarBotUI : Formium
         });
         RegisterJavaScriptObject(jsInjectHandl, "devTool", obj);
         EndRegisterJavaScriptObject(jsInjectHandl);
+    }
+
+    private void CreateShortIcon()
+    {
+        //检测并创建桌面快捷方式
+        // 获取桌面文件夹路径
+        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        var link = Path.Combine(desktopPath, "StarBot.lnk");
+        if (System.IO.File.Exists(link)) return;
+        DialogResult res = MessageBox.Show(Owner,"检测到桌面没有快捷方式，是否创建？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        if (res == DialogResult.No) return;
+
+        // 创建 WshShell 对象
+        WshShell shell = new();
+
+        // 创建快捷方式对象
+        IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(link);
+
+        // 设置快捷方式的目标路径
+        shortcut.TargetPath = Path.Combine(Directory.GetCurrentDirectory(), "StarBot.exe");
+
+        //设置起始位置，保持工作目录一致
+        shortcut.WorkingDirectory = Directory.GetCurrentDirectory();
+
+        // 设置快捷方式的描述
+        shortcut.Description = "StarBot.exe";
+
+        // 保存快捷方式
+        shortcut.Save();
     }
 }

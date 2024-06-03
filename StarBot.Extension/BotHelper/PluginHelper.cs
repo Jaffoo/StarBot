@@ -94,7 +94,7 @@ namespace StarBot.Extension
                     status = DefalultStart.Any(x => x == instance.Name + ":" + instance.Version);
                     Plugins.Add(new()
                     {
-                        PluginInfo = instance,
+                        PluginInfo = instance.DeepClone(),
                         Status = status,
                         FileName = item.FullName,
                     });
