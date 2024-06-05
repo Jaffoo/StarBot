@@ -42,10 +42,10 @@
                                     {{ item.url }}
                                 </a>
                                 <div v-if="item.type == 'audio'">
-                                    <a :href="item.url" target="_blank">点击播放音频</a>
+                                    <a :href="item.url" target="_blank">点击跳转播放音频</a>
                                 </div>
                                 <div v-if="item.type == 'video'">
-                                    <a :href="item.url" target="_blank">点击播放视频</a>
+                                    <a :href="item.url" target="_blank">点击跳转播放视频</a>
                                 </div>
                                 <div v-if="item.type == 'pic'">
                                     <el-image :src="item.url" :initial-index="getIndex(item.url)"
