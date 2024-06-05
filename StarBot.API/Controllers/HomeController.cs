@@ -12,10 +12,6 @@ using Newtonsoft.Json.Linq;
 using SqlSugar.Extensions;
 using System.Text;
 using System.Net;
-using System.Linq;
-using UnifyBot;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace StarBot.Controllers
 {

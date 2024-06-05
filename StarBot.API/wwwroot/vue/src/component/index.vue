@@ -111,7 +111,7 @@
                                         <li v-for="item in kdLogs">
                                             <span>{{ item.name }}</span>
                                             <span style="color: gray;font-size: 14px;">{{ item.time }}</span>
-                                            <div v-if="item.type == 'text'" @click="viewLog(item.content!, '口袋消息')"
+                                            <div v-if="item.content" @click="viewLog(item.content!, '口袋消息')"
                                                 title="点击查看" style="color:skyblue;cursor: pointer;">
                                                 {{ item.content?.substring(0, 20) }}
                                                 {{ (item.content?.length || 0) > 20 ? '...' : '' }}
@@ -124,7 +124,7 @@
                                                     :href="item.url">链接消息，点击查看！</a>
                                             </div>
                                             <div v-if="item.type == 'audio' || item.type == 'video'">
-                                                <a :href="item.url" target="_blank">视频或音频不支持播放，请点击后跳转至浏览器播放</a>
+                                                <a :href="item.url" target="_blank">点击播放视频或音频</a>
                                             </div>
                                         </li>
                                     </ul>

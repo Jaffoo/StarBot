@@ -41,8 +41,11 @@
                                 <a v-if="item.type == 'link'" :href="item.url" target="_blank">
                                     {{ item.url }}
                                 </a>
-                                <div v-if="item.type == 'audio' || item.type == 'video'">
-                                    <a :href="item.url" target="_blank">视频或音频暂不支持播放，请点击后跳转至浏览器播放</a>
+                                <div v-if="item.type == 'audio'">
+                                    <a :href="item.url" target="_blank">点击播放音频</a>
+                                </div>
+                                <div v-if="item.type == 'video'">
+                                    <a :href="item.url" target="_blank">点击播放视频</a>
                                 </div>
                                 <div v-if="item.type == 'pic'">
                                     <el-image :src="item.url" :initial-index="getIndex(item.url)"
@@ -157,6 +160,9 @@ const getLogs = () => {
     logs.value = tempLogs;
 }
 
+const play = (url: string, type: 1 | 2) => {
+
+}
 
 onMounted(() => {
     getLogs();
