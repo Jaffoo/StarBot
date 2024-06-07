@@ -437,16 +437,12 @@ namespace StarBot.Controllers
                 await file.CopyToAsync(stream);
             }
             string url = "/images/standard/" + name;
-            if (_env.IsDevelopment())
-            {
-                var ip = GetLocalIpAddress();
-                var domain = Helper.ConfigHelper.GetConfiguration("urls").Replace("*", ip);
-                url = Path.Combine(domain, url);
-            }
+           
             object obj = new
             {
                 name,
-                url
+                url,
+                base64 = Base64Helper.PathToBase64("wwwroot"+ url)
             };
             return DataResult(obj);
         }

@@ -77,10 +77,7 @@ namespace StarBot.Extension
                     if (item.Url.Contains("http"))
                         img64 = await Base64Helper.UrlImgToBase64(item.Url);
                     else
-                    {
-                        var path = Directory.GetCurrentDirectory() + item.Url;
-                        img64 = Base64Helper.PathToBase64(path);
-                    }
+                        img64 = Base64Helper.PathToBase64("wwwroot" + item.Url);
                     if (string.IsNullOrWhiteSpace(img64)) return 0;
                     string token = await GetBaiduToken();
                     string host = "https://aip.baidubce.com/rest/2.0/face/v3/match?access_token=" + token;
