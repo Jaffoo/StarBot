@@ -112,8 +112,8 @@ const clear = async () => {
             dangerouslyUseHTMLString: true
         })
         .then(() => {
-            logs.value = new Array<logI>;
-            logApi().clearLog();
+            logApi().clearLog(logType.value);
+            logs.value = logApi().getLogs()!;
         })
 }
 
@@ -123,11 +123,18 @@ const exportLog = () => {
         return;
     }
     let text = [''];
-    logs.value.forEach(item => {
-        if (item.type == "link" || item.type == "pic")
-            text.push(item.name + ":" + item.url);
-        else
-            text.push(item.name + ":" + item.content);
+    logs.value.filter(x => x.type == logType.value).forEach(item => {
+        let str = "系统信息：";
+        if (item.name) str = item.name;
+        if (item.idol) str += "[" + item.idol + "-" + item.channel + "]：";
+        if (item.content) str += item.content;
+        if(item.type=="pic")str += "[图片](";
+        if(item.type=="link")str += "[链接](";
+        if(item.type=="audio")str += "[音频](";
+        if(item.type=="video")str += "[视频](";
+        if (item.url) str +=  item.url + ")";
+        if (item.reply) str += "-----引用自-" + item.reply;
+        text.push(str);
     })
     const blob = new Blob(text, { type: "text/plain;charset=utf-8" }); // 创建一个包含文本内容的 Blob 对象
     saveAs(blob, "logs.txt"); // 使用 FileSaver.js 的 saveAs 方法导出文件

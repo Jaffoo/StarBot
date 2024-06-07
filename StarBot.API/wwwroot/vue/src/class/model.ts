@@ -164,8 +164,13 @@ export const logApi = () => {
             return undefined
         }
     }
-    const clearLog = () => {
-        localStorage.removeItem("localLog")
+    const clearLog = (type: string) => {
+        let tempLogs = getLogs();
+        var saveLogs = tempLogs?.filter(item => item.type != type);
+        if (saveLogs) {
+            localStorage.removeItem("localLog");
+            localStorage.setItem("localLog", JSON.stringify(saveLogs))
+        }
     }
     return { add, addRange, getLogs, addSystem, clearLog }
 }

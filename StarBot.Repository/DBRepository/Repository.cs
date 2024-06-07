@@ -298,11 +298,12 @@ namespace StarBot.Repository
             int row = await Db.Deleteable(entities.ToList()).ExecuteCommandAsync();
             return row > 0;
         }
+
         /// <summary>
         /// 根据主键删除实体
         /// </summary>
         /// <param name="id">主键</param>
-        public virtual async Task<bool> DeleteAsync(object id)
+        public virtual async Task<bool> DeleteAsync<Tid>(Tid id) where Tid : struct
         {
             int row = await Db.Deleteable<T>().In(id).ExecuteCommandAsync();
             return row > 0;
@@ -312,7 +313,7 @@ namespace StarBot.Repository
         /// 根据主键删除实体
         /// </summary>
         /// <param name="ids">主键</param>
-        public virtual async Task<bool> DeleteAsync(object[] ids)
+        public virtual async Task<bool> DeleteAsync<Tid>(IEnumerable<Tid> ids) where Tid : struct
         {
             int row = await Db.Deleteable<T>().In(ids).ExecuteCommandAsync();
             return row > 0;

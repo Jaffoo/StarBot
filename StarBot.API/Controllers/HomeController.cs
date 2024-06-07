@@ -299,6 +299,18 @@ namespace StarBot.Controllers
         }
 
         /// <summary>
+        /// 删除图片
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost("delimgs")]
+        public async Task<ApiResult> DelImg([FromBody] List<int> ids)
+        {
+            var b = await _sysCache.DeleteAsync(ids);
+            return AjaxResult(b);
+        }
+
+        /// <summary>
         /// 获取qq插件功能
         /// </summary>
         /// <returns></returns>

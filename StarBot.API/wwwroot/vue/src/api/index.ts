@@ -50,6 +50,11 @@ export const delImg = async (id: number) => {
     return response.data;
 }
 
+export const delImgs = async (ids: number[]) => {
+    const response = await axios.post<ApiResult>(`${_baseUrl}/delimgs`, ids);
+    return response.data;
+}
+
 export const getFun = async () => {
     const response = await axios.get<ApiResult>(`${_baseUrl}/getfun`);
     return response.data;

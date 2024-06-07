@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Security.Cryptography;
 using PageModel = StarBot.Model.PageModel;
 
 namespace StarBot.Repository
@@ -135,13 +136,13 @@ namespace StarBot.Repository
         /// 根据主键删除实体
         /// </summary>
         /// <param name="id">主键</param>
-        Task<bool> DeleteAsync(object id);
+        Task<bool> DeleteAsync<Tid>(Tid id) where Tid : struct;
 
         /// <summary>
         /// 根据主键删除实体
         /// </summary>
         /// <param name="ids">主键</param>
-        Task<bool> DeleteAsync(object[] ids);
+        Task<bool> DeleteAsync<Tid>(IEnumerable<Tid> ids) where Tid : struct;
 
         /// <summary>
         /// 根据条件删除实体
