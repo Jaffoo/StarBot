@@ -6,6 +6,7 @@ using Config = StarBot.Model.Config;
 using Microsoft.Extensions.DependencyInjection;
 using TBC.CommonLib;
 using UnifyBot.Message.Chain;
+using StarBot.Helper;
 
 namespace StarBot.Extension
 {
@@ -158,9 +159,10 @@ namespace StarBot.Extension
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     await _sysLog.WriteLog("(ERROR_1)获取微博信息失败，URL:" + url);
+                    UtilHelper.WriteLog(e.Message, prefix: "ERROR_1");
                     return;
                 }
             }
@@ -242,9 +244,10 @@ namespace StarBot.Extension
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     await _sysLog.WriteLog("(ERROR_2)获取微博信息失败，URL:" + url);
+                    UtilHelper.WriteLog(e.Message, prefix: "ERROR_2");
                     return;
                 }
             }
@@ -278,9 +281,10 @@ namespace StarBot.Extension
                     Thread.Sleep(1000);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 await _sysLog.WriteLog("(ERROR_3)获取微博信息失败，URL:" + url);
+                UtilHelper.WriteLog(e.Message, prefix: "ERROR_3");
             }
         }
 
@@ -373,7 +377,8 @@ namespace StarBot.Extension
             }
             catch (Exception e)
             {
-                await _sysLog.WriteLog("(ERROR_4)" + e.Message);
+                await _sysLog.WriteLog("(ERROR_4)人脸识别失败！");
+                UtilHelper.WriteLog(e.Message, prefix: "ERROR_4");
                 return;
             }
         }
