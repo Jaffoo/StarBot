@@ -42,7 +42,7 @@
                             <el-col><span title="每分钟更新一次">错误日志</span>
                                 <el-icon :size="18" title="每分钟更新一次">
                                     <Refresh class="et3"
-                                        @click="async () => errLogs = (await getLogs()).data.reverse()" />
+                                        @click="async () => errLogs = (await getLogs()).data" />
                                 </el-icon>
                             </el-col>
                         </el-row>

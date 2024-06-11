@@ -54,13 +54,12 @@ namespace StarBot.Extension
         }
         public async Task Save()
         {
-            string url = "";
-            try
+            var allList = Config.WB.UserAll.ToListStr().Concat(Config.WB.UserPart.ToListStr());
+            foreach (var item in allList)
             {
-                var allList = Config.WB.UserAll.ToListStr().Concat(Config.WB.UserPart.ToListStr());
-                foreach (var item in allList)
+                var url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
+                try
                 {
-                    url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
                     var handler = new HttpClientHandler() { UseCookies = true };
                     HttpClient httpClient = new(handler);
                     var headers = GetHeader(item);
@@ -159,21 +158,21 @@ namespace StarBot.Extension
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                await _sysLog.WriteLog(e.Message);
-                return;
+                catch (Exception)
+                {
+                    await _sysLog.WriteLog("(ERROR_1)获取微博信息失败，URL:" + url);
+                    return;
+                }
             }
         }
 
         public async Task ChiGua()
         {
-            try
+            foreach (var item in Config.WB.ChiGuaUser.ToListStr())
             {
-                foreach (var item in Config.WB.ChiGuaUser.ToListStr())
+                var url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
+                try
                 {
-                    var url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
                     HttpClient httpClient = new();
                     var headers = GetHeader(item);
                     var request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -243,20 +242,20 @@ namespace StarBot.Extension
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                await _sysLog.WriteLog(e.Message);
-                return;
+                catch (Exception)
+                {
+                    await _sysLog.WriteLog("(ERROR_2)获取微博信息失败，URL:" + url);
+                    return;
+                }
             }
         }
 
         public async Task SaveByUrl(string id)
         {
+            var url = "https://weibo.com/ajax/statuses/show?id=" + id;
             try
             {
                 await ReciverMsg.Instance.SendAdminMsg("开始识别微博连接");
-                var url = "https://weibo.com/ajax/statuses/show?id=" + id;
                 var handler = new HttpClientHandler() { UseCookies = true };
                 HttpClient httpClient = new(handler);
                 var headers = GetHeader(id);
@@ -279,9 +278,9 @@ namespace StarBot.Extension
                     Thread.Sleep(1000);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                await _sysLog.WriteLog(e.Message);
+                await _sysLog.WriteLog("(ERROR_3)获取微博信息失败，URL:" + url);
             }
         }
 
@@ -374,7 +373,7 @@ namespace StarBot.Extension
             }
             catch (Exception e)
             {
-                await _sysLog.WriteLog(e.Message);
+                await _sysLog.WriteLog("(ERROR_4)" + e.Message);
                 return;
             }
         }

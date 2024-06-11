@@ -437,12 +437,11 @@ namespace StarBot.Controllers
                 await file.CopyToAsync(stream);
             }
             string url = "/images/standard/" + name;
-           
+
             object obj = new
             {
                 name,
-                url,
-                base64 = Base64Helper.PathToBase64("wwwroot"+ url)
+                url
             };
             return DataResult(obj);
         }
@@ -582,7 +581,7 @@ namespace StarBot.Controllers
         [HttpGet("getlogs")]
         public async Task<ApiResult> GetLogs()
         {
-            var logs = await _sysLog.GetListAsync(10);
+            var logs = await _sysLog.GetListAsync(10, ordering: "Id Desc");
             return DataResult(logs);
         }
     }
