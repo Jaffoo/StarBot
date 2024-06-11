@@ -165,6 +165,10 @@ export const logApi = () => {
         }
     }
     const clearLog = (type: string) => {
+        if (type == "all") {
+            localStorage.removeItem("localLog");
+            return;
+        }
         let tempLogs = getLogs();
         var saveLogs = tempLogs?.filter(item => item.type != type);
         if (saveLogs) {
