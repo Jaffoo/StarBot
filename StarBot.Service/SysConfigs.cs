@@ -5,6 +5,7 @@ using StarBot.Model;
 using StarBot.Repository;
 using Newtonsoft.Json.Linq;
 using TBC.CommonLib;
+using System.Text.RegularExpressions;
 
 namespace StarBot.Service
 {
@@ -46,7 +47,7 @@ namespace StarBot.Service
                     if (newVal == "False" || newVal == "True") newVal = newVal.ToLower();
                     if (newVal == "[]") newVal = "";
                     if (newVal == child.Value) continue;
-                    child.Value = newVal;
+                    child.Value = Regex.Replace(newVal, @"[ \t\r\n]", "");;
                     ClearConfig(pModel.Key);
                     updates.Add(child);
                 }
