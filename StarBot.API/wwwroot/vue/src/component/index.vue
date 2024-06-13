@@ -441,18 +441,18 @@ const handleMessage = async function (msg: any) {
             kdMsg.content = kdMsg.idol + "开启了房间电台";
         }
         //文字翻牌
-        else if (customType = "FLIPCARD") {
+        else if (customType == "FLIPCARD") {
             kdMsg.reply = "[文字翻牌]粉丝提问：<br/>" + attach?.filpCardInfo?.question;
             kdMsg.content = attach?.filpCardInfo?.answer;
         }
         //语言翻牌
-        else if (customType = "FLIPCARD_AUDIO") {
+        else if (customType == "FLIPCARD_AUDIO") {
             kdMsg.type = 'audio'
             kdMsg.reply = "[语言翻牌]粉丝提问：<br/>" + attach?.filpCardInfo?.question;
             kdMsg.url = domain + attach?.filpCardInfo?.answer?.url;
         }
         //视频翻牌
-        else if (customType = "FLIPCARD_VIDEO") {
+        else if (customType == "FLIPCARD_VIDEO") {
             kdMsg.type = 'video'
             kdMsg.reply = "[视频翻牌]粉丝提问：<br/>" + attach?.filpCardInfo?.question;
             kdMsg.url = domain + attach?.filpCardInfo?.answer?.url;

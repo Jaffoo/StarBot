@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentScheduler" Version="5.5.1" />
-    <PackageReference Include="UnifyBot" Version="1.1.7" />
+    <PackageReference Include="UnifyBot" Version="1.1.8" />
   </ItemGroup>
 
 </Project>
