@@ -14,13 +14,13 @@
                 <el-switch v-model="wb.forwardGroup" active-text="转发" inactive-text="不转发" />
             </el-form-item>
             <el-form-item label="群qq号" v-if="wb.forwardGroup">
-                <el-input v-model="wb.group" />
+                <SearchGroup :value="wb.group" multiple :bot="bot" @change="(data) => wb.group = data"></SearchGroup>
             </el-form-item>
             <el-form-item label="转发至好友">
                 <el-switch v-model="wb.forwardQQ" active-text="转发" inactive-text="不转发" />
             </el-form-item>
             <el-form-item label="好友qq" v-if="wb.forwardQQ">
-                <el-input v-model="wb.qq" />
+                <SearchFriend :value="wb.qq" multiple :bot="bot" @change="(data) => wb.qq = data"></SearchFriend>
             </el-form-item>
             <el-form-item label="吃瓜用户">
                 <el-input v-model="wb.chiGuaUser" /><span style="color: red;">监听某些用户是否发送了包含关键词的动态</span>
@@ -32,13 +32,13 @@
                 <el-switch v-model="wb.chiGuaForwardGroup" active-text="转发" inactive-text="不转发" />
             </el-form-item>
             <el-form-item label="群qq号" v-if="wb.chiGuaForwardGroup">
-                <el-input v-model="wb.chiGuaGroup" />
+                <SearchGroup :value="wb.chiGuaGroup" multiple :bot="bot" @change="(data) => wb.chiGuaGroup = data"></SearchGroup>
             </el-form-item>
             <el-form-item label="转发至好友">
                 <el-switch v-model="wb.chiGuaForwardQQ" active-text="转发" inactive-text="不转发" />
             </el-form-item>
             <el-form-item label="好友qq" v-if="wb.chiGuaForwardQQ">
-                <el-input v-model="wb.chiGuaQQ" />
+                <SearchFriend :value="wb.chiGuaQQ" multiple :bot="bot" @change="(data) => wb.chiGuaQQ = data"></SearchFriend>
             </el-form-item>
             <el-form-item label="监听间隔"
                 v-if="wb.forwardQQ || wb.forwardGroup || wb.chiGuaForwardGroup || wb.chiGuaForwardQQ">
@@ -50,8 +50,11 @@
 
 <script setup lang="ts" name="wb">
 import { ref, type PropType } from 'vue'
-import type { WB } from '@/class/model'
+import type { Bot, WB } from '@/class/model'
 import type { FormInstance, FormRules } from 'element-plus';
+import SearchFriend from './searchFriend.vue';
+import SearchGroup from './searchGroup.vue';
+
 const props = defineProps({
     wb: {
         type: Object as PropType<WB>,
@@ -70,7 +73,18 @@ const props = defineProps({
             forwardQQ: false,
             qq: '',
         }
-    }
+    },
+    bot: {
+        type: Object as PropType<Bot>,
+        default: () => {
+            return {
+                host: '',
+                websocktPort: 0,
+                httpPort: 0,
+                token: ''
+            }
+        }
+    },
 })
 const wbform = ref<FormInstance>();
 const rules = ref<FormRules>(

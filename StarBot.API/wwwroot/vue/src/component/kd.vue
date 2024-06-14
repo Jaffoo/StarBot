@@ -52,13 +52,13 @@
                 <el-switch v-model="kd.forwardGroup" active-text="转发" inactive-text="不转发" />
             </el-form-item>
             <el-form-item label="群qq号" v-if="kd.forwardGroup">
-                <el-input v-model="kd.group" />
+                <SearchGroup :value="kd.group" multiple :bot="bot" @change="(data) => kd.group = data"></SearchGroup>
             </el-form-item>
             <el-form-item label="转发至好友">
                 <el-switch v-model="kd.forwardQQ" active-text="转发" inactive-text="不转发" />
             </el-form-item>
             <el-form-item label="好友qq" v-if="kd.forwardQQ">
-                <el-input v-model="kd.qq" />
+                <SearchFriend :value="kd.qq" multiple :bot="bot" @change="(data) => kd.qq = data"></SearchFriend>
             </el-form-item>
         </el-form>
         <el-dialog draggable title="登录口袋48" v-model="loginKD" :before-close="close" :close-on-click-modal="false">
@@ -108,9 +108,11 @@
 
 <script setup lang="ts" name="qq">
 import { ref, type PropType } from 'vue'
-import type { KD, MsgType } from '@/class/model'
+import type { Bot, KD, MsgType } from '@/class/model'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
 import { kdUserInfo, pocketLogin, sendSmsCode, searchIdol, } from "@/api"
+import SearchFriend from './searchFriend.vue';
+import SearchGroup from './searchGroup.vue';
 
 const props = defineProps({
     kd: {
@@ -130,7 +132,18 @@ const props = defineProps({
             saveMsg: 0,
             saveImg: false
         }
-    }
+    },
+    bot: {
+        type: Object as PropType<Bot>,
+        default: () => {
+            return {
+                host: '',
+                websocktPort: 0,
+                httpPort: 0,
+                token: ''
+            }
+        }
+    },
 })
 const kdform = ref<FormInstance>();
 const rules = ref<FormRules>(

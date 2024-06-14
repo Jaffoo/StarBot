@@ -11,13 +11,13 @@
                 <el-switch v-model="dy.forwardGroup" active-text="转发" inactive-text="不转发" />
             </el-form-item>
             <el-form-item label="群qq号" v-if="dy.forwardGroup">
-                <el-input v-model="dy.group" />
+                <SearchGroup :value="dy.group" multiple :bot="bot" @change="(data) => dy.group = data"></SearchGroup>
             </el-form-item>
             <el-form-item label="转发至好友">
                 <el-switch v-model="dy.forwardQQ" active-text="转发" inactive-text="不转发" />
             </el-form-item>
             <el-form-item label="好友qq" v-if="dy.forwardQQ">
-                <el-input v-model="dy.qq" />
+                <SearchFriend :value="dy.qq" multiple :bot="bot" @change="(data) => dy.qq = data"></SearchFriend>
             </el-form-item>
             <el-form-item label="监听间隔" v-if="dy.forwardQQ || dy.forwardGroup">
                 <el-input-number v-model="dy.timeSpan" />
@@ -28,8 +28,11 @@
 
 <script setup lang="ts" name="dy">
 import { ref, type PropType } from 'vue'
-import type { DY_XHS_BZ as DY } from '@/class/model'
+import type { Bot, DY_XHS_BZ as DY } from '@/class/model'
 import type { FormInstance, FormRules } from 'element-plus';
+import SearchFriend from './searchFriend.vue';
+import SearchGroup from './searchGroup.vue';
+
 defineProps({
     dy: {
         type: Object as PropType<DY>,
@@ -41,7 +44,18 @@ defineProps({
             qq: '',
             timeSpan: 3
         }
-    }
+    },
+    bot: {
+        type: Object as PropType<Bot>,
+        default: () => {
+            return {
+                host: '',
+                websocktPort: 0,
+                httpPort: 0,
+                token: ''
+            }
+        }
+    },
 })
 const dyform = ref<FormInstance>();
 const rules = ref<FormRules>(

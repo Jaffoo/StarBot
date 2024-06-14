@@ -11,13 +11,13 @@
                 <el-switch v-model="xhs.forwardGroup" active-text="转发" inactive-text="不转发" />
             </el-form-item>
             <el-form-item label="群qq号" v-if="xhs.forwardGroup">
-                <el-input v-model="xhs.group" />
+                <SearchGroup :value="xhs.group" :bot="bot" multiple @change="(val) => xhs.group = val" />
             </el-form-item>
             <el-form-item label="转发至好友">
                 <el-switch v-model="xhs.forwardQQ" active-text="转发" inactive-text="不转发" />
             </el-form-item>
             <el-form-item label="好友qq" v-if="xhs.forwardQQ">
-                <el-input v-model="xhs.qq" />
+                <SearchFriend :value="xhs.qq" :bot="bot" multiple @change="(val) => xhs.qq = val" />
             </el-form-item>
             <el-form-item label="监听间隔" v-if="xhs.forwardQQ || xhs.forwardGroup">
                 <el-input-number v-model="xhs.timeSpan" />
@@ -28,8 +28,10 @@
 
 <script setup lang="ts" name="xhs">
 import { ref, type PropType } from 'vue'
-import type { DY_XHS_BZ as XHS } from '@/class/model'
+import type { Bot, DY_XHS_BZ as XHS } from '@/class/model'
 import type { FormInstance, FormRules } from 'element-plus';
+import SearchFriend from './searchFriend.vue';
+import SearchGroup from './searchGroup.vue';
 
 const props = defineProps({
     xhs: {
@@ -42,7 +44,18 @@ const props = defineProps({
             qq: '',
             timeSpan: 3
         }
-    }
+    },
+    bot: {
+        type: Object as PropType<Bot>,
+        default: () => {
+            return {
+                host: '',
+                websocktPort: 0,
+                httpPort: 0,
+                token: ''
+            }
+        }
+    },
 })
 const xhsform = ref<FormInstance>();
 const rules = ref<FormRules>(
