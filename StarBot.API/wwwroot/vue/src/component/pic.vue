@@ -66,6 +66,7 @@ const getData = async () => {
 const delmore = async () => {
     var selects = tableRef.value.getSelectionRows();
     await delImgs(selects.map((item: any) => item.id));
+    await getData();
 }
 onMounted(async () => {
     await getData();

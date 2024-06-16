@@ -152,7 +152,7 @@ namespace StarBot.Extension
                                         var imgUrl = picInfo[picId]!["original"]!["url"]!.ToString();
                                         var fileName = Path.GetFileName(imgUrl);
                                         imgUrl = "https://cdn.ipfsscan.io/weibo/large/" + fileName;
-                                        await FatchFace(imgUrl, true);
+                                        await new Baidu().FatchFace(imgUrl, "微博");
                                     }
                                 }
                             }
@@ -277,7 +277,7 @@ namespace StarBot.Extension
                 foreach (var item in picList)
                 {
                     var img = "https://cdn.ipfsscan.io/weibo/large/" + item + ".jpg";
-                    await FatchFace(img, true);
+                    await new Baidu().FatchFace(img, "微博");
                     Thread.Sleep(1000);
                 }
             }
@@ -285,101 +285,6 @@ namespace StarBot.Extension
             {
                 await _sysLog.WriteLog("(ERROR_3)获取微博信息失败，URL:" + url);
                 UtilHelper.WriteLog(e.Message, prefix: "ERROR_3");
-            }
-        }
-
-        public async Task FatchFace(string url, bool save = false)
-        {
-            try
-            {
-                if (!Config.EnableModule.BD || !Config.BD.FaceVerify)
-                {
-                    await _sysCache.AddAsync(new()
-                    {
-                        Content = url,
-                        Type = 1,
-                        CreateDate = DateTime.Now,
-                    });
-                    await ReciverMsg.Instance.SendAdminMsg($"未启用百度人脸识别，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
-                    return;
-                }
-                var face = await new Baidu().IsFaceAndCount(url);
-                if (face == 1)
-                {
-                    var score = await new Baidu().FaceMatch(url);
-                    if (score != Config.BD.Audit) await ReciverMsg.Instance.SendAdminMsg($"人脸对比相似度：{score}");
-
-                    if (score >= Config.BD.Audit && score < Config.BD.Similarity)
-                    {
-                        await _sysCache.AddAsync(new()
-                        {
-                            Content = url,
-                            Type = 1,
-                            CreateDate = DateTime.Now,
-                        });
-                        await ReciverMsg.Instance.SendAdminMsg($"相似度低于{Config.BD.Similarity}，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
-                        return;
-                    }
-                    if (score >= Config.BD.Similarity && score <= 100)
-                    {
-                        if (!await new FileHelper().Save(url))
-                        {
-                            await _sysCache.AddAsync(new()
-                            {
-                                Content = url,
-                                Type = 1,
-                                CreateDate = DateTime.Now,
-                            });
-                            await ReciverMsg.Instance.SendAdminMsg($"保存失败，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
-                        }
-                        else
-                        {
-                            string msg = $"相似大于{Config.BD.Similarity}，已保存本地";
-                            if (Config.BD.SaveAliyunDisk) msg += $"，正在上传至阿里云盘【{Config.BD.AlbumName}】相册";
-                            await ReciverMsg.Instance.SendAdminMsg(msg);
-                        }
-                        return;
-                    }
-                    if (save)
-                    {
-                        await _sysCache.AddAsync(new()
-                        {
-                            Content = url,
-                            Type = 1,
-                            CreateDate = DateTime.Now,
-                        });
-                        await ReciverMsg.Instance.SendAdminMsg($"加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
-                        return;
-                    }
-                }
-                else if (face > 1)
-                {
-                    await _sysCache.AddAsync(new()
-                    {
-                        Content = url,
-                        Type = 1,
-                        CreateDate = DateTime.Now,
-                    });
-                    await ReciverMsg.Instance.SendAdminMsg($"识别到多个人脸，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
-                    return;
-                }
-                else if (face == 0 && save)
-                {
-                    await _sysCache.AddAsync(new()
-                    {
-                        Content = url,
-                        Type = 1,
-                        CreateDate = DateTime.Now,
-                    });
-                    await ReciverMsg.Instance.SendAdminMsg($"未识别到人脸，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
-                }
-                return;
-            }
-            catch (Exception e)
-            {
-                await _sysLog.WriteLog("(ERROR_4)人脸识别失败！");
-                UtilHelper.WriteLog(e.Message, prefix: "ERROR_4");
-                return;
             }
         }
     }

@@ -146,7 +146,7 @@ namespace StarBot.Extension
                                 foreach (var pic in picList)
                                 {
                                     var imgUrl = pic["img_src"]!.ToString();
-                                    await new Weibo().FatchFace(imgUrl);
+                                    await new Baidu().FatchFace(imgUrl, "哔哩哔哩");
                                 }
                             }
                         }

@@ -120,7 +120,7 @@ namespace StarBot.Extension
                         {
                             var imgUrl = pic["infoList"]?[1]?["url"]?.ToString();
                             if (!string.IsNullOrWhiteSpace(imgUrl))
-                                await new Weibo().FatchFace(imgUrl, true);
+                                await new Baidu().FatchFace(imgUrl, "小红书");
                         }
                     }
                     else

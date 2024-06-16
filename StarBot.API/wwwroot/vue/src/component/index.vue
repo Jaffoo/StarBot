@@ -514,7 +514,7 @@ const oneMinTimer = () => {
     oneMin.value = setInterval(oneMinFun, 10000)
 }
 const oneMinFun = async () => {
-    errLogs.value = (await getLogs()).data.reverse();
+    errLogs.value = (await getLogs()).data;
     let plugInfo = (await getFun()).data
     let picInfo = await getCache({ pageIndex: 1, pageSize: 9999 })
     info.value.plugin.total = plugInfo.length
