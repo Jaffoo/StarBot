@@ -35,8 +35,7 @@
                             <el-card body-class="card-body-diy" class="wrap-text">
                                 <div v-if="item.reply" style="font-size: 12px;color: grey;">引用--{{ item.reply }}
                                 </div>
-                                <div v-if="item.content" :style="{ color: item.color }">
-                                    {{ item.content }}
+                                <div v-if="item.content" :style="{ color: item.color }" v-html="item.content">
                                 </div>
                                 <a v-if="item.type == 'link'" :href="item.url" target="_blank">
                                     {{ item.url }}
