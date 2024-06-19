@@ -122,16 +122,20 @@ const exportLog = () => {
         return;
     }
     let text = [''];
-    logs.value.filter(x => x.type == logType.value).forEach(item => {
+    let logsTmp = logApi().getLogs()!;
+    if (logType.value != "all") {
+        logsTmp = logsTmp.filter(x => x.type == logType.value)
+    }
+    logsTmp.forEach(item => {
         let str = "系统信息：";
         if (item.name) str = item.name;
         if (item.idol) str += "[" + item.idol + "-" + item.channel + "]：";
         if (item.content) str += item.content;
-        if(item.type=="pic")str += "[图片](";
-        if(item.type=="link")str += "[链接](";
-        if(item.type=="audio")str += "[音频](";
-        if(item.type=="video")str += "[视频](";
-        if (item.url) str +=  item.url + ")";
+        if (item.type == "pic") str += "[图片](";
+        if (item.type == "link") str += "[链接](";
+        if (item.type == "audio") str += "[音频](";
+        if (item.type == "video") str += "[视频](";
+        if (item.url) str += item.url + ")";
         if (item.reply) str += "-----引用自-" + item.reply;
         text.push(str);
     })

@@ -6,11 +6,10 @@ using System.Diagnostics;
 using System.Drawing;
 using TBC.CommonLib;
 using IWshRuntimeLibrary;
-using System;
-using static Photino.NET.PhotinoWindow;
 using System.Text;
+using System.Reflection;
 
-namespace HelloPhotinoApp
+namespace StarBot.Photino
 {
     class Program
     {
@@ -133,7 +132,9 @@ namespace HelloPhotinoApp
             IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(link);
 
             // 设置快捷方式的目标路径
-            shortcut.TargetPath = Path.Combine(Directory.GetCurrentDirectory(), "StarBot.exe");
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            string rootNamespace = assembly.GetName().Name!;
+            shortcut.TargetPath = Path.Combine(Directory.GetCurrentDirectory(), rootNamespace+".exe");
 
             //设置起始位置，保持工作目录一致
             shortcut.WorkingDirectory = Directory.GetCurrentDirectory();

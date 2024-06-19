@@ -62,11 +62,11 @@
             <el-col :span="24">
                 <el-card shadow="hover" header="快速预览" class="chauto">
                     <el-row :gutter="15">
-                        <el-col :span="8">
+                        <el-col :span="7">
                             <el-card shadow="hover" class="ch320">
                                 <template #header><span title="每分钟更新一次">数据总览</span>
                                 </template>
-                                <div>
+                                <el-scrollbar height="210px" style="margin-top:-10px">
                                     <label>日志</label>
                                     <div>
                                         <span class="fs14">全部:{{ info.log.total }}</span>
@@ -76,40 +76,44 @@
                                         <el-divider direction="vertical" />
                                         <span class="fs14">其他:{{ info.log.other }}</span>
                                     </div>
-                                </div>
-                                <el-divider />
-                                <div>
-                                    <label>图片信息</label>
+                                    <el-divider />
                                     <div>
-                                        <span class="fs14">全部:{{ info.pic.total }}</span>
-                                        <el-divider direction="vertical" />
-                                        <span class="fs14">今日:{{ info.pic.today }}</span>
-                                        <el-divider direction="vertical" />
-                                        <span class="fs14">更早:{{ info.pic.old }}</span>
+                                        <label>图片信息</label>
+                                        <div>
+                                            <span class="fs14">全部:{{ info.pic.total }}</span>
+                                            <el-divider direction="vertical" />
+                                            <span class="fs14">今日:{{ info.pic.today }}</span>
+                                            <el-divider direction="vertical" />
+                                            <span class="fs14">更早:{{ info.pic.old }}</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <el-divider />
-                                <div v-if="enable.bot">
-                                    <label>插件信息</label>
-                                    <div>
-                                        <span class="fs14">全部:{{ info.plugin.total }}</span>
-                                        <el-divider direction="vertical" />
-                                        <span class="fs14">启用:{{ info.plugin.using }}</span>
-                                        <el-divider direction="vertical" />
-                                        <span class="fs14">禁用:{{ info.plugin.unusing }}</span>
+                                    <el-divider />
+                                    <div v-if="enable.bot">
+                                        <label>插件信息</label>
+                                        <div>
+                                            <span class="fs14">全部:{{ info.plugin.total }}</span>
+                                            <el-divider direction="vertical" />
+                                            <span class="fs14">启用:{{ info.plugin.using }}</span>
+                                            <el-divider direction="vertical" />
+                                            <span class="fs14">禁用:{{ info.plugin.unusing }}</span>
+                                        </div>
                                     </div>
-                                </div>
+                                </el-scrollbar>
                             </el-card>
                         </el-col>
-                        <el-col :span="8" v-if="enable.kd">
+                        <el-col :span="10" v-if="enable.kd">
                             <el-card shadow="hover" class="ch320">
                                 <template #header><span title="实时更新">口袋消息</span>
                                 </template>
                                 <el-scrollbar height="250px" style="margin-top:-10px">
-                                    <ul style="margin-top:-3px;margin-left: -20px;">
-                                        <li v-for="item in kdLogs">
-                                            <span>{{ item.name }}</span>
-                                            <span style="color: gray;font-size: 14px;">{{ item.time }}</span>
+                                    <ul style="margin-top:-3px;margin-left: -40px;">
+                                        <div v-for="item in kdLogs">
+                                            <span style="font-size: 14px;">{{ item.name }}</span>
+                                            <span style="color: gray;font-size: 11px;">
+                                                {{ item.idol }}
+                                                [{{ item.channel }}]
+                                                {{ item.time }}
+                                            </span>
                                             <div v-if="item.content" @click="viewLog(item.content!, '口袋消息')"
                                                 title="点击查看" style="color:skyblue;cursor: pointer;">
                                                 {{ item.content?.substring(0, 20) }}
@@ -128,42 +132,45 @@
                                                 <audio style="width:100%" v-if="item.type == 'audio'" controls
                                                     :src="item.url"></audio>
                                             </div>
-                                        </li>
+                                        </div>
                                     </ul>
                                 </el-scrollbar>
                             </el-card>
                         </el-col>
-                        <el-col :span="8" v-show="carousel == 'help'">
+                        <el-col :span="7" v-show="carousel == 'help'">
                             <el-card shadow="hover" class="ch320">
                                 <template #header>帮助反馈
                                     <el-icon :size="16">
                                         <Switch class="et2" circle @click="() => carousel = 'log'"></Switch>
                                     </el-icon>
                                 </template>
-                                <div>
-                                    <span>1、QQ机器人部署(2选1)：</span>
-                                    <div class="mt5">
-                                        <a href="https://llonebot.github.io/zh-CN/" target="_blank">LLOneBot</a>
-                                        <span style="font-size: 14px;color: gray;">：配置简单，可视化配置，占用电脑资源较高(>=300m内存)</span>
+                                <el-scrollbar height="210px" style="margin-top:-10px">
+                                    <div>
+                                        <span>1、QQ机器人部署(2选1)：</span>
+                                        <div class="mt5">
+                                            <a href="https://llonebot.github.io/zh-CN/" target="_blank">LLOneBot</a>
+                                            <span
+                                                style="font-size: 14px;color: gray;">：配置简单，可视化配置，占用电脑资源较高(>=300m内存)</span>
+                                        </div>
+                                        <div class="mt5">
+                                            <a href="https://napneko.github.io/zh-CN/" target="_blank">NapCatBot</a>
+                                            <span style="font-size: 14px;color: gray;">：非可视化配置，配置过程相对LLOneBot复杂，占用资源低(
+                                                <=100m内存) </span>
+                                        </div>
                                     </div>
-                                    <div class="mt5">
-                                        <a href="https://napneko.github.io/zh-CN/" target="_blank">NapCatBot</a>
-                                        <span style="font-size: 14px;color: gray;">：非可视化配置，配置过程相对LLOneBot复杂，占用资源低(
-                                            <=100m内存) </span>
+                                    <div class="mt10">
+                                        <span>2、配置项说明：</span>
+                                        <a href="https://gitee.com/jaffoo/ParkerBot#配置教程" target="_blank">参照此文档</a>
+                                        <span style="font-size: 14px;color: gray;"></span>
                                     </div>
-                                </div>
-                                <div class="mt10">
-                                    <span>2、配置项说明：</span>
-                                    <a href="https://gitee.com/jaffoo/ParkerBot#配置教程" target="_blank">参照此文档</a>
-                                    <span style="font-size: 14px;color: gray;"></span>
-                                </div>
-                                <div class="mt10">
-                                    <span>3、联系作者QQ：</span>
-                                    <span style="color: blue;">1615842006</span>
-                                </div>
+                                    <div class="mt10">
+                                        <span>3、联系作者QQ：</span>
+                                        <span style="color: blue;">1615842006</span>
+                                    </div>
+                                </el-scrollbar>
                             </el-card>
                         </el-col>
-                        <el-col :span="8" v-show="carousel == 'log'">
+                        <el-col :span="7" v-show="carousel == 'log'">
                             <el-card shadow="hover" class="ch320">
                                 <template #header>本地日志
                                     <el-icon :size="16">
