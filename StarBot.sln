@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginServer", "PluginServe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarBot.Timer", "StarBot.Timer\StarBot.Timer.csproj", "{827BAA05-E7EE-4F06-9E5E-6DA0F941D26C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarBot", "StarBot\StarBot.csproj", "{6AEE7FDD-8503-42C5-9F8C-52CBF9E21C57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarBot", "StarBot\StarBot.csproj", "{6AEE7FDD-8503-42C5-9F8C-52CBF9E21C57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarBot.Photino", "StarBot.Photino\StarBot.Photino.csproj", "{B2769FD2-13C8-4CD9-ACE9-A4C17C3224B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +76,10 @@ Global
 		{6AEE7FDD-8503-42C5-9F8C-52CBF9E21C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AEE7FDD-8503-42C5-9F8C-52CBF9E21C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AEE7FDD-8503-42C5-9F8C-52CBF9E21C57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2769FD2-13C8-4CD9-ACE9-A4C17C3224B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2769FD2-13C8-4CD9-ACE9-A4C17C3224B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2769FD2-13C8-4CD9-ACE9-A4C17C3224B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2769FD2-13C8-4CD9-ACE9-A4C17C3224B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

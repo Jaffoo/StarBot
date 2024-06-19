@@ -41,8 +41,7 @@
                         <el-row>
                             <el-col><span title="每分钟更新一次">错误日志</span>
                                 <el-icon :size="18" title="每分钟更新一次">
-                                    <Refresh class="et3"
-                                        @click="async () => errLogs = (await getLogs()).data" />
+                                    <Refresh class="et3" @click="async () => errLogs = (await getLogs()).data" />
                                 </el-icon>
                             </el-col>
                         </el-row>
@@ -124,7 +123,10 @@
                                                     :href="item.url">链接消息，点击查看！</a>
                                             </div>
                                             <div v-if="item.type == 'audio' || item.type == 'video'">
-                                                <a :href="item.url" target="_blank">点击播放视频或音频</a>
+                                                <span v-if="item.type == 'video'" style="cursor: pointer;color: blue;"
+                                                    @click="viewVideoPlay(item.url)">点击播放视频</span>
+                                                <audio style="width:100%" v-if="item.type == 'audio'" controls
+                                                    :src="item.url"></audio>
                                             </div>
                                         </li>
                                     </ul>
@@ -183,6 +185,12 @@
                 </el-card>
             </el-col>
         </el-row>
+        <el-dialog align-center v-model="viewVideo.show" :width="viewVideo.modalWidth">
+            <div class="centered-content">
+                <video controls :style="{ height: viewVideo.height, width: viewVideo.width }"
+                    :src="viewVideo.url"></video>
+            </div>
+        </el-dialog>
     </el-scrollbar>
 </template>
 <script setup lang="ts" name="index">
@@ -250,6 +258,15 @@ const oneMin = ref<NodeJS.Timeout>();
 const oneSec = ref<NodeJS.Timeout>()
 
 const carousel = ref('help')
+const viewVideo = ref(
+    {
+        show: false,
+        url: '',
+        width: '',
+        modalWidth: '',
+        height: ''
+    }
+)
 
 const startBot = async () => {
     const allFalse = Object.values(props.enable).every(value => value === false);
@@ -567,9 +584,40 @@ const refreshConfig = async () => {
     config.value = configTemp.data;
 }
 
-const openDebug = () => {
-    // @ts-ignore
-    window.external.devTool.openDevTool();
+const viewVideoPlay = (url?: string) => {
+    var viewportHeight = window.innerHeight;
+    var viewportWidth = window.innerWidth;
+
+    var dom = document.createElement("video");
+    dom.src = url!;
+    dom.addEventListener('loadedmetadata', function () {
+        // 获取视频的原始高度和宽度
+        var videoHeight = dom.videoHeight;
+        var videoWidth = dom.videoWidth;
+        // 判断视频高度是否超出浏览器可视窗口高度
+        var height = (videoHeight) + 'px';
+        var width = (videoWidth) + 'px';
+        var modalWidth = (videoWidth + 150) + 'px';
+        if (videoHeight > viewportHeight || videoWidth > viewportWidth) {
+            // 计算缩小比例
+            var scaleHeight = viewportHeight / videoHeight;
+            var scaleWidth = viewportWidth / videoWidth;
+            var scale = Math.min(scaleHeight, scaleWidth) - 0.08;
+            console.log(viewportHeight, videoHeight, scaleHeight)
+            // 缩小视频尺寸
+            height = (videoHeight * scale) + 'px';
+            width = (videoWidth * scale) + 'px';
+            var modalWidth = (videoWidth * scale + 150) + 'px';
+        }
+
+        viewVideo.value.show = true;
+        viewVideo.value.url = url!;
+        viewVideo.value.width = width;
+        viewVideo.value.height = height;
+        viewVideo.value.modalWidth = modalWidth;
+        console.log(width, height)
+
+    });
 }
 
 onMounted(async () => {
@@ -630,5 +678,15 @@ defineExpose({
 
 .fs14 {
     font-size: 14px;
+}
+
+.centered-content {
+    display: flex;
+    justify-content: center;
+    /* 水平居中 */
+    align-items: center;
+    /* 垂直居中 */
+    height: 100%;
+    /* 可以根据需要设置高度 */
 }
 </style>

@@ -107,8 +107,8 @@ internal class StarBotUI : Formium
     {
         var conf = System.IO.File.ReadAllText("appsettings.json").ToJObject();
         var host = conf["Urls"]?.ToString();
-        url = host?.Replace("*", "localhost") ?? "http://localhost:" + port;
         port = host?.Replace("http://*:", "") ?? port;
+        url = host?.Replace("*", "localhost") ?? "http://localhost:" + port;
         // …Ë÷√÷˜“≥µÿ÷∑
         Url = url + "/bot/index.html";
 
