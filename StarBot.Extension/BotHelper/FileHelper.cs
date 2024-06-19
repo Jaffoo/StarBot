@@ -1,4 +1,3 @@
-using StarBot.Extension;
 using StarBot.IService;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;

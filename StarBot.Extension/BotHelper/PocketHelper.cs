@@ -77,7 +77,7 @@ namespace StarBot.Extension
                     {
                         await Task.Run(async () =>
                         {
-                            await new Weibo().FatchFace(msbBody);
+                            await new Baidu().FatchFace(msbBody, "口袋");
                         });
                     }
                     if (!Config.KD.MsgType.Contains(msgType)) return;
