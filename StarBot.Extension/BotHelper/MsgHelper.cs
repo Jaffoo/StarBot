@@ -14,6 +14,7 @@ using UnifyBot.Receiver.MessageReceiver;
 using UnifyBot.Receiver.EventReceiver;
 using UnifyBot.Model;
 using UnifyBot.Message;
+using StarBot.Helper;
 
 namespace StarBot.Extension
 {
@@ -41,11 +42,10 @@ namespace StarBot.Extension
 
         private ReciverMsg()
         {
-            var factory = DataService.BuildServiceProvider();
-            _sysConfig = factory.GetService<ISysConfig>()!;
-            _sysLog = factory.GetService<ISysLog>()!;
-            _cache = factory.GetService<ISysCache>()!;
-            _qqMessage = factory.GetService<IQQMessage>()!;
+            _sysConfig = ConfigHelper.GetService<ISysConfig>();
+            _sysLog = ConfigHelper.GetService<ISysLog>()!;
+            _cache = ConfigHelper.GetService<ISysCache>()!;
+            _qqMessage = ConfigHelper.GetService<IQQMessage>()!;
         }
 
         public static ReciverMsg Instance
