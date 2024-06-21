@@ -22,7 +22,7 @@ namespace StarBot.Controllers
         ISysCache _sysCache = sysCache;
         ISysIdol _sysIdol = sysIdol;
         ISysLog _sysLog = sysLog;
-        public static Process? AliProcess = null;
+
         private static UnifyBot.Bot? TempBot = null;
         public Config Config
         {
@@ -392,23 +392,21 @@ namespace StarBot.Controllers
         {
             if (Config.EnableModule.BD && Config.BD.SaveAliyunDisk)
             {
-                if (AliProcess != null)
-                {
-                    AliProcess.Kill();
-                    AliProcess = null;
-                }
                 Task.Run(() =>
                 {
-                    if (Process.GetProcessesByName("wwwroot/script/alipan-win").Length == 0)
+                    //关闭阿里云盘服务
+                    var alis = Process.GetProcessesByName("alipan-win");
+                    if (alis.Length > 0)
+                        foreach (var item in alis)
+                            item.Kill();
+                    ProcessStartInfo startInfo = new()
                     {
-                        ProcessStartInfo startInfo = new()
-                        {
-                            FileName = "wwwroot/script/alipan-win.exe",
-                            WorkingDirectory = Directory.GetCurrentDirectory(),
-                            CreateNoWindow = true
-                        };
-                        AliProcess = Process.Start(startInfo)!;
-                    }
+                        FileName = "wwwroot/script/alipan-win.exe",
+                        WorkingDirectory = Directory.GetCurrentDirectory(),
+                        CreateNoWindow = true
+                    };
+                    _ = Process.Start(startInfo)!;
+
                 });
             }
             return Success();
