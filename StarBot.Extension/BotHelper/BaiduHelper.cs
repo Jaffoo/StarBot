@@ -121,6 +121,7 @@ namespace StarBot.Extension
         {
             try
             {
+                var check = await ReciverMsg.Instance.GetCheck();
                 if (!Config.EnableModule.BD || !Config.BD.FaceVerify)
                 {
                     await _sysCache.AddAsync(new()
@@ -129,7 +130,7 @@ namespace StarBot.Extension
                         Type = 1,
                         CreateDate = DateTime.Now,
                     });
-                    await ReciverMsg.Instance.SendAdminMsg($"来自{resource}的图片，未启用人脸识别功能，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
+                    await ReciverMsg.Instance.SendAdminMsg($"来自{resource}的图片，未启用人脸识别功能，加入待审核，目前有{check.Count}张图片待审核");
                     return;
                 }
                 var face = await new Baidu().IsFaceAndCount(url);
@@ -146,7 +147,7 @@ namespace StarBot.Extension
                             Type = 1,
                             CreateDate = DateTime.Now,
                         });
-                        await ReciverMsg.Instance.SendAdminMsg($"来自{resource}的图片，相似度低于{Config.BD.Similarity}，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
+                        await ReciverMsg.Instance.SendAdminMsg($"来自{resource}的图片，相似度低于{Config.BD.Similarity}，加入待审核，目前有{check.Count}张图片待审核");
                         return;
                     }
                     if (score >= Config.BD.Similarity && score <= 100)
@@ -159,7 +160,7 @@ namespace StarBot.Extension
                                 Type = 1,
                                 CreateDate = DateTime.Now,
                             });
-                            await ReciverMsg.Instance.SendAdminMsg($"来自{resource}的图片保存失败，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
+                            await ReciverMsg.Instance.SendAdminMsg($"来自{resource}的图片保存失败，加入待审核，目前有{check.Count}张图片待审核");
                         }
                         else
                         {
@@ -178,7 +179,7 @@ namespace StarBot.Extension
                         Type = 1,
                         CreateDate = DateTime.Now,
                     });
-                    await ReciverMsg.Instance.SendAdminMsg($"来自{resource}的图片，识别到多个人脸，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
+                    await ReciverMsg.Instance.SendAdminMsg($"来自{resource}的图片，识别到多个人脸，加入待审核，目前有{check.Count}张图片待审核");
                     return;
                 }
                 else if (face == 0)
@@ -189,7 +190,7 @@ namespace StarBot.Extension
                         Type = 1,
                         CreateDate = DateTime.Now,
                     });
-                    await ReciverMsg.Instance.SendAdminMsg($"未识别到人脸，加入待审核，目前有{ReciverMsg.Instance.Check.Count}张图片待审核");
+                    await ReciverMsg.Instance.SendAdminMsg($"未识别到人脸，加入待审核，目前有{check.Count}张图片待审核");
                 }
                 return;
             }

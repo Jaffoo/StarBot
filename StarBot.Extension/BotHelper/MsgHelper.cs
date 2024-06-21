@@ -74,12 +74,10 @@ namespace StarBot.Extension
         public string Admin => Config.QQ.Admin;
         public bool Notice => Config.QQ.Notice;
         public bool Debug => Config.QQ.Debug;
-        public List<string> Check
+
+        public async Task<List<string>> GetCheck()
         {
-            get
-            {
-                return _cache.GetListAsync(t => t.Type == 1).Result.Select(t => t.Content).ToList();
-            }
+            return (await _cache.GetListAsync(t => t.Type == 1)).Select(t => t.Content).ToList();
         }
         public List<string> Permission => Config.QQ.Permission.ToListStr();
         public List<string> FuncAdmin => Config.QQ.FuncAdmin;
@@ -159,6 +157,7 @@ namespace StarBot.Extension
         {
             Bot!.MessageReceived.OfType<PrivateReceiver>().Subscribe(async fmr =>
             {
+                var Check = await GetCheck();
                 //消息链
                 var msgChain = fmr.Message;
                 var msgText = msgChain?.GetPlainText().Replace(" #", "") ?? "";
