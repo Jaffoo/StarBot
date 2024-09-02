@@ -40,9 +40,9 @@ DROP TABLE IF EXISTS "QQMessage";
 CREATE TABLE "QQMessage" (
   "Id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "SenderId" INTEGER NOT NULL,
-  "RecieverId" INTEGER NOT NULL,
+  "ReciverId" INTEGER NOT NULL,
   "SenderName" TEXT NOT NULL,
-  "RecieverName" TEXT NOT NULL,
+  "ReciverName" TEXT NOT NULL,
   "Content" TEXT NOT NULL,
   "Time" DATE NOT NULL,
   "Url" TEXT
