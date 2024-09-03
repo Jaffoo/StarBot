@@ -84,9 +84,9 @@
 
   A:是的，抖音暂时无法使用
 
-- Q:新版本无法启动？
+- Q:新版本无法启动，点击无反应？
   
-  A:如果没有Edge浏览器，下载Edge浏览器即可，如果不想下载Edge浏览器，可以前往微软下载[WebView2运行时](https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/?form=MA13LH#download)，通常情况较新的电脑选择中间x64，如果是比较老的电脑，自行百度方法查询自己电脑是多少位的。
+  A:前往微软下载[WebView2运行时](https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/?form=MA13LH#download)，通常情况较新的电脑选择中间x64，如果是比较老的电脑，自行百度方法查询自己电脑是多少位的。
 
 ## 五、反馈
 

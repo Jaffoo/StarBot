@@ -54,6 +54,11 @@ namespace StarBot.Photino
 
             window.WindowClosing += (sender, e) =>
             {
+                //关闭阿里云盘服务
+                var alis = Process.GetProcessesByName("alipan-win");
+                if (alis.Length > 0)
+                    foreach (var item in alis)
+                        item.Kill();
                 CreateShortIcon(window);
                 return false;
             };
@@ -101,11 +106,6 @@ namespace StarBot.Photino
                     {
                         process.Kill();
                     }
-                    if (HomeController.AliProcess != null)
-                    {
-                        HomeController.AliProcess.Kill();
-                        HomeController.AliProcess = null;
-                    }
                 };
             }
             catch (Exception ex)
@@ -134,7 +134,7 @@ namespace StarBot.Photino
             // 设置快捷方式的目标路径
             Assembly assembly = Assembly.GetExecutingAssembly();
             string rootNamespace = assembly.GetName().Name!;
-            shortcut.TargetPath = Path.Combine(Directory.GetCurrentDirectory(), rootNamespace+".exe");
+            shortcut.TargetPath = Path.Combine(Directory.GetCurrentDirectory(), rootNamespace + ".exe");
 
             //设置起始位置，保持工作目录一致
             shortcut.WorkingDirectory = Directory.GetCurrentDirectory();
