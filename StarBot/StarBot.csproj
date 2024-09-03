@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NetDimension.NanUI" Version="1.0.109.182" />
+    <PackageReference Include="NetDimension.NanUI" Version="1.0.109.230" />
     <PackageReference Include="NetDimension.NanUI.Runtime" Version="109.0.5414.1" />
   </ItemGroup>
 
