@@ -126,8 +126,8 @@ namespace StarBot.Extension
                         {
                             SenderId = gmr.Sender!.QQ.ToString(),
                             SenderName = gmr.Sender.Nickname,
-                            ReciverId = gmr.Group!.GroupQQ.ToString(),
-                            ReciverName = gmr.Group.GroupName,
+                            ReceiverId = gmr.Group!.GroupQQ.ToString(),
+                            ReceiverName = gmr.Group.GroupName,
                             Time = DateTime.Now,
                         };
                         foreach (var item in msgChain)

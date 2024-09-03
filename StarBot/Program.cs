@@ -81,11 +81,6 @@ internal class App : WinFormiumStartup
                 {
                     process.Kill();
                 }
-                if (HomeController.AliProcess != null)
-                {
-                    HomeController.AliProcess.Kill();
-                    HomeController.AliProcess = null;
-                }
             };
         }
         catch (Exception ex)
@@ -164,7 +159,7 @@ internal class StarBotUI : Formium
         string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         var link = Path.Combine(desktopPath, "StarBot.lnk");
         if (System.IO.File.Exists(link)) return;
-        DialogResult res = MessageBox.Show(Owner,"检测到桌面没有快捷方式，是否创建？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        DialogResult res = MessageBox.Show(Owner, "检测到桌面没有快捷方式，是否创建？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         if (res == DialogResult.No) return;
 
         // 创建 WshShell 对象

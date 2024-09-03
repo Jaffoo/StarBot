@@ -27,12 +27,12 @@ namespace StarBot.Entity
         /// <summary>
         /// 接收人/群id
         /// </summary>
-        public string ReciverId { get; set; } = string.Empty;
+        public string ReceiverId { get; set; } = string.Empty;
 
         /// <summary>
         /// 接收人/群
         /// </summary>
-        public string ReciverName { get; set; } = string.Empty;
+        public string ReceiverName { get; set; } = string.Empty;
 
         /// <summary>
         /// 消息内容
