@@ -60,6 +60,9 @@ namespace StarBot.Photino
                     foreach (var item in alis)
                         item.Kill();
                 CreateShortIcon(window);
+                var res = window.ShowMessage("提示", "确认关闭？", PhotinoDialogButtons.YesNo, PhotinoDialogIcon.Question);
+                if (res == PhotinoDialogResult.No)
+                    return true;
                 return false;
             };
             window.WaitForClose(); // Starts the application event loop           

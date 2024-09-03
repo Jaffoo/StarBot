@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <Platforms>AnyCPU</Platforms>
+    <Platforms>AnyCPU;ARM32;ARM64</Platforms>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ApplicationIcon>logo.ico</ApplicationIcon>
