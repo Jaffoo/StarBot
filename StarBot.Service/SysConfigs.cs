@@ -47,13 +47,19 @@ namespace StarBot.Service
                     if (newVal == "False" || newVal == "True") newVal = newVal.ToLower();
                     if (newVal == "[]") newVal = "";
                     if (newVal == child.Value) continue;
-                    child.Value = Regex.Replace(newVal, @"[ \t\r\n]", "");;
+                    child.Value = Regex.Replace(newVal, @"[ \t\r\n]", ""); ;
                     ClearConfig(pModel.Key);
                     updates.Add(child);
                 }
             }
             if (updates.Count == 0) return true;
-            return await UpdateRangeAsync(updates);
+            var b = await UpdateRangeAsync(updates);
+            if (b)
+            {
+                ClearConfig();
+                await GetConfig();
+            }
+            return b;
         }
 
         public async Task<Config> GetConfig()
