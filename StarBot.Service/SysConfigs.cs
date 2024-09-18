@@ -26,7 +26,7 @@ namespace StarBot.Service
                 model = await GetModelAsync(t => t.Pid == pid && t.Key == key);
             else
                 model = await GetModelAsync(t => t.Key == key);
-            return model.Value;
+            return model.Value ?? "";
         }
 
         public async Task<bool> SaveConfig(Config config)

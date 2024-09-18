@@ -45,19 +45,19 @@
                 <el-checkbox-group v-model="kd.msgType">
                     <el-checkbox v-for="(item, index) in kd.msgTypeAll" :label="item.value" :key="index">{{
                         item.name
-                        }}</el-checkbox>
+                    }}</el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
-            <el-form-item label="转发至群">
+            <el-form-item label="转发至群" v-if="usebot">
                 <el-switch v-model="kd.forwardGroup" active-text="转发" inactive-text="不转发" />
             </el-form-item>
-            <el-form-item label="群qq号" v-if="kd.forwardGroup">
+            <el-form-item label="群qq号" v-if="kd.forwardGroup && usebot">
                 <SearchGroup :value="kd.group" multiple :bot="bot" @change="(data) => kd.group = data"></SearchGroup>
             </el-form-item>
-            <el-form-item label="转发至好友">
+            <el-form-item label="转发至好友" v-if="usebot">
                 <el-switch v-model="kd.forwardQQ" active-text="转发" inactive-text="不转发" />
             </el-form-item>
-            <el-form-item label="好友qq" v-if="kd.forwardQQ">
+            <el-form-item label="好友qq" v-if="kd.forwardQQ && usebot">
                 <SearchFriend :value="kd.qq" multiple :bot="bot" @change="(data) => kd.qq = data"></SearchFriend>
             </el-form-item>
         </el-form>
@@ -144,6 +144,10 @@ const props = defineProps({
             }
         }
     },
+    usebot: {
+        type: Boolean,
+        default: false
+    }
 })
 const kdform = ref<FormInstance>();
 const rules = ref<FormRules>(

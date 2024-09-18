@@ -58,7 +58,7 @@ namespace StarBot.Extension
             string url = "";
             try
             {
-                foreach (var item in Config.XHS.User.ToListStr())
+                foreach (var item in Config.XHS.User!.ToListStr())
                 {
                     url = "https://www.xiaohongshu.com/user/profile/" + item;
                     var handler = new HttpClientHandler() { UseCookies = true };
@@ -136,12 +136,12 @@ namespace StarBot.Extension
                     {
                         var goups = string.IsNullOrWhiteSpace(Config.XHS.Group) ? Config.QQ.Group : Config.XHS.Group;
                         if (goups == null) continue;
-                        await ReciverMsg.Instance.SendGroupMsg(goups.ToListStr(), mcb.Build());
+                        await ReciverMsg.Instance.SendGroupMsg(goups!.ToListStr(), mcb.Build());
                     }
                     if (Config.XHS.ForwardQQ)
                     {
                         if (string.IsNullOrWhiteSpace(Config.XHS.QQ)) continue;
-                        await ReciverMsg.Instance.SendFriendMsg(Config.XHS.QQ.ToListStr(), mcb.Build());
+                        await ReciverMsg.Instance.SendFriendMsg(Config.XHS.QQ!.ToListStr(), mcb.Build());
                     }
                 }
             }

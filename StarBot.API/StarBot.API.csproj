@@ -67,13 +67,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="wwwroot\data\**">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Update="wwwroot\script\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -81,6 +74,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Update="wwwroot\data\main.sql">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	  <None Update="wwwroot\script\alipan.py">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </None>

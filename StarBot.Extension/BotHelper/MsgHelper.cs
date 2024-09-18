@@ -15,6 +15,7 @@ using UnifyBot.Receiver.EventReceiver;
 using UnifyBot.Model;
 using UnifyBot.Message;
 using StarBot.Helper;
+using UmoBot.Extension;
 
 namespace StarBot.Extension
 {
@@ -71,7 +72,7 @@ namespace StarBot.Extension
         private readonly double _interval = 3;//单位秒
         public Bot? Bot;
         #region 全局变量
-        public string Admin => Config.QQ.Admin;
+        public string Admin => Config.QQ.Admin ?? "";
         public bool Notice => Config.QQ.Notice;
         public bool Debug => Config.QQ.Debug;
 
@@ -79,9 +80,9 @@ namespace StarBot.Extension
         {
             return (await _cache.GetListAsync(t => t.Type == 1)).Select(t => t.Content).ToList();
         }
-        public List<string> Permission => Config.QQ.Permission.ToListStr();
+        public List<string> Permission => Config.QQ.Permission!.ToListStr();
         public List<string> FuncAdmin => Config.QQ.FuncAdmin;
-        public List<string> Group => Config.QQ.Group.ToListStr();
+        public List<string> Group => Config.QQ.Group!.ToListStr();
         public List<RequestFriend> RequestFriend { get; set; } = [];
         public List<RequestGroup> RequestGroup { get; set; } = [];
         public static bool BotReady { get; set; } = false;
@@ -685,9 +686,9 @@ namespace StarBot.Extension
                             var keywords = msgText.Replace("#删除微博关键词#", "");
                             if (string.IsNullOrWhiteSpace(keywords))
                                 await fmr.SendMessage("输入内容为空！");
-                            if (!Config.WB.Keyword.ToListStr().Contains(keywords))
+                            if (!Config.WB.Keyword!.ToListStr().Contains(keywords))
                                 await fmr.SendMessage("不存在该关键词！");
-                            var temp = Config.WB.Keyword.ToListStr();
+                            var temp = Config.WB.Keyword!.ToListStr();
                             temp.Remove(keywords);
                             Config.WB.Keyword = string.Join(",", temp);
                             var model = await _sysConfig.GetModelAsync(t => t.Key == "Keyword" && t.DataType == "list");
@@ -703,9 +704,9 @@ namespace StarBot.Extension
                             var keywords = msgText.Replace("#添加微博关键词#", "");
                             if (string.IsNullOrWhiteSpace(keywords))
                                 await fmr.SendMessage("输入内容为空！");
-                            if (Config.WB.Keyword.ToListStr().Contains(keywords))
+                            if (Config.WB.Keyword!.ToListStr().Contains(keywords))
                                 await fmr.SendMessage("已存在该关键词！");
-                            var temp = Config.WB.Keyword.ToListStr();
+                            var temp = Config.WB.Keyword!.ToListStr();
                             temp.Add(keywords);
                             Config.WB.Keyword = string.Join(",", temp);
                             var model = await _sysConfig.GetModelAsync(t => t.Key == "Keyword" && t.DataType == "list");

@@ -12,12 +12,12 @@
     <Bot ref="botRef" :bot="model.bot" v-if="model.enableModule.bot" class="mt10" />
     <QQ ref="qqRef" :qq="model.qq" :bot="model.bot" v-if="model.enableModule.qq" class="mt10"
       :new="Object.values(props.enable).every(value => value === false)" />
-    <WB ref="wbRef" :wb="model.wb" :bot="model.bot" v-if="model.enableModule.wb" class="mt10" />
-    <KD ref="kdRef" :kd="model.kd" :bot="model.bot" v-if="model.enableModule.kd" class="mt10" />
-    <BZ ref="bzRef" :bz="model.bz" :bot="model.bot" v-if="model.enableModule.bz" class="mt10" />
-    <XHS ref="xhsRef" :xhs="model.xhs" :bot="model.bot" v-if="model.enableModule.xhs" class="mt10" />
+    <WB ref="wbRef" :wb="model.wb" :usebot="model.enableModule.bot" :bot="model.bot" v-if="model.enableModule.wb" class="mt10" />
+    <KD ref="kdRef" :kd="model.kd" :usebot="model.enableModule.bot" :bot="model.bot" v-if="model.enableModule.kd" class="mt10" />
+    <BZ ref="bzRef" :bz="model.bz" :usebot="model.enableModule.bot" :bot="model.bot" v-if="model.enableModule.bz" class="mt10" />
+    <XHS ref="xhsRef" :xhs="model.xhs" :usebot="model.enableModule.bot" :bot="model.bot" v-if="model.enableModule.xhs" class="mt10" />
     <BD ref="bdRef" :bd="model.bd" v-if="model.enableModule.bd" />
-    <DY ref="dyRef" :dy="model.dy" :bot="model.bot" v-if="model.enableModule.dy" class="mt10 mb50" />
+    <DY ref="dyRef" :dy="model.dy" :usebot="model.enableModule.bot" :bot="model.bot" v-if="model.enableModule.dy" class="mt10 mb50" />
   </el-scrollbar>
 </template>
 

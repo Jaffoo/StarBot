@@ -111,7 +111,7 @@ namespace StarBot.Model
         /// <summary>
         /// 地址
         /// </summary>
-        public string Host { get; set; } = string.Empty;
+        public string? Host { get; set; }
 
         /// <summary>
         /// Websockt端口
@@ -126,7 +126,7 @@ namespace StarBot.Model
         /// <summary>
         /// token
         /// </summary>
-        public string Token { get; set; } = "";
+        public string? Token { get; set; }
     }
 
     /// <summary>
@@ -253,12 +253,12 @@ namespace StarBot.Model
         /// <summary>
         /// appkey
         /// </summary>
-        public string AppKey { get; set; } = string.Empty;
+        public string? AppKey { get; set; }
 
         /// <summary>
         /// 密钥
         /// </summary>
-        public string AppSeret { get; set; } = string.Empty;
+        public string? AppSeret { get; set; }
 
         /// <summary>
         /// 相似度
@@ -278,7 +278,7 @@ namespace StarBot.Model
         /// <summary>
         /// 相册名称
         /// </summary>
-        public string AlbumName { get; set; } = string.Empty;
+        public string? AlbumName { get; set; }
 
         /// <summary>
         /// 人脸对比
@@ -338,27 +338,27 @@ namespace StarBot.Model
         /// <summary>
         /// 小偶像名称
         /// </summary>
-        public string IdolName { get; set; } = string.Empty;
+        public string? IdolName { get; set; }
 
         /// <summary>
         /// 账号
         /// </summary>
-        public string Account { get; set; } = string.Empty;
+        public string? Account { get; set; }
 
         /// <summary>
         /// token
         /// </summary>
-        public string Token { get; set; } = string.Empty;
+        public string? Token { get; set; }
 
         /// <summary>
         /// 服务器id
         /// </summary>
-        public string ServerId { get; set; } = string.Empty;
+        public string? ServerId { get; set; }
 
         /// <summary>
         /// qq群
         /// </summary>
-        public string Group { get; set; } = string.Empty;
+        public string? Group { get; set; }
 
         /// <summary>
         /// 是否转发到qq群
@@ -373,27 +373,27 @@ namespace StarBot.Model
         /// <summary>
         /// qq号
         /// </summary>
-        public string QQ { get; set; } = string.Empty;
+        public string? QQ { get; set; }
 
         /// <summary>
         /// appkey
         /// </summary>
-        public string AppKey { get; set; } = string.Empty;
+        public string? AppKey { get; set; }
 
         /// <summary>
         /// 图片域名
         /// </summary>
-        public string ImgDomain { get; set; } = string.Empty;
+        public string? ImgDomain { get; set; }
 
         /// <summary>
         /// 视频域名
         /// </summary>
-        public string VideoDomain { get; set; } = string.Empty;
+        public string? VideoDomain { get; set; }
 
         /// <summary>
         /// 直播房间id
         /// </summary>
-        public string LiveRoomId { get; set; } = string.Empty;
+        public string? LiveRoomId { get; set; }
 
         /// <summary>
         /// 消息类型
@@ -460,13 +460,13 @@ namespace StarBot.Model
         /// 用户id
         /// 转发动态，保存图片
         /// </summary>
-        public string UserAll { get; set; } = string.Empty;
+        public string? UserAll { get; set; }
 
         /// <summary>
         /// 用户id
         /// 仅用于保存图片
         /// </summary>
-        public string UserPart { get; set; } = string.Empty;
+        public string? UserPart { get; set; }
 
         /// <summary>
         /// 监听间隔时间
@@ -476,7 +476,7 @@ namespace StarBot.Model
         /// <summary>
         /// 群号
         /// </summary>
-        public string Group { get; set; } = string.Empty;
+        public string? Group { get; set; }
 
         /// <summary>
         /// 转发qq群
@@ -491,22 +491,22 @@ namespace StarBot.Model
         /// <summary>
         /// qq
         /// </summary>
-        public string QQ { get; set; } = string.Empty;
+        public string? QQ { get; set; }
 
         /// <summary>
         /// 吃瓜id
         /// </summary>
-        public string ChiGuaUser { get; set; } = string.Empty;
+        public string? ChiGuaUser { get; set; }
 
         /// <summary>
         /// 吃瓜微博关键词过滤
         /// </summary>
-        public string Keyword { get; set; } = string.Empty;
+        public string? Keyword { get; set; }
 
         /// <summary>
         /// 吃瓜转发qq
         /// </summary>
-        public string ChiGuaQQ { get; set; } = string.Empty;
+        public string? ChiGuaQQ { get; set; }
 
         /// <summary>
         /// 吃瓜转发qq
@@ -516,7 +516,7 @@ namespace StarBot.Model
         /// <summary>
         /// 吃瓜转发群
         /// </summary>
-        public string ChiGuaGroup { get; set; } = string.Empty;
+        public string? ChiGuaGroup { get; set; }
 
         /// <summary>
         /// 吃瓜转发群
@@ -567,7 +567,7 @@ namespace StarBot.Model
         /// <summary>
         /// 用户id
         /// </summary>
-        public string User { get; set; } = string.Empty;
+        public string? User { get; set; }
 
         /// <summary>
         /// 监听间隔时间
@@ -577,7 +577,7 @@ namespace StarBot.Model
         /// <summary>
         /// 群号
         /// </summary>
-        public string Group { get; set; } = string.Empty;
+        public string? Group { get; set; }
 
         /// <summary>
         /// 转发qq群
@@ -592,7 +592,7 @@ namespace StarBot.Model
         /// <summary>
         /// qq
         /// </summary>
-        public string QQ { get; set; } = string.Empty;
+        public string? QQ { get; set; }
     }
 
     /// <summary>
@@ -638,7 +638,7 @@ namespace StarBot.Model
         /// <summary>
         /// 用户id
         /// </summary>
-        public string User { get; set; } = string.Empty;
+        public string? User { get; set; }
 
         /// <summary>
         /// 监听间隔时间
@@ -648,7 +648,7 @@ namespace StarBot.Model
         /// <summary>
         /// 群号
         /// </summary>
-        public string Group { get; set; } = string.Empty;
+        public string? Group { get; set; }
 
         /// <summary>
         /// 转发qq群
@@ -663,7 +663,7 @@ namespace StarBot.Model
         /// <summary>
         /// qq
         /// </summary>
-        public string QQ { get; set; } = string.Empty;
+        public string? QQ { get; set; }
     }
 
     /// <summary>
@@ -709,7 +709,7 @@ namespace StarBot.Model
         /// <summary>
         /// 用户id
         /// </summary>
-        public string User { get; set; } = string.Empty;
+        public string? User { get; set; }
 
         /// <summary>
         /// 监听间隔时间
@@ -719,7 +719,7 @@ namespace StarBot.Model
         /// <summary>
         /// 群号
         /// </summary>
-        public string Group { get; set; } = string.Empty;
+        public string? Group { get; set; }
 
         /// <summary>
         /// 转发qq群
@@ -734,7 +734,7 @@ namespace StarBot.Model
         /// <summary>
         /// qq
         /// </summary>
-        public string QQ { get; set; } = string.Empty;
+        public string? QQ { get; set; }
     }
 
     /// <summary>
@@ -785,7 +785,7 @@ namespace StarBot.Model
         /// <summary>
         /// 监听群/转发群
         /// </summary>
-        public string Group { get; set; } = string.Empty;
+        public string? Group { get; set; }
 
         /// <summary>
         /// 是否保存群消息
@@ -795,7 +795,7 @@ namespace StarBot.Model
         /// <summary>
         /// 超管
         /// </summary>
-        public string Admin { get; set; } = string.Empty;
+        public string? Admin { get; set; }
 
         /// <summary>
         /// 开启消息通知
@@ -805,7 +805,7 @@ namespace StarBot.Model
         /// <summary>
         /// 管理员
         /// </summary>
-        public string Permission { get; set; } = string.Empty;
+        public string? Permission { get; set; }
 
         /// <summary>
         /// 开启程序错误通知
@@ -821,11 +821,11 @@ namespace StarBot.Model
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get; set; } = string.Empty;
+        public string? Name { get; set; }
 
         /// <summary>
         /// 值
         /// </summary>
-        public string Value { get; set; } = string.Empty;
+        public string? Value { get; set; }
     }
 }

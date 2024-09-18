@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using IWshRuntimeLibrary;
-using StarBot.Controllers;
 using StarBot.Extension;
 using StarBot.IService;
 using System.Diagnostics;

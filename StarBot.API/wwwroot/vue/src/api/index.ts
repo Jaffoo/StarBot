@@ -5,6 +5,7 @@ const _port = sessionStorage.getItem("HttpPort") || 5266;
 
 const getApiurl = () => {
     console.log('environment', import.meta.env.MODE);
+    return `http://localhost:${_port}/api/v1`;
     if (import.meta.env.MODE === "production") {
         return `http://localhost:${_port}/api/v1`;
     } else {
@@ -60,18 +61,18 @@ export const getFun = async () => {
     return response.data;
 };
 
-export const startPlugin = async (name: string, version: string) => {
-    const response = await axios.get<ApiResult>(`${_baseUrl}/startplugin?name=${name}&version=${version}`);
+export const startPlugin = async (id: number) => {
+    const response = await axios.get<ApiResult>(`${_baseUrl}/startplugin?id=${id}`);
     return response.data;
 };
 
-export const stopPlugin = async (name: string) => {
-    const response = await axios.get<ApiResult>(`${_baseUrl}/stopplugin?name=${name}`);
+export const stopPlugin = async (id: number) => {
+    const response = await axios.get<ApiResult>(`${_baseUrl}/stopplugin?id=${id}`);
     return response.data;
 };
 
-export const delPlugin = async (name: string) => {
-    const response = await axios.get<ApiResult>(`${_baseUrl}/delplugin?name=${name}`);
+export const delPlugin = async (id: number) => {
+    const response = await axios.get<ApiResult>(`${_baseUrl}/delplugin?id=${id}`);
     return response.data;
 };
 

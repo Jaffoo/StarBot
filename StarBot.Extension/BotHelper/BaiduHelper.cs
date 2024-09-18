@@ -36,8 +36,8 @@ namespace StarBot.Extension
             List<KeyValuePair<string, string>> paraList =
             [
                 new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                new KeyValuePair<string, string>("client_id", Config.BD.AppKey),
-                new KeyValuePair<string, string>("client_secret", Config.BD.AppSeret)
+                new KeyValuePair<string, string>("client_id", Config.BD.AppKey??""),
+                new KeyValuePair<string, string>("client_secret", Config.BD.AppSeret??"")
             ];
 
             HttpResponseMessage response = await client.PostAsync(authHost, new FormUrlEncodedContent(paraList));

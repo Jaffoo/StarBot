@@ -7,19 +7,19 @@
             <el-form-item label="抖音用户" prop="user">
                 <el-input v-model="dy.user" />
             </el-form-item>
-            <el-form-item label="转发至群">
+            <el-form-item label="转发至群" v-if="usebot">
                 <el-switch v-model="dy.forwardGroup" active-text="转发" inactive-text="不转发" />
             </el-form-item>
-            <el-form-item label="群qq号" v-if="dy.forwardGroup">
+            <el-form-item label="群qq号" v-if="dy.forwardGroup && usebot">
                 <SearchGroup :value="dy.group" multiple :bot="bot" @change="(data) => dy.group = data"></SearchGroup>
             </el-form-item>
-            <el-form-item label="转发至好友">
+            <el-form-item label="转发至好友" v-if="usebot">
                 <el-switch v-model="dy.forwardQQ" active-text="转发" inactive-text="不转发" />
             </el-form-item>
-            <el-form-item label="好友qq" v-if="dy.forwardQQ">
+            <el-form-item label="好友qq" v-if="dy.forwardQQ && usebot">
                 <SearchFriend :value="dy.qq" multiple :bot="bot" @change="(data) => dy.qq = data"></SearchFriend>
             </el-form-item>
-            <el-form-item label="监听间隔" v-if="dy.forwardQQ || dy.forwardGroup">
+            <el-form-item label="监听间隔" v-if="(dy.forwardQQ || dy.forwardGroup) && usebot">
                 <el-input-number v-model="dy.timeSpan" />
             </el-form-item>
         </el-form>
@@ -56,6 +56,10 @@ defineProps({
             }
         }
     },
+    usebot: {
+        type: Boolean,
+        default: false
+    }
 })
 const dyform = ref<FormInstance>();
 const rules = ref<FormRules>(

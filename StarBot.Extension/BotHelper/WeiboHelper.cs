@@ -55,7 +55,7 @@ namespace StarBot.Extension
         }
         public async Task Save()
         {
-            var allList = Config.WB.UserAll.ToListStr().Concat(Config.WB.UserPart.ToListStr());
+            var allList = Config.WB.UserAll!.ToListStr().Concat(Config.WB.UserPart!.ToListStr());
             foreach (var item in allList)
             {
                 var url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
@@ -90,7 +90,7 @@ namespace StarBot.Extension
                             if (blog.ContainsKey("pic_infos")) mblogtype = 2;
                             if (blog.ContainsKey("topic_struct")) mblogtype = 1;
                             //需要发送通知则发送通知
-                            if (Config.WB.UserAll.Contains(item))
+                            if ((Config.WB.UserAll ?? "").Contains(item))
                             {
                                 var msgModel = new MsgModel();
                                 var mcb = new MessageChainBuild();
@@ -131,12 +131,12 @@ namespace StarBot.Extension
                                 {
                                     var goups = string.IsNullOrWhiteSpace(Config.WB.Group) ? Config.QQ.Group : Config.WB.Group;
                                     if (goups == null) continue;
-                                    await ReciverMsg.Instance.SendGroupMsg(goups.ToListStr(), mcb.Build());
+                                    await ReciverMsg.Instance.SendGroupMsg(goups!.ToListStr(), mcb.Build());
                                 }
                                 if (Config.WB.ForwardQQ)
                                 {
                                     if (string.IsNullOrWhiteSpace(Config.WB.QQ)) continue;
-                                    await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ.ToListStr(), mcb.Build());
+                                    await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ!.ToListStr(), mcb.Build());
                                 }
                             }
                             //保存图片
@@ -170,7 +170,7 @@ namespace StarBot.Extension
 
         public async Task ChiGua()
         {
-            foreach (var item in Config.WB.ChiGuaUser.ToListStr())
+            foreach (var item in Config.WB.ChiGuaUser!.ToListStr())
             {
                 var url = "https://weibo.com/ajax/statuses/mymblog?uid=" + item;
                 try
@@ -202,7 +202,7 @@ namespace StarBot.Extension
                             if (blog.ContainsKey("page_info")) mblogtype = 0;
                             if (blog.ContainsKey("pic_infos")) mblogtype = 2;
                             var blogContent = blog["text_raw"]!.ToString();
-                            if (!Config.WB.Keyword.ToListStr().Select(blogContent.Contains).Any(x => x) && Config.WB.Keyword.ToListStr().Count > 0)
+                            if (!Config.WB.Keyword!.ToListStr().Select(blogContent.Contains).Any(x => x) && Config.WB.Keyword!.ToListStr().Count > 0)
                                 return;
                             var mcb = new MessageChainBuild();
                             var msgModel = new MsgModel { MsgStr = $"{blog["user"]!["screen_name"]}发了一条相关微博！" + $"\n链接：https://weibo.com/{blog["user"]!["id"]}/{blog["mid"]}\n" };
@@ -234,12 +234,12 @@ namespace StarBot.Extension
                             {
                                 var goups = Config.WB.Group ?? Config.QQ.Group;
                                 if (goups == null) continue;
-                                await ReciverMsg.Instance.SendGroupMsg(goups.ToListStr(), mcb.Build());
+                                await ReciverMsg.Instance.SendGroupMsg(goups!.ToListStr(), mcb.Build());
                             }
                             if (Config.WB.ForwardQQ)
                             {
                                 if (string.IsNullOrWhiteSpace(Config.WB.QQ)) continue;
-                                await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ.ToListStr(), mcb.Build());
+                                await ReciverMsg.Instance.SendFriendMsg(Config.WB.QQ!.ToListStr(), mcb.Build());
                             }
                         }
                     }

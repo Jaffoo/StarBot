@@ -7,19 +7,19 @@
             <el-form-item label="b站用户" prop="user">
                 <el-input v-model="bz.user" />
             </el-form-item>
-            <el-form-item label="转发至群">
+            <el-form-item label="转发至群" v-if="usebot">
                 <el-switch v-model="bz.forwardGroup" active-text="转发" inactive-text="不转发" />
             </el-form-item>
-            <el-form-item label="群qq号" v-if="bz.forwardGroup">
+            <el-form-item label="群qq号" v-if="bz.forwardGroup && usebot">
                 <SearchGroup :value="bz.group" multiple :bot="bot" @change="(data) => bz.group = data"></SearchGroup>
             </el-form-item>
-            <el-form-item label="转发至好友">
+            <el-form-item label="转发至好友" v-if="usebot">
                 <el-switch v-model="bz.forwardQQ" active-text="转发" inactive-text="不转发" />
             </el-form-item>
-            <el-form-item label="好友qq" v-if="bz.forwardQQ">
+            <el-form-item label="好友qq" v-if="bz.forwardQQ && usebot">
                 <SearchFriend :value="bz.qq" multiple :bot="bot" @change="(data) => bz.qq = data"></SearchFriend>
             </el-form-item>
-            <el-form-item label="监听间隔" v-if="bz.forwardQQ || bz.forwardGroup">
+            <el-form-item label="监听间隔" v-if="(bz.forwardQQ || bz.forwardGroup) && usebot">
                 <el-input-number v-model="bz.timeSpan" />
             </el-form-item>
         </el-form>
@@ -56,6 +56,10 @@ defineProps({
             }
         }
     },
+    usebot: {
+        type: Boolean,
+        default: false
+    }
 })
 const bzform = ref<FormInstance>();
 const rules = ref<FormRules>(
