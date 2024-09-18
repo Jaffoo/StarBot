@@ -295,10 +295,6 @@ const startBot = async () => {
         localStorage.setItem("lastStart", currentTime.value)
         runTime.value = "0小时0分钟";
         lastStart.value = currentTime.value;
-        if (props.enable.bd && config.value?.bd?.saveAliyunDisk) {
-            ElMessage.info("正在启动阿里云盘服务")
-            await startAliYunPan();
-        }
     } else {
         let emsg = startRes.msg ?? "启动失败：未知错误";
         ElMessage.error(emsg)
@@ -308,7 +304,6 @@ const startBot = async () => {
     }
     if (props.enable.kd) {
         await initPocket()
-        initPocketLive()
     }
 }
 const closeBot = () => {
