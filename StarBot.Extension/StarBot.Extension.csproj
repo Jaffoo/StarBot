@@ -13,13 +13,13 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.65" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.8" />
+    <PackageReference Include="PluginServer" Version="2.1.1.4" />
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\StarBot.Entity\StarBot.Entity.csproj" />
     <ProjectReference Include="..\StarBot.IService\StarBot.IService.csproj" />
-    <ProjectReference Include="..\PluginServer\PluginServer.csproj" />
   </ItemGroup>
 
 	<PropertyGroup>

@@ -56,7 +56,6 @@ namespace UmoBot.Extension
                 }
                 using BasePlugin? instance = instanceObj as BasePlugin;
                 if (instance == null) continue;
-                if (instance.ServerVersion != new ServerVersion().ServerVersion) continue;
                 Plugin temp;
                 if (!Plugins.Exists(t => t.Name == instance.Name && t.Version == instance.Version))
                 {
@@ -77,6 +76,7 @@ namespace UmoBot.Extension
                 else
                 {
                     temp = Plugins.FirstOrDefault(x => x.Name == instance.Name && x.Version == instance.Version)!;
+                    instance.PluginId = temp.Id;
                 }
                 if (!LoadedPlugins.Any(x => x.Key.Name == instance.Name && x.Key.Version == instance.Version))
                     LoadedPlugins.Add(temp, instance);
