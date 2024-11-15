@@ -31,7 +31,7 @@
 
    方式1：[LLOneBot](https://llonebot.github.io/zh-CN)基于QQNT架构的QQ**客户端**，可视化配置，配置简单（比mirai简单的不是亿点点），内存占用较高300MB起步。
    
-   方式2：[NapCat](https://napneko.github.io/zh-CN)基于QQNT架构的QQ**运行环境**，**无需客户端**，非可视化配置，配置相比LLOneBot复杂一点，内存占用较低正常情况不高于100MB。
+   方式2（推荐）：[NapCat](https://napneko.github.io/zh-CN)基于QQNT架构的QQ**运行环境**，**可以无需客户端**，可视化配置，配置过程相比LLOneBot复杂一点，内存占用较低正常情况不高于100MB。
    
 2. 其他配置项
 
